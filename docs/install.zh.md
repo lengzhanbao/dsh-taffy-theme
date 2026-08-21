@@ -17,13 +17,13 @@
 在终端执行：
 
 ```bash
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.1.tgz
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.2.tgz
 ```
 
-若 `latest` 尚未指向 0.1.1，可改用固定版本：
+若 `latest` 尚未指向 0.1.2，可改用固定版本：
 
 ```bash
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.1/dsh-external-dsh-taffy-theme-0.1.1.tgz
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.2/dsh-external-dsh-taffy-theme-0.1.2.tgz
 ```
 
 然后：
@@ -55,7 +55,7 @@ dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/rele
 ## 升级
 
 ```bash
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.1.tgz
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.2.tgz
 dsh web
 ```
 
@@ -71,7 +71,7 @@ dsh web
 刷新后界面恢复 DSH 默认。若要装回官方 Release：
 
 ```bash
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.1.tgz
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.2.tgz
 ```
 
 ## 常见问题

@@ -37,6 +37,7 @@ describe('plugin asset route', () => {
 
     expect(status.code).toBe(200)
     expect(status.headers['content-type']).toBe('image/webp')
+    expect(status.headers['cache-control']).toBe('public, max-age=0, must-revalidate')
     expect(status.body.toString()).toBe('webp-bytes')
   })
 

@@ -181,6 +181,7 @@ export function apply(ctx: ClientContext): void {
       body.removeAttribute('data-taffy-frame-opacity')
       body.removeAttribute('data-taffy-panel-opacity')
       body.removeAttribute('data-taffy-character-opacity')
+      body.removeAttribute('data-taffy-scene')
       body.removeAttribute('data-taffy-hide-left')
       body.removeAttribute('data-taffy-hide-right')
       body.removeAttribute('data-taffy-hide-mascot')

@@ -15,13 +15,13 @@ Web UI only — not CLI or other profiles.
 ## Install (recommended)
 
 ```bash
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.1.tgz
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.2.tgz
 ```
 
 Pinned version:
 
 ```bash
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.1/dsh-external-dsh-taffy-theme-0.1.1.tgz
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.2/dsh-external-dsh-taffy-theme-0.1.2.tgz
 ```
 
 Then:
@@ -47,7 +47,7 @@ Skin and voice are **independent**. For Taffy speaking style, select agent prese
 
 ```bash
 # upgrade
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.1.tgz
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.2.tgz
 dsh web
 
 # remove

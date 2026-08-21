@@ -3,11 +3,22 @@ body[data-dsh-taffy-theme][data-taffy-viewport-resizing] [data-skin-chrome='atel
 body[data-dsh-taffy-theme][data-taffy-viewport-resizing] [data-skin-chrome='sidebar-trim'] {
   transition: none;
   filter: none;
+  animation: none;
 }
 
 @keyframes taffy-q-pop {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.08); }
+}
+
+@keyframes taffy-idle-sway {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(0.35deg); }
+}
+
+@keyframes taffy-sparkle-drift {
+  0%, 100% { background-position: 12% 18%, 78% 32%, 42% 72%; opacity: 0.42; }
+  50% { background-position: 18% 28%, 70% 24%, 48% 64%; opacity: 0.68; }
 }
 
 @keyframes taffy-send-glow {
@@ -49,6 +60,19 @@ body[data-dsh-taffy-theme][data-taffy-state='idle'] [data-taffy-veil='curtain'] 
   animation: taffy-veil-breathe calc(10s * var(--taffy-motion-duration, 1)) ease-in-out infinite;
 }
 
+body[data-dsh-taffy-theme]:not([data-taffy-low-power]):not([data-dsh-taffy-motion='off']):not([data-dsh-taffy-reduced-motion='true']) [data-taffy-character] {
+  animation: taffy-idle-sway calc(5.6s * var(--taffy-motion-duration, 1)) ease-in-out infinite;
+}
+
+body[data-dsh-taffy-theme]:not([data-taffy-low-power]):not([data-dsh-taffy-motion='off']):not([data-dsh-taffy-reduced-motion='true']) [data-taffy-character='right'] {
+  animation-duration: calc(6.4s * var(--taffy-motion-duration, 1));
+  animation-delay: -1.8s;
+}
+
+body[data-dsh-taffy-theme]:not([data-taffy-low-power]):not([data-dsh-taffy-motion='off']):not([data-dsh-taffy-reduced-motion='true']) [data-taffy-sparkles] {
+  animation: taffy-sparkle-drift calc(9s * var(--taffy-motion-duration, 1)) ease-in-out infinite;
+}
+
 body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='发送消息'],
 body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Send message'] {
   animation: taffy-send-glow calc(2.8s * var(--taffy-motion-duration, 1)) ease-in-out infinite;
@@ -78,13 +102,23 @@ body[data-dsh-taffy-theme][data-taffy-state='error'] [data-skin-chrome='atelier-
 
 body[data-dsh-taffy-theme] [data-slot='sidebar.settings'] button[aria-haspopup='dialog']:hover::before,
 body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand']:hover::before,
-body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='命令']:hover::before,
-body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Commands']:hover::before,
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='命令']:hover::after,
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Commands']:hover::after,
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏']:hover::after,
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar']:hover::after,
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏']:hover::after,
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar']:hover::after,
 body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']):hover::before,
 body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']):hover::before {
   animation: taffy-q-pop 0.45s ease;
 }
 
+body[data-dsh-taffy-theme][data-dsh-taffy-motion='off'] [data-taffy-character],
+body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'] [data-taffy-character],
+body[data-dsh-taffy-theme][data-taffy-low-power] [data-taffy-character],
+body[data-dsh-taffy-theme][data-dsh-taffy-motion='off'] [data-taffy-sparkles],
+body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'] [data-taffy-sparkles],
+body[data-dsh-taffy-theme][data-taffy-low-power] [data-taffy-sparkles],
 body[data-dsh-taffy-theme][data-dsh-taffy-motion='off'] [data-composer-card] button[aria-label='发送消息'],
 body[data-dsh-taffy-theme][data-dsh-taffy-motion='off'] [data-composer-card] button[aria-label='Send message'],
 body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'] [data-composer-card] button[aria-label='发送消息'],
@@ -101,10 +135,10 @@ body[data-dsh-taffy-theme][data-dsh-taffy-motion='off'] [data-slot='sidebar.sett
 body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog']:hover::before,
 body[data-dsh-taffy-theme][data-dsh-taffy-motion='off'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand']:hover::before,
 body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand']:hover::before,
-body[data-dsh-taffy-theme][data-dsh-taffy-motion='off'] [data-composer-card] button[aria-label='命令']:hover::before,
-body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'] [data-composer-card] button[aria-label='命令']:hover::before,
-body[data-dsh-taffy-theme][data-dsh-taffy-motion='off'] [data-composer-card] button[aria-label='Commands']:hover::before,
-body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'] [data-composer-card] button[aria-label='Commands']:hover::before,
+body[data-dsh-taffy-theme][data-dsh-taffy-motion='off'] [data-composer-card] button[aria-label='命令']:hover::after,
+body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'] [data-composer-card] button[aria-label='命令']:hover::after,
+body[data-dsh-taffy-theme][data-dsh-taffy-motion='off'] [data-composer-card] button[aria-label='Commands']:hover::after,
+body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'] [data-composer-card] button[aria-label='Commands']:hover::after,
 body[data-dsh-taffy-theme][data-dsh-taffy-motion='off'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']):hover::before,
 body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']):hover::before,
 body[data-dsh-taffy-theme][data-dsh-taffy-motion='off'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']):hover::before,

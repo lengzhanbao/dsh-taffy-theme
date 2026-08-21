@@ -93,7 +93,7 @@ function TaffyModeRow() {
     className: 'dsh-taffy-general-row',
     'data-dsh-taffy-settings': '',
   },
-    createElement('div', { className: 'dsh-taffy-general-title' }, 'Taffy 模式'),
+    createElement('div', { className: 'dsh-taffy-general-title' }, '塔菲工房'),
     createElement('div', { className: 'dsh-taffy-general-cubes' },
       createElement(Cube, { selected: settings.enabled, label: '开启', onClick: () => commit({ enabled: true }) }),
       createElement(Cube, { selected: !settings.enabled, label: '关闭', onClick: () => commit({ enabled: false }) }),
@@ -135,15 +135,15 @@ function TaffyModeRow() {
       createElement(Cube, { selected: !settings.reducedMotion, label: '关闭', onClick: () => commit({ reducedMotion: false, motion: 'standard' }) }),
     ),
     createElement('div', { className: 'dsh-taffy-general-note' },
-      '开启后左右立绘与工房背景会跟着「外观」的浅色 / 深色切换。边框包住对话文本；百分比只改透明层，人物默认不透明。对话口吻请在 Agent 预设里选用「Taffy 塔菲」。',
+      '工房开了喵：浅色花房、深色舞台跟着「外观」走。边框包住对话，百分比只改透明层，人物默认不透明。想听塔菲说话，去 Agent 预设里选「Taffy 塔菲」喵。',
     ),
   )
 }
 
 export function registerSettingsPanel(ctx: ClientContext): void {
   ctx.effect(() => ctx.locale.register(SETTINGS_NS, {
-    zh: { 'settings.taffyTheme.label': 'Taffy 模式' },
-    en: { 'settings.taffyTheme.label': 'Taffy mode' },
+    zh: { 'settings.taffyTheme.label': '塔菲工房' },
+    en: { 'settings.taffyTheme.label': 'Taffy atelier' },
   }), '@dsh-external/dsh-taffy-theme: locale')
 
   ctx.slots.inject('settings.general.item', () => ctx.slots.register({

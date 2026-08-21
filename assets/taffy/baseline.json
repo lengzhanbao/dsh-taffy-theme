@@ -1,5 +1,5 @@
 {
-  "assetSetVersion": "2026-08-left-light-defringe",
+  "assetSetVersion": "2026-08-22-fill-q",
   "creamBackground": "#fff7f1",
   "limits": {
     "avatarBytes": 1048576,
@@ -61,7 +61,7 @@
     }
   },
   "wallpaper": {
-    "wallpaper-light.webp": { "bytes": 197542 },
-    "wallpaper-dark.webp": { "bytes": 285232 }
+    "wallpaper-light.webp": { "bytes": 165906 },
+    "wallpaper-dark.webp": { "bytes": 146858 }
   }
 }

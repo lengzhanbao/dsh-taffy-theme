@@ -29,4 +29,4 @@ if ($LASTEXITCODE -ne 0) { throw 'host import smoke failed' }
 
 Write-Host ""
 Write-Host "Done. Restart DSH web and open http://127.0.0.1:3080"
-Write-Host "Rollback: dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.1.tgz"
+Write-Host "Rollback: dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.2.tgz"

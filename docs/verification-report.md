@@ -1,38 +1,40 @@
 # 工程化验收报告
 
-记录时间：2026-08-21
+记录时间：2026-08-22
 
 ## 当前版本
 
-- **包版本**：`0.1.1`（待发 GitHub Release）
+- **包版本**：`0.1.2`（待发 GitHub Release `v0.1.2`）
 - **对外安装**：[install.zh.md](install.zh.md)
 
 ## 自动化门禁
 
 | 命令 | 结果 |
 |------|------|
-| `npm test` | 70 passed |
-| `npm run verify:static` | 71 checks, 0 failures |
-| `npm run verify:assets` | 50 checks, 0 failures |
-| `npm run verify:pack` | 11 checks, 0 failures |
-| `npm run verify -- capture/chat-light.json capture/chat-dark.json` | 77 checks, 0 failures |
+| `npm test` | 84 passed |
+| `npm run verify:static` | 通过 |
+| `npm run verify:assets` | 通过 |
+| `npm run verify:pack` | 20 checks, 0 failures |
+| `npm run typecheck` | 通过（`tsconfig.host.json`） |
 
-## v0.1.1 变更摘要
+## v0.1.2 变更摘要
 
-- 对外安装文档（中/英）、CHANGELOG、发版清单
-- 对话字色与字光晕可读性修复
-- `applyThemeTokens` 不再把浅色字钉死在暗色主题
-- pack / install 稳定性（延续 0.1.0 晚修复）
+- host 静态资源路由 + tarball 补全 + loopback trust fence
+- client bundle 改 URL 加载（~176KB，原 base64 ~4MB）
+- 性能节流：`chrome-observer`、流式 metrics、低功耗模式
+- 发版门禁：`build.ps1` 失败即中止、`verify:pack` 增强
 
 ## 3080 实况
 
-- Profile 通过 `npm run install:release` 安装本地 pack
-- 插件 host 端可加载
+- Profile 可通过 `npm run install:release` 安装本地 pack
+- 插件 host / client 可加载；更新后需重启 `dsh web`
 
 ## 待发
 
-- Git commit / tag `v0.1.1` / GitHub Release（用户验收后）
-- awesome-dsh-plugin PR
+- Git push / tag `v0.1.2` / GitHub Release + `.tgz` 资产
+- GitHub 仓库 topic：`dsh-plugin`
+- [dsh-market 提交 issue](https://github.com/2BingLing/dsh-market/issues/new?template=submit_plugin.md) 或等待 topic 自动收录
+- awesome-dsh-plugin PR（`docs/market/lengzhanbao__dsh-taffy-theme.yml`）
 
 ## 刻意延后
 

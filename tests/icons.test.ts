@@ -11,7 +11,7 @@ const icons = join(root, 'assets/taffy/icons')
 describe('Taffy headshot icons', () => {
   it('ships square headshots and resolves them via plugin asset URLs', () => {
     const bundledQ = readFileSync(join(root, 'src/client/bundled-q.ts'), 'utf8')
-    for (const name of ['face-look', 'face-happy', 'face-stop', 'face-portrait', 'face-wink', 'face-new']) {
+    for (const name of ['face-look', 'face-happy', 'face-stop', 'face-portrait', 'face-wink', 'face-new', 'face-pet']) {
       expect(existsSync(join(icons, `${name}.webp`)), name).toBe(true)
       expect(existsSync(join(icons, `${name}.png`)), name).toBe(true)
     }
@@ -20,21 +20,31 @@ describe('Taffy headshot icons', () => {
     expect(bundledQ).toContain("buildAssetUrl('icons/face-stop.webp')")
     expect(bundledQ).toContain("buildAssetUrl('icons/face-wink.webp')")
     expect(bundledQ).toContain("buildAssetUrl('icons/face-new.webp')")
+    expect(bundledQ).toContain("buildAssetUrl('icons/face-portrait.webp')")
+    expect(bundledQ).toContain("buildAssetUrl('icons/face-pet.webp')")
+    expect(bundledQ).toContain('BUNDLED_Q_BRAND_RIGHT')
     expect(bundledQ).not.toContain('data:image/')
   })
 
-  it('keeps sidebar and new-session at 36px / 82%, and fills settings and send at 98%', () => {
+  it('keeps new-session at 36px, collapse at 48px, DS brand at 56px, and fills Q faces at 118–122%', () => {
     expect(components).toContain("button[aria-label='发送消息']")
     expect(components).toContain("button[aria-label='收起侧边栏']")
+    expect(components).toContain("content: 'taffy-harness'")
+    expect(components).toContain("button[class*='brand']::after")
+    expect(components).not.toContain('padding-right: 66px')
+    expect(components).toMatch(/收起侧边栏'\]::after[\s\S]{0,400}--taffy-q-brand-right/)
     expect(components).toContain('width: 36px')
     expect(components).toContain('min-width: 36px')
     expect(components).toContain('width: 42px')
     expect(components).toContain('width: 44px')
-    expect(components).toContain('background-size: 82% 82%')
-    expect(components).toContain('background-size: 98% 98%')
+    expect(components).toContain('width: 48px')
+    expect(components).toContain('width: 56px')
+    expect(components).toContain('background-size: 118% 118%')
+    expect(components).toContain('background-size: 122% 122%')
     expect(components).toMatch(/\[data-composer-card\] button\[aria-label='发送消息'\][\s\S]{0,900}border-radius:\s*50%/)
-    expect(components).toMatch(/\[data-composer-card\] button\[aria-label='发送消息'\]::after[\s\S]{0,220}background-size:\s*98% 98%/)
-    expect(components).toMatch(/\[data-composer-card\] button\[aria-label='停止生成'\]::after[\s\S]{0,220}background-size:\s*98% 98%/)
+    expect(components).toMatch(/\[data-composer-card\] button\[aria-label='发送消息'\]::after[\s\S]{0,220}background-size:\s*122% 122%/)
+    expect(components).toMatch(/\[data-composer-card\] button\[aria-label='停止生成'\]::after[\s\S]{0,220}background-size:\s*122% 122%/)
+    expect(components).toMatch(/\[data-composer-card\] button\[aria-label='命令'\]::after[\s\S]{0,220}background-size:\s*122% 122%/)
     expect(components).not.toContain('width: 52px')
   })
 
@@ -46,7 +56,9 @@ describe('Taffy headshot icons', () => {
     )
     expect(plate?.[0]).toContain('width: 100%')
     expect(plate?.[0]).toContain('font-size: 14px')
-    expect(plate?.[0]).toContain('overflow: visible')
+    expect(plate?.[0]).toContain('background: var(--taffy-plate-art)')
+    expect(plate?.[0]).toContain('border-radius: 14px')
+    expect(plate?.[0]).not.toContain('border-image-source')
     expect(plate?.[0]).not.toMatch(/font-size:\s*0/)
     expect(plate?.[0]).not.toContain('color: transparent')
     expect(plate?.[0]).not.toMatch(/border-radius:\s*50%/)
@@ -65,7 +77,7 @@ describe('Taffy headshot icons', () => {
     )
     expect(labeled?.[0]).toContain('min-height: 56px')
     expect(labeled?.[0]).not.toMatch(/border-radius:\s*50%/)
-    expect(components).not.toMatch(/button\[class\*='brand'\][\s\S]{0,200}border-radius:\s*50%/)
+    expect(components).not.toMatch(/button\[class\*='brand'\] \{[\s\S]{0,200}border-radius:\s*50%/)
   })
 
   it('hides native SVG only after the headshot is ready', () => {

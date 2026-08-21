@@ -20,6 +20,7 @@ const Q_VARS = [
   '--taffy-q-new',
   '--taffy-q-settings',
   '--taffy-q-brand',
+  '--taffy-q-brand-right',
   '--taffy-q-command',
 ] as const
 
@@ -51,15 +52,22 @@ export function applyImageSrc(image: HTMLImageElement, src: string): void {
   image.src = src
 }
 
-function makeImage(src: string, character: 'left' | 'right'): HTMLImageElement {
+function makeImage(src: string, character: 'left' | 'right', pose: 'sit' | 'stand' | 'bust'): HTMLImageElement {
   const image = document.createElement('img')
   image.dataset.skinOwner = SKIN_OWNER
   image.dataset.taffyCharacter = character
+  image.dataset.taffyPose = pose
   image.alt = ''
   image.decoding = 'async'
   bindAssetFallback(image, resolvePortraitFallback())
   applyImageSrc(image, src)
   return image
+}
+
+function scenePoses(night: boolean): { left: 'sit' | 'stand' | 'bust'; right: 'sit' | 'stand' | 'bust' } {
+  return night
+    ? { left: 'bust', right: 'sit' }
+    : { left: 'sit', right: 'stand' }
 }
 
 function makeMascot(src: string): HTMLImageElement {
@@ -106,6 +114,7 @@ function applyQChromeVars(body: HTMLElement, settings: TaffySettings): void {
     ['--taffy-q-new', q.newSession],
     ['--taffy-q-settings', q.settings],
     ['--taffy-q-brand', q.brand],
+    ['--taffy-q-brand-right', q.brandRight],
     ['--taffy-q-command', q.command],
   ] as const
 
@@ -136,6 +145,7 @@ export function applyRootAttributes(body: HTMLElement, settings: TaffySettings, 
     body.removeAttribute('data-taffy-frame-opacity')
     body.removeAttribute('data-taffy-panel-opacity')
     body.removeAttribute('data-taffy-character-opacity')
+    body.removeAttribute('data-taffy-scene')
     body.removeAttribute('data-taffy-hide-left')
     body.removeAttribute('data-taffy-hide-right')
     body.removeAttribute('data-taffy-hide-mascot')
@@ -159,6 +169,7 @@ export function applyRootAttributes(body: HTMLElement, settings: TaffySettings, 
   body.setAttribute('data-taffy-frame-opacity', String(settings.frameOpacity))
   body.setAttribute('data-taffy-panel-opacity', String(settings.panelOpacity))
   body.setAttribute('data-taffy-character-opacity', String(settings.characterOpacity))
+  body.setAttribute('data-taffy-scene', 'fused')
   applyOpacityVars(body, settings)
   body.toggleAttribute('data-taffy-hide-left', !settings.showLeftCharacter)
   body.toggleAttribute('data-taffy-hide-right', !settings.showRightCharacter)
@@ -174,11 +185,18 @@ export function syncStageArt(root: HTMLElement = document.body, settings?: Taffy
   if (wallpaper instanceof HTMLImageElement && wallpaperUrl) applyImageSrc(wallpaper, wallpaperUrl)
 
   const figures = resolveFigureUrls(night)
+  const poses = scenePoses(night)
   const left = root.querySelector("[data-taffy-character='left']")
   const right = root.querySelector("[data-taffy-character='right']")
   const mascot = root.querySelector("[data-taffy-mascot='sidebar']")
-  if (left instanceof HTMLImageElement) applyImageSrc(left, figures.left)
-  if (right instanceof HTMLImageElement) applyImageSrc(right, figures.right)
+  if (left instanceof HTMLImageElement) {
+    left.dataset.taffyPose = poses.left
+    applyImageSrc(left, figures.left)
+  }
+  if (right instanceof HTMLImageElement) {
+    right.dataset.taffyPose = poses.right
+    applyImageSrc(right, figures.right)
+  }
   if (settings && mascot instanceof HTMLImageElement) applyImageSrc(mascot, resolveAvatarUrl(settings, undefined, night))
 }
 
@@ -204,13 +222,36 @@ export function createCharacterStage(settings: TaffySettings): HTMLElement | nul
   veil.dataset.taffyVeil = 'curtain'
   stage.append(veil)
 
+  const sparkles = document.createElement('div')
+  sparkles.dataset.skinOwner = SKIN_OWNER
+  sparkles.dataset.taffySparkles = 'ambient'
+  sparkles.setAttribute('aria-hidden', 'true')
+
+  const atmosphere = document.createElement('div')
+  atmosphere.dataset.skinOwner = SKIN_OWNER
+  atmosphere.dataset.taffyAtmosphere = 'haze'
+  atmosphere.setAttribute('aria-hidden', 'true')
+
   if (settings.portrait !== 'off') {
     const figures = resolveFigureUrls(night)
+    const poses = scenePoses(night)
+    const leftGround = document.createElement('div')
+    leftGround.dataset.skinOwner = SKIN_OWNER
+    leftGround.dataset.taffyGround = 'left'
+    leftGround.setAttribute('aria-hidden', 'true')
+    const rightGround = document.createElement('div')
+    rightGround.dataset.skinOwner = SKIN_OWNER
+    rightGround.dataset.taffyGround = 'right'
+    rightGround.setAttribute('aria-hidden', 'true')
     stage.append(
-      makeImage(figures.left, 'left'),
-      makeImage(figures.right, 'right'),
+      leftGround,
+      rightGround,
+      makeImage(figures.left, 'left', poses.left),
+      makeImage(figures.right, 'right', poses.right),
     )
   }
+
+  stage.append(atmosphere, sparkles)
   return stage
 }
 

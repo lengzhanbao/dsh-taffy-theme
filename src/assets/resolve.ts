@@ -11,6 +11,7 @@ import {
 } from '../client/bundled-assets'
 import {
   BUNDLED_Q_BRAND,
+  BUNDLED_Q_BRAND_RIGHT,
   BUNDLED_Q_COMMAND,
   BUNDLED_Q_FACE,
   BUNDLED_Q_NEW,
@@ -77,6 +78,7 @@ export function resolveQChromeUrls(settings: TaffySettings): {
   newSession: string
   settings: string
   brand: string
+  brandRight: string
   command: string
 } {
   const avatar = resolveAvatarUrl(settings)
@@ -88,6 +90,7 @@ export function resolveQChromeUrls(settings: TaffySettings): {
     newSession: pickImage(BUNDLED_Q_NEW, avatar),
     settings: pickImage(BUNDLED_Q_SETTINGS, avatar),
     brand: pickImage(BUNDLED_Q_BRAND, portrait),
+    brandRight: pickImage(BUNDLED_Q_BRAND_RIGHT, portrait),
     command: pickImage(BUNDLED_Q_COMMAND, portrait),
   }
 }

@@ -7,7 +7,7 @@
 | | |
 | --- | --- |
 | Package | `@dsh-external/dsh-taffy-theme` |
-| Version | `0.1.1` |
+| Version | `0.1.2` |
 | Platform | DSH **Web** profile only |
 | Requires | DeepSeek Harness `0.1.0-rc.6`+ |
 
@@ -16,7 +16,7 @@
 **普通用户只需一条命令，无需克隆仓库或本地构建。**
 
 ```bash
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.1.tgz
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.2.tgz
 dsh web
 ```
 
@@ -42,12 +42,12 @@ dsh web
 - 架构思路参考 [maid-atelier](https://github.com/Small-tailqwq/dsh-deep-whale/tree/main/maid-atelier)，**未复制**其代码与资产
 - `--dsw-*` token 限定在 DSH 列容器内；亚克力 **opt-in**，降低误伤第三方插件风险
 
-## 稳定性说明（0.1.1）
+## 稳定性说明（0.1.2）
 
 | 面向 | 说明 |
 | --- | --- |
 | 普通用户 | Release `.tgz` 安装；发版前 `verify:pack` + 本地 profile 冒烟 |
-| 已知边界 | 依赖 DSH Web DOM；DSH 大版本升级后请装最新 Release |
+| 已知边界 | 依赖 DSH Web DOM；DSH 大版本升级后请装最新 Release；更新后需**重启** `dsh web` |
 | 维护者 | `npm test` + `verify:*` 门禁；见 [release-checklist.md](docs/release-checklist.md) |
 
 ## 卸载

@@ -22,6 +22,7 @@ body[data-dsh-taffy-theme] {
   --taffy-q-send: none;
   --taffy-q-settings: none;
   --taffy-q-brand: none;
+  --taffy-q-brand-right: none;
   --taffy-q-new: none;
   --taffy-q-command: none;
   --taffy-q-stop: none;
@@ -56,12 +57,9 @@ body[data-dsh-taffy-theme] {
   --taffy-panel-opacity: 82;
   --taffy-plate-art: linear-gradient(
     90deg,
-    #f29bc2 0%,
-    #ffd8e7 14%,
-    rgba(255, 247, 241, 0.94) 24%,
-    rgba(255, 247, 241, 0.94) 76%,
-    #ffd8e7 86%,
-    #e7b957 100%
+    rgba(255, 214, 232, 0.7),
+    rgba(255, 247, 241, 0.42) 50%,
+    rgba(255, 214, 232, 0.58)
   );
   --taffy-settings-frame-art: var(--taffy-plate-art);
   --taffy-character-opacity: 1;
@@ -124,12 +122,9 @@ body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] {
   --taffy-glow: rgba(242, 165, 200, 0.22);
   --taffy-plate-art: linear-gradient(
     90deg,
-    #dc6f9e 0%,
-    rgba(255, 216, 231, 0.28) 16%,
-    rgba(36, 29, 52, 0.88) 28%,
-    rgba(36, 29, 52, 0.88) 72%,
-    rgba(255, 216, 231, 0.22) 86%,
-    #e7b957 100%
+    rgba(220, 111, 158, 0.22),
+    rgba(39, 30, 55, 0.42) 50%,
+    rgba(185, 167, 232, 0.16)
   );
   --taffy-settings-frame-art: var(--taffy-plate-art);
   --taffy-acrylic-bg: color-mix(in srgb, rgb(36, 29, 52) calc(var(--taffy-acrylic-percent) * 1%), transparent);

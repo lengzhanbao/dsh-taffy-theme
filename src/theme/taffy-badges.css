@@ -213,20 +213,9 @@ body[data-dsh-taffy-theme] [data-taffy-sidebar-corner] {
   border: 1.5px solid rgba(231, 185, 87, 0.58);
 }
 
-body[data-dsh-taffy-theme] [data-taffy-sidebar-corner='top-left'] {
-  top: 10px;
-  left: 10px;
-  border-right: 0;
-  border-bottom: 0;
-  border-radius: 10px 0 0 0;
-}
-
+body[data-dsh-taffy-theme] [data-taffy-sidebar-corner='top-left'],
 body[data-dsh-taffy-theme] [data-taffy-sidebar-corner='top-right'] {
-  top: 10px;
-  right: 10px;
-  border-left: 0;
-  border-bottom: 0;
-  border-radius: 0 10px 0 0;
+  display: none;
 }
 
 body[data-dsh-taffy-theme] [data-taffy-sidebar-corner='bottom-left'] {

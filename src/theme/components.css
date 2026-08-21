@@ -23,9 +23,15 @@ body[data-dsh-taffy-theme] [data-taffy-wallpaper] {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center 76%;
   pointer-events: none;
   opacity: 1;
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-taffy-wallpaper],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-taffy-wallpaper] {
+  object-position: center 62%;
+  filter: saturate(1.08) contrast(1.04);
 }
 
 body[data-dsh-taffy-theme] [data-taffy-wallpaper][data-taffy-asset-error] {
@@ -38,11 +44,110 @@ body[data-dsh-taffy-theme] [data-taffy-veil='curtain'] {
   z-index: 1;
   pointer-events: none;
   opacity: 1;
-  background: color-mix(
-    in srgb,
-    var(--taffy-veil, var(--ds-taffy-cream)) calc(var(--taffy-veil-opacity, 0.12) * 100%),
-    transparent
-  );
+  background:
+    radial-gradient(
+      ellipse 48% 62% at 52% 42%,
+      color-mix(
+        in srgb,
+        var(--taffy-veil, var(--ds-taffy-cream)) calc(var(--taffy-veil-opacity, 0.12) * 130%),
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--taffy-veil, var(--ds-taffy-cream)) calc(var(--taffy-veil-opacity, 0.12) * 35%),
+        transparent
+      ) 68%,
+      transparent 100%
+    );
+}
+
+body[data-dsh-taffy-theme] [data-taffy-atmosphere] {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 48%,
+      color-mix(in srgb, var(--taffy-veil, var(--ds-taffy-cream)) 16%, transparent) 100%
+    ),
+    radial-gradient(
+      ellipse 90% 40% at 50% 100%,
+      color-mix(in srgb, var(--taffy-veil, var(--ds-taffy-cream)) 22%, transparent),
+      transparent 70%
+    );
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-taffy-atmosphere],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-taffy-atmosphere] {
+  background:
+    radial-gradient(ellipse 36% 48% at 18% 62%, rgba(242, 155, 194, 0.16), transparent 72%),
+    radial-gradient(ellipse 28% 36% at 84% 70%, rgba(231, 185, 87, 0.1), transparent 70%),
+    linear-gradient(180deg, transparent 42%, rgba(18, 10, 28, 0.28) 100%);
+}
+
+body[data-dsh-taffy-theme] [data-taffy-ground] {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  height: 54px;
+  border-radius: 50%;
+  filter: blur(12px);
+  background: radial-gradient(ellipse, rgba(73, 59, 80, 0.28), transparent 72%);
+}
+
+body[data-dsh-taffy-theme] [data-taffy-ground='left'] {
+  left: 0;
+  bottom: 10px;
+  width: min(30vw, 380px);
+  translate: calc(var(--taffy-conversation-left, var(--taffy-sidebar-width)) + clamp(16px, 2vw, 36px)) 0;
+}
+
+body[data-dsh-taffy-theme] [data-taffy-ground='right'] {
+  right: calc(var(--taffy-right-panel-width, var(--taffy-frame-right-inset, 0px)) + 12px);
+  bottom: 12px;
+  width: min(22vw, 280px);
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-taffy-ground],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-taffy-ground] {
+  background: radial-gradient(ellipse, rgba(242, 155, 194, 0.22), rgba(8, 4, 16, 0.42) 42%, transparent 74%);
+}
+
+body[data-dsh-taffy-theme][data-taffy-hide-left] [data-taffy-ground='left'],
+body[data-dsh-taffy-theme][data-taffy-hide-right] [data-taffy-ground='right'],
+body[data-dsh-taffy-theme][data-taffy-right-crowded] [data-taffy-ground='right'] {
+  opacity: 0;
+}
+
+body[data-dsh-taffy-theme] [data-taffy-sparkles] {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image:
+    radial-gradient(circle, rgba(255, 216, 231, 0.95) 0 1.5px, transparent 2.4px),
+    radial-gradient(circle, rgba(231, 185, 87, 0.78) 0 1.2px, transparent 2px),
+    radial-gradient(circle, rgba(242, 155, 194, 0.7) 0 1px, transparent 1.8px);
+  background-size: 220px 180px, 280px 240px, 160px 200px;
+  background-position: 12% 18%, 78% 32%, 42% 72%;
+}
+
+body[data-dsh-taffy-theme][data-taffy-low-power] [data-taffy-sparkles],
+body[data-dsh-taffy-theme][data-dsh-taffy-motion='off'] [data-taffy-sparkles],
+body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'] [data-taffy-sparkles] {
+  display: none;
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-taffy-sparkles],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-taffy-sparkles] {
+  opacity: 0.42;
+  background-image:
+    radial-gradient(circle, rgba(255, 236, 180, 0.95) 0 1.6px, transparent 2.6px),
+    radial-gradient(circle, rgba(242, 165, 200, 0.7) 0 1.2px, transparent 2.1px),
+    radial-gradient(circle, rgba(185, 167, 232, 0.65) 0 1px, transparent 1.8px);
 }
 
 body[data-dsh-taffy-theme] [data-taffy-character] {
@@ -56,8 +161,10 @@ body[data-dsh-taffy-theme] [data-taffy-character] {
   pointer-events: none;
   opacity: var(--taffy-character-opacity, 1);
   filter:
-    saturate(1.04)
-    drop-shadow(0 10px 18px rgba(242, 155, 194, 0.16));
+    saturate(1.02)
+    contrast(0.98)
+    drop-shadow(0 0 14px rgba(255, 216, 180, 0.22))
+    drop-shadow(0 18px 16px rgba(73, 59, 80, 0.28));
 }
 
 body[data-dsh-taffy-theme] [data-taffy-character][data-taffy-asset-error] {
@@ -67,10 +174,12 @@ body[data-dsh-taffy-theme] [data-taffy-character][data-taffy-asset-error] {
 body[data-dsh-taffy-theme][data-ds-dark-theme] [data-taffy-character],
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-taffy-character] {
   filter:
-    brightness(1.08)
-    saturate(1.06)
-    contrast(1.06)
-    drop-shadow(0 14px 22px rgba(0, 0, 0, 0.22));
+    brightness(1.04)
+    saturate(0.98)
+    contrast(1.04)
+    drop-shadow(0 0 22px rgba(242, 155, 194, 0.38))
+    drop-shadow(0 0 36px rgba(231, 185, 87, 0.16))
+    drop-shadow(0 20px 18px rgba(8, 4, 16, 0.5));
 }
 
 body[data-dsh-taffy-theme] [data-taffy-character='left'] {
@@ -79,15 +188,18 @@ body[data-dsh-taffy-theme] [data-taffy-character='left'] {
   translate: calc(var(--taffy-conversation-left, var(--taffy-sidebar-width)) + clamp(10px, 1.6vw, 28px)) 0;
   height: clamp(520px, 88vh, 1080px);
   max-width: min(32vw, 460px);
+  transform-origin: center bottom;
   transition: none;
 }
 
 body[data-dsh-taffy-theme]:not([data-ds-dark-theme]):not([data-taffy-preset='taffy-night']) [data-taffy-character='left'] {
   filter:
-    saturate(1.04)
+    saturate(1.02)
+    sepia(0.1)
+    drop-shadow(-14px 0 18px rgba(255, 214, 150, 0.42))
     drop-shadow(0 0 0.45px #fff4ea)
-    drop-shadow(0 0 0.7px rgba(255, 247, 241, 0.9))
-    drop-shadow(0 10px 18px rgba(242, 155, 194, 0.16));
+    drop-shadow(0 0 16px rgba(255, 216, 180, 0.28))
+    drop-shadow(0 16px 14px rgba(120, 70, 50, 0.22));
 }
 
 body[data-dsh-taffy-theme] [data-taffy-character='right'] {
@@ -96,10 +208,40 @@ body[data-dsh-taffy-theme] [data-taffy-character='right'] {
   height: clamp(500px, 84vh, 1020px);
   max-width: min(24vw, 340px);
   object-position: right bottom;
+  transform-origin: center bottom;
   transition:
     right 420ms cubic-bezier(0.22, 0.78, 0.2, 1),
     height 420ms cubic-bezier(0.22, 0.78, 0.2, 1),
     opacity 220ms ease;
+}
+
+/* Conservatory: left figure sits on the greenhouse floor. */
+body[data-dsh-taffy-theme]:not([data-ds-dark-theme]):not([data-taffy-preset='taffy-night']) [data-taffy-character='left'][data-taffy-pose='sit'] {
+  height: clamp(280px, 52vh, 620px);
+  max-width: min(36vw, 520px);
+  bottom: clamp(4px, 1.4vh, 18px);
+}
+
+/* Conservatory: right figure is a standing salute, keep her taller. */
+body[data-dsh-taffy-theme]:not([data-ds-dark-theme]):not([data-taffy-preset='taffy-night']) [data-taffy-character='right'][data-taffy-pose='stand'] {
+  height: clamp(420px, 72vh, 880px);
+  bottom: clamp(-8px, -0.4vh, 0px);
+}
+
+/* Concert: left wink is a bust, plant her in the spotlight. */
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-taffy-character='left'][data-taffy-pose='bust'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-taffy-character='left'][data-taffy-pose='bust'] {
+  height: clamp(340px, 58vh, 720px);
+  max-width: min(30vw, 420px);
+  bottom: clamp(8px, 2vh, 28px);
+}
+
+/* Concert: right figure sits at the piano on stage. */
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-taffy-character='right'][data-taffy-pose='sit'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-taffy-character='right'][data-taffy-pose='sit'] {
+  height: clamp(250px, 46vh, 540px);
+  max-width: min(28vw, 380px);
+  bottom: clamp(6px, 1.8vh, 22px);
 }
 
 body[data-dsh-taffy-theme][data-taffy-better-sidebar-open] [data-taffy-character='right'],
@@ -110,8 +252,16 @@ body[data-dsh-taffy-theme][data-dsh-floating-panel-open] [data-taffy-character='
   opacity: 0.92;
 }
 
-body[data-dsh-taffy-theme][data-taffy-hide-left] [data-taffy-character='left'] {
-  opacity: 0;
+body[data-dsh-taffy-theme][data-taffy-better-sidebar-open] [data-taffy-character='right'][data-taffy-pose='sit'],
+body[data-dsh-taffy-theme][data-taffy-details-open] [data-taffy-character='right'][data-taffy-pose='sit'],
+body[data-dsh-taffy-theme][data-dsh-floating-panel-open] [data-taffy-character='right'][data-taffy-pose='sit'] {
+  height: clamp(220px, 38vh, 420px);
+  opacity: 0.94;
+}
+
+body[data-dsh-taffy-theme][data-taffy-scene='fused'] [data-taffy-character],
+body[data-dsh-taffy-theme][data-taffy-scene='fused'] [data-taffy-ground] {
+  display: none;
 }
 
 body[data-dsh-taffy-theme][data-taffy-hide-right] [data-taffy-character='right'],
@@ -367,12 +517,8 @@ body[data-dsh-taffy-theme] .dsh-taffy-general-row,
   color: var(--ds-taffy-pink, #f29bc2);
 }
 
-/* Circular chips copy the collapse-sidebar control: 36px, 82% headshot, overflow clip. */
+/* Circular chips: new-session stays 36px; brand (collapse) is larger. */
 
-body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏'],
-body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar'],
-body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏'],
-body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar'],
 body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] > :is(button, [role='button']),
 body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'],
 body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']),
@@ -384,6 +530,23 @@ body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] :is([data-pane='sideb
   min-width: 36px;
   min-height: 36px;
   max-width: 36px;
+  padding: 0;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: visible;
+}
+
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏'],
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar'],
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏'],
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar'] {
+  position: relative;
+  box-sizing: border-box;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  max-width: 48px;
   padding: 0;
   aspect-ratio: 1;
   border-radius: 50%;
@@ -410,7 +573,7 @@ body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Commands'] {
 
 body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='命令'],
 body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Commands'] {
-  overflow: hidden;
+  overflow: visible;
 }
 
 body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] > :is(button, [role='button']),
@@ -461,32 +624,34 @@ body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class
   border-radius: 50%;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 82% 82%;
+  background-size: 118% 118%;
 }
 
 body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='发送消息']::after,
 body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Send message']::after {
   background-image: var(--taffy-q-send);
   background-position: center;
-  background-size: 98% 98%;
+  background-size: 122% 122%;
 }
 
 body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='停止生成']::after,
 body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Stop generating']::after {
   background-image: var(--taffy-q-stop);
   background-position: center;
-  background-size: 98% 98%;
+  background-size: 122% 122%;
 }
 
 body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='命令']::after,
 body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Commands']::after {
   background-image: var(--taffy-q-command);
+  background-position: center;
+  background-size: 122% 122%;
 }
 
 body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::after {
   background-image: var(--taffy-q-settings);
   background-position: center;
-  background-size: 98% 98%;
+  background-size: 122% 122%;
 }
 
 body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand'])::after,
@@ -498,7 +663,9 @@ body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class
 body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar']::after,
 body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏']::after,
 body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar']::after {
-  background-image: var(--taffy-q-brand);
+  background-image: var(--taffy-q-brand-right);
+  background-position: center;
+  background-size: 122% 122%;
 }
 
 body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] > :is(button, [role='button']),
@@ -516,19 +683,14 @@ body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane=
   min-width: 0;
   min-height: 56px;
   height: auto;
-  padding: 8px 28px;
-  overflow: visible;
-  border-radius: 0;
+  padding: 8px 16px;
+  overflow: hidden;
+  border-radius: 14px;
   color: var(--ds-taffy-text);
-  background: transparent;
-  border-style: solid;
-  border-width: 0 34px;
-  border-image-source: var(--taffy-settings-frame-art, var(--taffy-plate-art));
-  border-image-slice: 0 220 0 220 fill;
-  border-image-width: 0 34px;
-  border-image-repeat: stretch;
+  background: var(--taffy-plate-art);
+  border: 1px solid color-mix(in srgb, var(--ds-taffy-pink) 26%, transparent);
   box-shadow: none;
-  filter: drop-shadow(0 6px 16px rgba(220, 111, 158, 0.12));
+  filter: none;
   font-size: 14px;
   line-height: 1.2;
   opacity: 1;
@@ -543,13 +705,14 @@ body[data-dsh-taffy-theme][data-ds-dark-theme]:not([data-taffy-sidebar-size='rai
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night']:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']),
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night']:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) {
   color: var(--ds-taffy-text-on-dark);
-  background: transparent;
+  background: var(--taffy-plate-art);
+  border-color: color-mix(in srgb, var(--ds-taffy-pink) 28%, transparent);
 }
 
 body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog']:hover,
 body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']):hover,
 body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']):hover {
-  filter: brightness(1.06) drop-shadow(0 8px 18px rgba(220, 111, 158, 0.16));
+  filter: brightness(1.06);
 }
 
 body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog']:active,
@@ -576,7 +739,7 @@ body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rai
   pointer-events: none;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 82% 82%;
+  background-size: 118% 118%;
 }
 
 body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] > :is(button, [role='button'])::before,
@@ -588,7 +751,7 @@ body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rai
   min-height: 44px;
   background-image: var(--taffy-q-settings);
   background-position: center;
-  background-size: 98% 98%;
+  background-size: 122% 122%;
 }
 
 body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand'])::before,
@@ -607,7 +770,61 @@ body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rai
 }
 
 body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand'] {
-  color: var(--dsw-alias-label-primary);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  min-height: 56px;
+  overflow: hidden;
+  font-size: 0;
+  line-height: 0;
+  color: var(--ds-taffy-pink);
+}
+
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand'] > * {
+  font-size: 0;
+  line-height: 0;
+}
+
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand'] :is(svg, img) {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand']::before {
+  content: '';
+  flex: 0 0 56px;
+  box-sizing: border-box;
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  min-height: 56px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+  background-image: var(--taffy-q-brand);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 122% 122%;
+}
+
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand']::after {
+  content: 'taffy-harness';
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 56px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+  color: var(--ds-taffy-pink);
+  text-shadow: 0 0 10px color-mix(in srgb, var(--ds-taffy-pink) 45%, transparent);
 }
 
 body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button,
@@ -646,7 +863,7 @@ body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) but
   outline-offset: 2px;
 }
 
-/* Dark chrome: soft pink/lavender glow on primary controls only. */
+/* Dark chrome: keep labeled rows on the sidebar fill, no extra glow plate. */
 body[data-dsh-taffy-theme][data-ds-dark-theme] [data-slot='sidebar.settings'] > :is(button, [role='button']),
 body[data-dsh-taffy-theme][data-ds-dark-theme] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'],
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-slot='sidebar.settings'] > :is(button, [role='button']),
@@ -655,12 +872,8 @@ body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class
 body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']),
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']),
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) {
-  border-color: rgba(185, 167, 232, 0.36);
-  box-shadow:
-    inset 0 1px rgba(255, 244, 250, 0.12),
-    0 0 10px rgba(242, 165, 200, 0.18);
-  filter: drop-shadow(0 0 8px rgba(242, 165, 200, 0.16));
-  transition: box-shadow 140ms ease, filter 140ms ease, border-color 140ms ease, transform 140ms ease;
+  box-shadow: none;
+  filter: none;
 }
 
 body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='发送消息'],
@@ -699,11 +912,7 @@ body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class
 body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']):hover,
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']):hover,
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']):hover {
-  border-color: rgba(255, 205, 225, 0.72);
-  box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.2),
-    0 0 14px rgba(242, 165, 200, 0.26);
-  filter: brightness(1.08) drop-shadow(0 0 10px rgba(242, 165, 200, 0.22));
+  filter: brightness(1.08);
 }
 
 body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='发送消息']:hover,

@@ -57,17 +57,27 @@ describe('decorative CSS contracts', () => {
     expect(badges).toContain("[data-taffy-frame-corners]")
     expect(badges).toContain("[data-taffy-sidebar-ornament='ribbon']")
     expect(badges).toContain("[data-taffy-sidebar-ornament='swag']")
-    expect(components).toContain("[data-composer-card]::before")
+    expect(components).toContain("[data-taffy-sparkles]")
+    expect(components).toContain("[data-taffy-pose='sit']")
+    expect(mount).toContain('scenePoses')
   })
 
   it('specializes chrome icons with distinct Q-version overlays', () => {
     expect(components).toContain('--taffy-q-send')
     expect(components).toContain('--taffy-q-settings')
     expect(components).toContain('--taffy-q-brand')
+    expect(components).toContain('--taffy-q-brand-right')
     expect(components).toContain("button[aria-label='发送消息']")
     expect(components).toContain("button[aria-haspopup='dialog']")
     expect(components).toContain("button[class*='brand']")
     expect(motion).toContain('taffy-send-glow')
+  })
+
+  it('hides top sidebar frame corners so they do not stack on the brand Q', () => {
+    expect(badges).toContain("[data-taffy-sidebar-corner='top-left']")
+    expect(badges).toContain("[data-taffy-sidebar-corner='top-right']")
+    expect(badges).toMatch(/sidebar-corner='top-left'\][\s\S]{0,80}display:\s*none/)
+    expect(badges).toMatch(/sidebar-corner='top-right'\][\s\S]{0,80}display:\s*none/)
   })
 
   it('scopes native DSH tokens to app columns instead of body', () => {
@@ -83,7 +93,7 @@ describe('decorative CSS contracts', () => {
     expect(components).toContain('text-shadow: var(--taffy-text-halo)')
     expect(tokens).toContain('--taffy-text-halo')
     expect(components).toContain(':is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-general-cube')
-    expect(components).toContain('calc(var(--taffy-veil-opacity, 0.12) * 100%)')
+    expect(components).toContain('calc(var(--taffy-veil-opacity, 0.12) * 130%)')
     expect(tokens).not.toContain('--taffy-veil-opacity: 0.18')
     expect(tokens).not.toContain('--taffy-veil-opacity: 0.08')
   })
@@ -105,8 +115,8 @@ describe('decorative CSS contracts', () => {
     expect(components).not.toMatch(/detailsCol[\s\S]{0,240}backdrop-filter/)
     expect(components).not.toContain('clip-path')
     expect(components).toContain('[data-taffy-q-ready]')
-    expect(components).toContain('background-size: 82% 82%')
-    expect(components).toContain('background-size: 98% 98%')
+    expect(components).toContain('background-size: 118% 118%')
+    expect(components).toContain('background-size: 122% 122%')
     expect(components).toContain('width: 42px')
     expect(components).toContain('width: 36px')
     expect(components).not.toContain('background-size: 76%')

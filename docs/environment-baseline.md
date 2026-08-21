@@ -1,64 +1,43 @@
-# 环境基线（Phase 0）
+# 环境基线
 
-记录时间：2026-08-21（v0.1.1 待发）
+记录时间：2026-08-22（v0.1.2 待发 Release / dsh-market 收录）
 
-| 项目 | 值 |
-|------|-----|
-| 插件源码 | `E:\DeepSeekHarness\projects\dsh-taffy-theme` |
-| 当前版本 | `0.1.1`（本地；GitHub Release 待打 tag） |
+| 项 | 值 |
+| --- | --- |
 | DSH_HOME | `E:\DeepSeekHarness` |
-| DSH checkout | `E:\DeepSeekHarness\src\deepseek-harness` |
+| 当前版本 | `0.1.2`（本地已 commit；GitHub Release / tag 待打） |
 | Web profile | `E:\DeepSeekHarness\profiles\web` |
-| Web 地址 | `http://127.0.0.1:3080` |
-| 用户 preset | `E:\DeepSeekHarness\.agent-presets\taffy\` |
-| 已发布 tag | `v0.1.0` @ `03032aa` |
+| 默认端口 | `http://127.0.0.1:3080` |
+| Node | ≥ 20（与 DSH 一致） |
+| 已发布 tag | `v0.1.0` @ `03032aa`；`v0.1.1` 若已发则可用作回滚 |
 
-## 门禁快照（2026-08-21）
-
-| 命令 | 结果 |
-|------|------|
-| `npm test` | 70 passed |
-| `npm run verify:static` | 71 checks, 0 failures |
-| `npm run verify:assets` | 50 checks, 0 failures |
-| `npm run verify:pack` | 11 checks, 0 failures |
-| `npm run verify -- capture/*.json` | 77 checks, 0 failures |
-
-## 对外安装（普通用户）
+## 对外安装（与 README 一致）
 
 ```bash
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.1.tgz
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.2.tgz
 dsh web
 ```
 
-详见 [install.zh.md](install.zh.md)。
+固定版本：
 
-## 资产 pin
+```bash
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.2/dsh-external-dsh-taffy-theme-0.1.2.tgz
+```
 
-- `assetSetVersion`: `2026-08-left-light-defringe`
-- 重生成：`npm run assets:defringe` → `npm run verify:assets`
-
-## 本地开发装到 3080
+## 开发者 link
 
 ```powershell
-$env:DSH_CHECKOUT = "E:\DeepSeekHarness\src\deepseek-harness"
+$env:DSH_HOME = "E:\DeepSeekHarness"
 npm run install:dev
 dsh web
 ```
 
-## 生产式 tarball 冒烟（发版前必跑）
+## 发版前冒烟
 
 ```powershell
+npm test
+npm run verify:pack
 npm run install:release
-dsh web
 ```
 
-## 发版
-
-见 [release-checklist.md](release-checklist.md)。
-
-## 实况取证
-
-```powershell
-npm run capture:hint
-npm run verify -- capture/chat-light.json capture/chat-dark.json
-```
+更新插件 tarball 后需**重启** `dsh web`（host 静态路由不 HMR）。

@@ -63,7 +63,7 @@ export async function servePluginAsset(
     const body = await readFile(target)
     res.writeHead(200, {
       'content-type': MIME[extname(target).toLowerCase()] ?? 'application/octet-stream',
-      'cache-control': 'public, max-age=86400, must-revalidate',
+      'cache-control': 'public, max-age=0, must-revalidate',
     })
     res.end(req.method === 'HEAD' ? undefined : body)
   } catch {
