@@ -161,6 +161,155 @@ dsh plugin --profile web remove @dsh-external/dsh-taffy-theme
 - 纯 UI 主题，不修改会话存储、模型路由或插件宿主逻辑  
 - 需要自行从 Release 或 GitHub 安装；安装后刷新页面即可生效  
 
-## English summary
+---
 
-**Taffy Live Atelier** is an unofficial fan theme for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Web: candy-pink acrylic chrome, light/dark stage wallpapers, adjustable frame/panel/veil opacity, and an optional **Taffy** agent preset. Assets are bundled locally. Install with `dsh plugin --profile web add` using the GitHub URL or Release `.tgz` above. Light/dark follows DSH Appearance settings. UI skin and agent persona are independent — pick the **Taffy 塔菲** preset for the speaking style.
+# English
+
+**A DeepSeek Harness Web theme** — candy-pink acrylic chrome, light/dark stage portraits, adjustable transparency layers, and an optional **Taffy** agent preset.
+
+| | |
+| --- | --- |
+| Package | `@dsh-external/dsh-taffy-theme` |
+| Version | `0.1.0` |
+| Platform | DSH Web |
+| Requires | DeepSeek Harness `0.1.0-rc.6` or newer (Web profile) |
+| License | Code [MIT](LICENSE) · fan art for character assets — see [NOTICE.md](NOTICE.md) |
+
+## What it is
+
+**Taffy Live Atelier** turns the DSH Web UI into a virtual-streamer stage:
+
+- **Light mode** — sunlit conservatory stage, side portraits, pink-gold chat frame  
+- **Dark mode** — neon spotlight stage, piano scene, dark acrylic panels  
+- **Q-face icons** — send, stop, new session, and settings use Taffy headshots  
+- **Bundled assets** — wallpapers, portraits, and icons ship inside the plugin (no CDN)  
+- **Presentation only** — does not change chat logic, model routing, or host APIs; acrylic does not blanket other plugins by default  
+
+Also includes a **Taffy** agent preset: full coding tools, with an optional Taffy persona (see below).
+
+## Screenshots
+
+### Light
+
+Conservatory backdrop, side characters, translucent composer, pink-gold frame.
+
+![Light mode](preview/light.webp)
+
+### Dark
+
+Stage lighting, dark panels, portraits and piano scene.
+
+![Dark mode](preview/dark.webp)
+
+## Install
+
+Use the **GitHub repo URL** or a **Release tarball** (do not pass a bare folder path).
+
+```bash
+# Recommended: prebuilt Release (fastest)
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.0.tgz
+
+# Or install from the repository
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme.git
+```
+
+Refresh the DSH Web page. Open **Settings → General** — you should see the **Taffy mode** panel.
+
+## Uninstall
+
+```bash
+dsh plugin --profile web remove @dsh-external/dsh-taffy-theme
+```
+
+Refresh the page. All theme chrome and styles are removed; the native DSH UI returns.
+
+## Usage
+
+### Light and dark
+
+There is **no separate day/night toggle** in this theme. It follows DSH globally:
+
+**Settings → Appearance → Light / Dark / System**
+
+When appearance changes, the plugin swaps:
+
+| Item | Light | Dark |
+| --- | --- | --- |
+| Stage wallpaper | Sunlit conservatory | Neon concert stage |
+| Side portraits | Casual seated poses | Stage / formal outfits |
+| Panels & veil | Warm translucent mix | Deep purple mix, soft pink-gold button glow |
+| Agent state colors | Pink / lavender / lens tokens | Same palette, dark phase |
+
+### Opacity and display
+
+Adjust under **Settings → General → Taffy mode** (stored in browser local storage; defaults restore on uninstall).
+
+| Setting | Default | What it does |
+| --- | ---: | --- |
+| Taffy mode | On | Master switch — off hides all skin chrome |
+| Frame opacity | 85% | Pink-gold border around the chat area |
+| Panel opacity | 82% | Sidebar, chat column, and composer background mix |
+| Background veil | 10% | Wash over the wallpaper — higher = easier to read text |
+| Acrylic opacity | 70% | Only surfaces marked as acrylic; other plugins untouched |
+| Left portrait | On | Large character on the left |
+| Right portrait | On | Character on the right (shrinks with floating panels) |
+| Cheer mascot | On | Chibi mascot at the bottom of the sidebar |
+| Portrait opacity | 100% | Overall opacity for portraits and mascot |
+| Reduced motion | Off | Disables looping glows and breathe animations |
+
+**Tips:**
+
+- Busy background, hard to read → raise **Background veil** to 14%–18%  
+- Composer looks flat → slightly raise **Panel opacity**  
+- Want more art visible → lower **Background veil**, or turn off **Cheer mascot**  
+- Dark mode glow too strong → enable **Reduced motion** and raise **Background veil** slightly  
+
+Acrylic is **opt-in only** — only nodes that declare acrylic get the frosted effect.
+
+### Taffy agent preset (optional)
+
+Skin and speaking style are separate:
+
+- **Taffy mode** — UI appearance only  
+- **Agent preset “Taffy 塔菲”** — how the model talks  
+
+Select preset **「Taffy 塔菲」** in your session for the Taffy voice. Built on the standard tool set — no loss of coding capability.
+
+#### Persona
+
+The model plays **Taffy (永雏塔菲)** — a Welsh ace detective-inventor and virtual idol who is also a reliable technical assistant in DSH:
+
+- Pink hair, golden eyes, 148 cm, one stubborn ahoge  
+- Cheerful and playful; fans are called **雏草姬**  
+- Catchphrases like “follow Taffy meow!” appear **occasionally**, not every sentence  
+- From 1885, arrived late via time machine; companions include 小皮 and 菲球  
+
+#### Voice
+
+- “Meow” (喵) is seasoning — used when cute or emphatic, not in every technical sentence  
+- Light particles: 呀, 啦, 嘻嘻, etc.  
+- When you ask for brevity or the topic is serious, the persona steps back and gives direct answers  
+
+#### When coding
+
+- Says “I don’t know” instead of inventing paths, logs, or tool output  
+- General questions: conclusion → why → steps → how to verify  
+- Code issues: locate → root cause → minimal fix → test → risks  
+- No leaking secrets or private data  
+
+Example intro:
+
+> I’m Taffy, ace detective-inventor from Wales and virtual idol for 雏草姬. I’ll help you write code properly, meow.
+
+## Assets and license
+
+- Wallpapers, portraits, and Q-icons live under `assets/taffy/` and are embedded in the client bundle  
+- Agent preset and system prompt live under `presets/taffy/`  
+- **Unofficial fan skin** — character IP remains with the rights holders  
+- See [NOTICE.md](NOTICE.md) and `assets/taffy/LICENSE.txt`
+
+## Known limits
+
+- **Web profile only** — not CLI or other profiles  
+- UI theme only — does not alter session storage, model routing, or host plugin logic  
+- Install from Release or GitHub, then refresh the page
