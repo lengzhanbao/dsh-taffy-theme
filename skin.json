@@ -1,0 +1,32 @@
+{
+  "id": "dsh-taffy-theme",
+  "name": "塔菲直播工房",
+  "nameEn": "Taffy Live Atelier",
+  "author": "lengzhanbao",
+  "tagline": "粉金亚克力对话框、浅色/深色舞台立绘与 Q 版侧栏",
+  "description": "面向 DeepSeek Harness Web 的塔菲风格主题。浅色与深色各有本地舞台背景，粉金边框包住对话区，左右立绘与侧栏加油喵可开关，亚克力仅 opt-in，不遮挡右侧插件。",
+  "tags": [
+    "theme",
+    "ui",
+    "taffy",
+    "anime",
+    "acrylic",
+    "pink",
+    "gold",
+    "light",
+    "dark",
+    "dsh"
+  ],
+  "accent": "#f29bc2",
+  "bodyAttr": "data-dsh-taffy-theme",
+  "package": "@dsh-external/dsh-taffy-theme",
+  "wiring": {
+    "id": "dsh-taffy-theme",
+    "bundleWired": true
+  },
+  "preview": {
+    "light": "preview/light.webp",
+    "dark": "preview/dark.webp"
+  },
+  "order": 10
+}
