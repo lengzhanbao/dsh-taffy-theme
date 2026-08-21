@@ -1,0 +1,14 @@
+Taffy Live Atelier bundled images
+=================================
+
+These files under assets/taffy/ (wallpapers, portraits, Q-face icons) are
+shipped as local UI art for this unofficial fan theme.
+
+Character: Taffy / 永雏塔菲 (third-party VTuber likeness)
+Status: unofficial fan skin — not an official product
+Redistribution: only as part of this plugin package for non-commercial
+fan UI use. Do not claim official affiliation.
+
+Plugin source code is MIT. Character rights stay with the original holders.
+
+Reference: https://mzh.moegirl.org.cn/%E6%B0%B8%E9%9B%8F%E5%A1%94%E8%8F%B2
