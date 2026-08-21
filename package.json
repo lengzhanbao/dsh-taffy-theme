@@ -1,0 +1,100 @@
+{
+  "name": "@dsh-external/dsh-taffy-theme",
+  "version": "0.1.0",
+  "description": "Taffy Live Atelier — candy acrylic DSH Web UI theme with light/dark stage art, character overlays, and a Taffy agent preset.",
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/types/index.d.ts",
+  "license": "MIT",
+  "author": "lengzhanbao",
+  "homepage": "https://github.com/lengzhanbao/dsh-taffy-theme#readme",
+  "bugs": {
+    "url": "https://github.com/lengzhanbao/dsh-taffy-theme/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lengzhanbao/dsh-taffy-theme.git"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "theme",
+    "ui",
+    "ui-theme",
+    "webui",
+    "taffy",
+    "acrylic",
+    "light-dark"
+  ],
+  "scripts": {
+    "build": "powershell -ExecutionPolicy Bypass -File scripts/build.ps1 && npm run build:client",
+    "build:client": "tsdown",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "types": "./lib/types/client/index.d.ts",
+      "default": "./lib/client.js"
+    },
+    "./package.json": "./package.json",
+    "./skin.json": "./skin.json"
+  },
+  "files": [
+    "lib/index.js",
+    "lib/client.js",
+    "lib/prompt/taffy-system.md",
+    "lib/prompt/loader.js",
+    "cordis.patch.yml",
+    "skin.json",
+    "presets",
+    "assets/taffy/*.webp",
+    "assets/taffy/icons",
+    "assets/taffy/LICENSE.txt",
+    "assets/taffy/manifest.json",
+    "preview/light.webp",
+    "preview/dark.webp",
+    "README.md",
+    "LICENSE",
+    "NOTICE.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-slots"
+      ],
+      "platform": "web"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-agent-presets": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-client-locale": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-client-runtime": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-client-ui-settings": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-client-ui-settings-general": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-client-ui-slots": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-client-ui-theme": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-settings": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-tools": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
+    "react": "^18.2.0",
+    "schemastery": "^3.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "jsdom": "^29.1.1",
+    "tsdown": "^0.22.14",
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.10"
+  }
+}
