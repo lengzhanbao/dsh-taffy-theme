@@ -1,0 +1,13 @@
+import type { TaffyAgentState, TaffySettings } from '../state/types';
+export declare function bindAssetFallback(image: HTMLImageElement, fallbackSrc?: string): void;
+export declare function applyImageSrc(image: HTMLImageElement, src: string): void;
+export declare function applyRootAttributes(body: HTMLElement, settings: TaffySettings, state: TaffyAgentState): void;
+export declare function syncStageArt(root?: HTMLElement, settings?: TaffySettings): void;
+export declare function createCharacterStage(settings: TaffySettings): HTMLElement | null;
+export declare function createAtelierFrame(): HTMLElement;
+export declare function createStageCurtains(): HTMLElement[];
+export declare function createSidebarTrim(): HTMLElement;
+export declare function createTrims(): HTMLElement[];
+export declare function decorateSidebar(settings: TaffySettings, sidebar: HTMLElement): HTMLElement[];
+export declare function removeOwnedChrome(root?: ParentNode): void;
+export declare const TAFFY_INLINE_STYLE_KEYS: readonly ["--taffy-q-face", "--taffy-q-send", "--taffy-q-stop", "--taffy-q-new", "--taffy-q-settings", "--taffy-q-brand", "--taffy-q-command", "--taffy-frame-opacity", "--taffy-panel-opacity", "--taffy-veil-opacity", "--taffy-character-opacity", "--taffy-acrylic-percent", "--taffy-conversation-left", "--taffy-conversation-top", "--taffy-conversation-width", "--taffy-conversation-height", "--taffy-conversation-content-left", "--taffy-conversation-content-width", "--taffy-conversation-viewport-top", "--taffy-conversation-viewport-height", "--taffy-content-left", "--taffy-content-width", "--taffy-viewport-top", "--taffy-viewport-height", "--taffy-frame-left", "--taffy-frame-top", "--taffy-frame-width", "--taffy-frame-height", "--taffy-right-panel-width", "--taffy-frame-right-inset"];
