@@ -1,0 +1,67 @@
+{
+  "assetSetVersion": "2026-08-left-light-defringe",
+  "creamBackground": "#fff7f1",
+  "limits": {
+    "avatarBytes": 1048576,
+    "imageBytes": 5242880,
+    "widthPct": 0.08,
+    "heightPct": 0.08,
+    "bytesPct": 0.25
+  },
+  "figures": {
+    "left-light.webp": {
+      "width": 589,
+      "height": 1024,
+      "bytes": 71512,
+      "opaqueRatioMin": 0.25,
+      "bboxAreaRatioMin": 0.85,
+      "darkEdgeRatioMax": 0.025,
+      "creamFringeGate": true
+    },
+    "right-light.webp": {
+      "width": 864,
+      "height": 1033,
+      "bytes": 132396,
+      "opaqueRatioMin": 0.35,
+      "bboxAreaRatioMin": 0.85,
+      "creamFringeGate": false
+    },
+    "left-dark.webp": {
+      "width": 977,
+      "height": 1019,
+      "bytes": 131822,
+      "opaqueRatioMin": 0.35,
+      "bboxAreaRatioMin": 0.85,
+      "creamFringeGate": false
+    },
+    "right-dark.webp": {
+      "width": 968,
+      "height": 960,
+      "bytes": 112520,
+      "opaqueRatioMin": 0.25,
+      "bboxAreaRatioMin": 0.85,
+      "creamFringeGate": false
+    },
+    "avatar.webp": {
+      "width": 919,
+      "height": 1033,
+      "bytes": 123606,
+      "opaqueRatioMin": 0.35,
+      "bboxAreaRatioMin": 0.85,
+      "creamFringeGate": false
+    },
+    "portrait.webp": {
+      "width": 420,
+      "height": 603,
+      "bytes": 35822,
+      "opaqueRatioMin": 0.8,
+      "bboxAreaRatioMin": 0.95,
+      "darkEdgeRatioMax": 0.02,
+      "creamFringeGate": true
+    }
+  },
+  "wallpaper": {
+    "wallpaper-light.webp": { "bytes": 197542 },
+    "wallpaper-dark.webp": { "bytes": 285232 }
+  }
+}

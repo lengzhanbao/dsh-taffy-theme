@@ -12,12 +12,12 @@ describe('contrast', () => {
   })
 
   it('keeps night labels readable on observatory charcoal', () => {
-    expect(meetsTextContrast('#fff4fa', '#211b32')).toBe(true)
-    expect(meetsTextContrast('#fff4fa', '#181326')).toBe(true)
+    expect(meetsTextContrast('#fff3e8', '#211b32')).toBe(true)
+    expect(meetsTextContrast('#fff3e8', '#181326')).toBe(true)
   })
 
   it('keeps daylight ink readable on cream', () => {
-    expect(meetsTextContrast('#493b50', '#fffdfb')).toBe(true)
-    expect(meetsTextContrast('#493b50', '#fff7f1')).toBe(true)
+    expect(meetsTextContrast('#141018', '#fffdfb')).toBe(true)
+    expect(meetsTextContrast('#141018', '#fff7f1')).toBe(true)
   })
 })

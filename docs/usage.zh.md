@@ -1,5 +1,7 @@
 # 使用说明
 
+> **首次安装？** 请看 [install.zh.md](install.zh.md)（一条命令、无需构建）。
+
 ## 快速开始
 
 1. 安装插件（见 [README](../README.md)）
@@ -111,4 +113,5 @@ System prompt 源文件：`presets/taffy/`（安装后位于插件包内）。
 
 - 仅 DSH **Web** profile
 - 纯 UI 主题，不改会话、模型或宿主逻辑
-- 普通用户请用 Release `.tgz` 安装，无需本地构建
+- 普通用户请用 Release `.tgz` 安装，无需本地构建（见 [install.zh.md](install.zh.md)）
+- DSH 大版本升级后请安装主题最新 Release

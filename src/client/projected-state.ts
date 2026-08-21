@@ -1,11 +1,11 @@
 import {
   ACTIVE_SELECTOR,
+  BETTER_SIDEBAR_SELECTOR,
   CHAT_FLOW_SELECTOR,
   SETTINGS_DIALOG_SELECTOR,
+  WORKSPACE_SELECTOR,
 } from './chrome-selectors'
 
-const WORKSPACE_SELECTOR = "header [role='tablist']"
-const BETTER_SIDEBAR_SELECTOR = '[data-dsh-better-sidebar]'
 
 export function startProjectedState(body: HTMLElement): () => void {
   const sync = (): void => {

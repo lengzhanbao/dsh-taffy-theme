@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import {
   ACTIVE_SELECTOR,
-  HERO_SELECTOR,
+  BETTER_SIDEBAR_SELECTOR,
   COMPOSER_CARD_SELECTOR,
+  HERO_SELECTOR,
+  RIGHT_DOCK_SELECTOR,
   SIDEBAR_SELECTOR,
+  WORKSPACE_SELECTOR,
 } from '../src/client/chrome-selectors'
 
 describe('chrome-selectors', () => {
@@ -16,5 +19,8 @@ describe('chrome-selectors', () => {
   it('targets real DSH shell nodes', () => {
     expect(SIDEBAR_SELECTOR).toContain('sidebar')
     expect(COMPOSER_CARD_SELECTOR).toBe('[data-composer-card]')
+    expect(WORKSPACE_SELECTOR).toContain("role='tablist'")
+    expect(BETTER_SIDEBAR_SELECTOR).toBe('[data-dsh-better-sidebar]')
+    expect(RIGHT_DOCK_SELECTOR).toContain('[data-dsh-floating-panel]')
   })
 })

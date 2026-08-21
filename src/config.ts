@@ -37,7 +37,7 @@ export const DEFAULT_SETTINGS = {
 }
 
 export const TaffySettingsSchema = {
-  parse(value) {
+  parse(value: unknown) {
     return { ...DEFAULT_SETTINGS, ...(value && typeof value === 'object' ? value : {}) }
   },
 }

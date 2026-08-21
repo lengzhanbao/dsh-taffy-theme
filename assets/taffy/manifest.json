@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "assetSetVersion": "2026-08-left-light-defringe",
+  "baseline": "baseline.json",
   "defaults": {
     "avatar": "avatar.png",
     "portrait": "left-light.webp",

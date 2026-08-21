@@ -1,11 +1,5 @@
-import { DETAILS_SELECTOR, SIDEBAR_SELECTOR, SKIN_OWNER } from './chrome-selectors'
+import { DETAILS_SELECTOR, RIGHT_DOCK_SELECTOR, SIDEBAR_SELECTOR, SKIN_OWNER } from './chrome-selectors'
 
-const RIGHT_DOCK_SELECTOR = [
-  DETAILS_SELECTOR,
-  '[data-dsh-better-sidebar]',
-  '[data-dsh-floating-panel]',
-  '[data-plugin-root]',
-].join(', ')
 
 function measureRightPanelWidth(doc: Document): number {
   const vw = doc.defaultView?.innerWidth ?? 0

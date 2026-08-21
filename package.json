@@ -1,6 +1,6 @@
 {
   "name": "@dsh-external/dsh-taffy-theme",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Taffy Live Atelier — candy acrylic DSH Web UI theme with light/dark stage art, character overlays, and a Taffy agent preset.",
   "type": "module",
   "main": "./lib/index.js",
@@ -28,10 +28,20 @@
     "light-dark"
   ],
   "scripts": {
+    "assets:defringe": "python scripts/defringe-left-light.py",
+    "verify:assets": "node scripts/verify-assets.mjs",
+    "verify:static": "node scripts/verify-taffy.mjs",
+    "verify:pack": "node scripts/verify-pack.mjs",
+    "verify": "node scripts/verify-taffy.mjs",
+    "capture:hint": "node scripts/capture-hint.mjs",
+    "install:dev": "powershell -ExecutionPolicy Bypass -File scripts/install-dev.ps1",
+    "install:release": "powershell -ExecutionPolicy Bypass -File scripts/install-release.ps1",
+    "prebuild": "node scripts/verify-assets.mjs",
     "build": "powershell -ExecutionPolicy Bypass -File scripts/build.ps1 && npm run build:client",
-    "build:client": "tsdown",
+    "build:client": "npx tsdown",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run"
+    "test": "npx vitest run",
+    "prepublishOnly": "npm run build && npm test && npm run verify:static && npm run verify:pack"
   },
   "exports": {
     ".": {
@@ -47,6 +57,7 @@
   },
   "files": [
     "lib/index.js",
+    "lib/config.js",
     "lib/client.js",
     "lib/prompt/taffy-system.md",
     "lib/prompt/loader.js",
@@ -57,10 +68,14 @@
     "assets/taffy/icons",
     "assets/taffy/LICENSE.txt",
     "assets/taffy/manifest.json",
+    "assets/taffy/baseline.json",
     "preview/light.webp",
     "preview/dark.webp",
     "docs/usage.zh.md",
     "docs/usage.en.md",
+    "docs/install.zh.md",
+    "docs/install.en.md",
+    "CHANGELOG.md",
     "README.md",
     "LICENSE",
     "NOTICE.md"
@@ -77,6 +92,9 @@
       ],
       "platform": "web"
     }
+  },
+  "dependencies": {
+    "schemastery": "^3.18.0"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.1",

@@ -35,6 +35,7 @@ describe('user theme', () => {
     expect(root.style.getPropertyValue('--dsw-alias-bg-base')).toBe('rgb(249, 250, 251)')
     expect(root.style.getPropertyValue('--dsw-alias-label-primary')).toBe('#3a322e')
     expect(root.style.getPropertyValue('--ds-taffy-pink')).toBe('#f29bc2')
+    expect(root.style.getPropertyValue('--ds-taffy-text')).toBe('')
   })
 
   it('restores taffy tokens captured before apply', () => {
@@ -57,6 +58,24 @@ describe('user theme', () => {
       dynamicEnabled: true,
       dynamicIntensity: 'standard',
     })
-    expect(tokens.text).toBe('#fff4fa')
+    expect(tokens.text).toBe('#fff3e8')
+  })
+
+  it('pins custom text only when asked, so dark CSS can still switch', () => {
+    const root = document.createElement('div')
+    root.style.setProperty('--ds-taffy-text', '#493b50')
+    applyThemeTokens(root, resolveThemeTokens({
+      preset: 'taffy-candy',
+      dynamicEnabled: true,
+      dynamicIntensity: 'standard',
+    }))
+    expect(root.style.getPropertyValue('--ds-taffy-text')).toBe('')
+    applyThemeTokens(root, resolveThemeTokens({
+      preset: 'custom',
+      text: '#fff3e8',
+      dynamicEnabled: true,
+      dynamicIntensity: 'standard',
+    }), { pinText: true })
+    expect(root.style.getPropertyValue('--ds-taffy-text')).toBe('#fff3e8')
   })
 })

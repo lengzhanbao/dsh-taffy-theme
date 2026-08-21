@@ -33,5 +33,34 @@ export declare const DEFAULT_SETTINGS: {
     };
 };
 export declare const TaffySettingsSchema: {
-    parse(value: any): any;
+    parse(value: unknown): {
+        schemaVersion: number;
+        enabled: boolean;
+        displayName: string;
+        subtitle: string;
+        avatar: string;
+        portrait: string;
+        preset: string;
+        dynamicEnabled: boolean;
+        dynamicIntensity: string;
+        timePhaseEnabled: boolean;
+        stateColorEnabled: boolean;
+        motion: string;
+        reducedMotion: boolean;
+        veilStrength: string;
+        backgroundVeil: string;
+        veilOpacity: number;
+        acrylicPercent: number;
+        frameOpacity: number;
+        panelOpacity: number;
+        characterOpacity: number;
+        showLeftCharacter: boolean;
+        showRightCharacter: boolean;
+        showMascot: boolean;
+        colors: {
+            preset: string;
+            dynamicEnabled: boolean;
+            dynamicIntensity: string;
+        };
+    };
 };

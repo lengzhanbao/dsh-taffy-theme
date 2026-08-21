@@ -7,16 +7,27 @@
 | | |
 | --- | --- |
 | Package | `@dsh-external/dsh-taffy-theme` |
-| Version | `0.1.0` |
-| Platform | DSH Web |
-| Requires | DeepSeek Harness `0.1.0-rc.6`+ (Web profile) |
+| Version | `0.1.1` |
+| Platform | DSH **Web** profile only |
+| Requires | DeepSeek Harness `0.1.0-rc.6`+ |
 
-## 简介
+## 下载即用
 
-**Taffy Live Atelier** 为 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Web 提供虚拟直播工房式界面：花房/舞台壁纸、粉金对话框边框、塔菲 Q 版按钮、左右立绘。资源全部本地打包，不依赖 CDN；仅修改外观，不影响对话逻辑与其他插件。
+**普通用户只需一条命令，无需克隆仓库或本地构建。**
 
-- 详细说明（中文）：[docs/usage.zh.md](docs/usage.zh.md)
-- User guide (English): [docs/usage.en.md](docs/usage.en.md)
+```bash
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.1.tgz
+dsh web
+```
+
+然后：**设置 → 通用 → Taffy 模式** 打开总开关，浏览器 **硬刷新**（Ctrl+F5）。
+
+| 文档 | 说明 |
+| --- | --- |
+| [安装指南（中文）](docs/install.zh.md) | 环境要求、自检清单、FAQ、升级/卸载 |
+| [Install guide (EN)](docs/install.en.md) | Same for English |
+| [使用说明](docs/usage.zh.md) | 透明度、预设、素材声明 |
+| [CHANGELOG](CHANGELOG.md) | 版本变更 |
 
 ## 截图
 
@@ -24,17 +35,20 @@
 | --- | --- |
 | ![Light](preview/light.webp) | ![Dark](preview/dark.webp) |
 
-## 安装
+## 简介
 
-```bash
-# 推荐：预构建 Release
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.0.tgz
+**Taffy Live Atelier** 为 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Web 提供虚拟直播工房式界面：花房/舞台壁纸、粉金对话框边框、塔菲 Q 版按钮、左右立绘。资源全部本地打包，不依赖 CDN；**仅修改外观**，不影响对话逻辑与其他插件。
 
-# 或从仓库安装
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme.git
-```
+- 架构思路参考 [maid-atelier](https://github.com/Small-tailqwq/dsh-deep-whale/tree/main/maid-atelier)，**未复制**其代码与资产
+- `--dsw-*` token 限定在 DSH 列容器内；亚克力 **opt-in**，降低误伤第三方插件风险
 
-刷新 DSH Web 页面。打开 **设置 → 通用** 可看到 **Taffy 模式**。
+## 稳定性说明（0.1.1）
+
+| 面向 | 说明 |
+| --- | --- |
+| 普通用户 | Release `.tgz` 安装；发版前 `verify:pack` + 本地 profile 冒烟 |
+| 已知边界 | 依赖 DSH Web DOM；DSH 大版本升级后请装最新 Release |
+| 维护者 | `npm test` + `verify:*` 门禁；见 [release-checklist.md](docs/release-checklist.md) |
 
 ## 卸载
 
@@ -44,14 +58,26 @@ dsh plugin --profile web remove @dsh-external/dsh-taffy-theme
 
 刷新页面后界面恢复默认。
 
+## 开发者
+
+```powershell
+# 本地 link 到 3080（仅开发）
+npm run install:dev
+dsh web
+
+# 生产式 pack 冒烟（发版前推荐）
+npm run install:release
+```
+
+详见 [environment-baseline.md](docs/environment-baseline.md)、[rollback.md](docs/rollback.md)。
+
+**切勿**手改 `profiles/web/package.json`（UTF-8 BOM 会导致 DSH 无法启动）。
+
 ## 素材与授权
 
 - **源代码**：[MIT](LICENSE)
-- **角色图像**：非官方同人 fan skin；**不声称**获得官方或权利人授权；**不得**将素材单独商用或再分发
-- 权利人若认为侵权，请通过 [GitHub Issues](https://github.com/lengzhanbao/dsh-taffy-theme/issues) 联系，核实后将下架相关素材
-
-详见 [NOTICE.md](NOTICE.md)。
+- **角色图像**：非官方同人 fan skin；详见 [NOTICE.md](NOTICE.md)
 
 ## English
 
-Candy-pink acrylic theme for DSH Web with light/dark stage art and an optional Taffy agent preset. Install with the commands above, then see [docs/usage.en.md](docs/usage.en.md) for settings and persona details.
+Candy-pink acrylic theme for DSH Web. Install with the command above, then see [docs/install.en.md](docs/install.en.md) and [docs/usage.en.md](docs/usage.en.md).

@@ -9,6 +9,7 @@ import {
   SIDEBAR_SELECTOR,
 } from './chrome-selectors'
 import { restoreInlineStyles, snapshotInlineStyles } from './inline-restore'
+import { stampMetrics } from './metrics-stamp'
 
 export const CONVERSATION_METRIC_KEYS = [
   '--taffy-conversation-left',
@@ -277,6 +278,7 @@ export function startConversationMetrics(doc: Document, body: HTMLElement): () =
       viewport: nextViewport.getBoundingClientRect(),
       composer: nextComposer?.getBoundingClientRect() ?? null,
     })
+    stampMetrics(doc, body)
   }
 
   const schedule = (): void => {

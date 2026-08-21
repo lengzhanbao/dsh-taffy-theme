@@ -1,0 +1,48 @@
+{
+  "packageId": "@dsh-external/dsh-taffy-theme",
+  "styleId": "dsh-taffy-theme-style",
+  "skinId": "dsh-taffy-theme",
+  "clientJsMaxBytes": 8388608,
+  "contrastMinRatio": 4.5,
+  "contrastPairs": [
+    ["#141018", "#fffdfb"],
+    ["#141018", "#fff7f1"],
+    ["#fff3e8", "#211b32"],
+    ["#fff3e8", "#181326"]
+  ],
+  "requiredPackageFiles": [
+    "lib/index.js",
+    "lib/config.js",
+    "lib/client.js",
+    "cordis.patch.yml",
+    "skin.json",
+    "assets/taffy/manifest.json",
+    "assets/taffy/LICENSE.txt",
+    "preview/light.webp",
+    "preview/dark.webp"
+  ],
+  "bannedClientPatterns": [
+    { "pattern": "\\[class\\*=_tab\\]", "reason": "误伤 _tabs / _table" },
+    { "pattern": "(?<![a-zA-Z])\\[class\\*=bubble\\]", "reason": "未限定元素的 bubble 子串会误伤 Tooltip" },
+    { "pattern": "\\[class\\*=_tableScroll\\]", "reason": "表格滚动容器误伤" },
+    { "pattern": "\\[data-cordis-panel\\]", "reason": "不得扫描第三方 Cordis 面板" },
+    { "pattern": "\\[data-shell-overlay\\]", "reason": "不得扫描宿主 overlay" }
+  ],
+  "bannedCssPatterns": [
+    { "pattern": "!important", "reason": "主题 CSS 禁止 !important" },
+    { "pattern": "^body \\*$", "reason": "禁止全局 body * 选择器" },
+    { "pattern": "#root \\*", "reason": "禁止 #root * 全局覆盖" },
+    { "pattern": "\\[class\\*='panel'\\]", "reason": "禁止宽泛 panel 子串" },
+    { "pattern": "body button", "reason": "禁止全局 button 改写" },
+    { "pattern": "\\[data-pane='details'\\]", "reason": "禁止对 details 面板做亚克力扫描" }
+  ],
+  "requiredChromeExports": [
+    "SIDEBAR_SELECTOR",
+    "CONVERSATION_SELECTOR",
+    "COMPOSER_CARD_SELECTOR",
+    "ACTIVE_SELECTOR",
+    "CHAT_FLOW_SELECTOR",
+    "WORKSPACE_SELECTOR",
+    "RIGHT_DOCK_SELECTOR"
+  ]
+}

@@ -28,3 +28,16 @@ const indented = prompt
 const next = agent.slice(0, startIdx + markerStart.length) + indented + agent.slice(endIdx)
 fs.writeFileSync(agentPath, next)
 console.log('synced persona into presets/taffy/agent.cordis.yml')
+
+const dshHome = process.env.DSH_HOME || 'E:/DeepSeekHarness'
+const presetSrc = path.join(root, 'presets/taffy')
+const presetDst = path.join(dshHome, '.agent-presets/taffy')
+if (fs.existsSync(dshHome)) {
+  fs.mkdirSync(presetDst, { recursive: true })
+  for (const name of fs.readdirSync(presetSrc)) {
+    fs.copyFileSync(path.join(presetSrc, name), path.join(presetDst, name))
+  }
+  console.log(`synced preset into ${presetDst}`)
+} else {
+  console.warn(`skip preset sync: DSH_HOME not found at ${dshHome}`)
+}

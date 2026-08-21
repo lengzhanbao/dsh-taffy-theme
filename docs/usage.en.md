@@ -1,5 +1,7 @@
 # User Guide
 
+> **First install?** See [install.en.md](install.en.md) (one command, no build).
+
 ## Quick start
 
 1. Install the plugin (see [README](../README.md))
@@ -111,4 +113,5 @@ Architecture studied from [maid-atelier](https://github.com/Small-tailqwq/dsh-de
 
 - **Web profile only**
 - UI theme only — does not alter sessions, models, or host logic
-- End users should install the Release `.tgz`; no local build required
+- End users: install the Release `.tgz` ([install.en.md](install.en.md))
+- After a major DSH upgrade, install the latest theme Release

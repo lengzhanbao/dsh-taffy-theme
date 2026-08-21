@@ -11,5 +11,7 @@ describe('prompt loader', () => {
     expect(text).toContain('{{model}}')
     expect(text).toContain('萌娘百科')
     expect(text).toContain('不要带入 QQBot')
+    expect(text).toContain('先答准')
+    expect(text).toContain('抽象')
   })
 })

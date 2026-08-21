@@ -9,6 +9,13 @@ import { applyThemeTokens, restoreThemeTokens, resolveThemeTokens, snapshotTheme
 import { resolveTimePhase, startTimePhaseTicker } from '../theme/time-theme'
 import { loadSettings, saveSettings, subscribeSettings } from './settings-store'
 import { ensureStyleNode, removeStyleNode, updateStyleNode } from './styles'
+import {
+  clearMetricsStamp,
+  markMetricsStampMounted,
+  resetMetricsStampState,
+  setMetricsEnabledGetter,
+  stampMetrics,
+} from './metrics-stamp'
 import { startBackdropSync } from './backdrop'
 import { startProjectedState } from './projected-state'
 import { startSidebarMetrics } from './sidebar-metrics'
@@ -79,12 +86,16 @@ export function apply(ctx: ClientContext): void {
     if (!settings.enabled) {
       applyRootAttributes(body, settings, state)
       restoreHostStyles()
+      stampMetrics(document, body)
       return
     }
-    applyThemeTokens(body, resolveThemeTokens(settings.colors))
+    applyThemeTokens(body, resolveThemeTokens(settings.colors), {
+      pinText: settings.colors.preset === 'custom' && Boolean(settings.colors.text),
+    })
     applyRootAttributes(body, settings, state)
     if (settings.timePhaseEnabled) body.setAttribute('data-time-phase', resolveTimePhase())
     else body.removeAttribute('data-time-phase')
+    stampMetrics(document, body)
   }
 
   const mountStaticChrome = (): void => {
@@ -123,6 +134,9 @@ export function apply(ctx: ClientContext): void {
   }
 
   ctx.effect(() => {
+    resetMetricsStampState()
+    markMetricsStampMounted()
+    setMetricsEnabledGetter(() => settings.enabled)
     ensureStyleNode(document)
     syncTheme()
     ensureChrome()
@@ -148,6 +162,7 @@ export function apply(ctx: ClientContext): void {
       unmountChrome()
       resetStateAdapter()
       removeStyleNode(document)
+      clearMetricsStamp(document)
       body.removeAttribute('data-dsh-taffy-theme')
       body.removeAttribute('data-taffy-state')
       body.removeAttribute('data-taffy-preset')

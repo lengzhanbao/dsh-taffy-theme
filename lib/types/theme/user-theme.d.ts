@@ -13,5 +13,7 @@ export interface ThemeTokens {
 }
 export declare function resolveThemeTokens(colors: TaffyColorConfig): ThemeTokens;
 export declare function snapshotThemeTokens(root: HTMLElement): InlineStyleSnapshot[];
-export declare function applyThemeTokens(root: HTMLElement, tokens: ThemeTokens): void;
+export declare function applyThemeTokens(root: HTMLElement, tokens: ThemeTokens, options?: {
+    pinText?: boolean;
+}): void;
 export declare function restoreThemeTokens(root: HTMLElement, snapshot: readonly InlineStyleSnapshot[]): void;

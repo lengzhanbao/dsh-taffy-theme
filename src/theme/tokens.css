@@ -11,8 +11,12 @@ body[data-dsh-taffy-theme] {
   --ds-taffy-ribbon: #c43c3c;
   --ds-taffy-lens: #91d5e8;
   --ds-taffy-lavender: #b9a7e8;
-  --ds-taffy-text: #493b50;
-  --ds-taffy-text-on-dark: #fff4fa;
+  --ds-taffy-text: #141018;
+  --ds-taffy-text-on-dark: #fff3e8;
+  --taffy-text-halo:
+    0 0 0.6px rgba(255, 255, 255, 0.95),
+    0 1px 0 rgba(255, 247, 241, 0.92),
+    0 0 8px rgba(255, 247, 241, 0.62);
   --ds-taffy-border: rgba(73, 59, 80, 0.14);
   --taffy-q-face: none;
   --taffy-q-send: none;
@@ -107,8 +111,12 @@ body[data-dsh-taffy-theme][data-ds-dark-theme],
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] {
   --ds-taffy-cream: #211b32;
   --ds-taffy-cream-deep: #181326;
-  --ds-taffy-text: #fff4fa;
-  --ds-taffy-text-on-dark: #fff4fa;
+  --ds-taffy-text: #fff3e8;
+  --ds-taffy-text-on-dark: #fff3e8;
+  --taffy-text-halo:
+    0 0 0.8px rgba(255, 243, 232, 0.95),
+    0 0 7px rgba(231, 185, 87, 0.34),
+    0 0 14px rgba(242, 155, 194, 0.22);
   --taffy-veil: #211b32;
   --taffy-veil-strength: 0.14;
   --taffy-veil-opacity: var(--taffy-veil-strength);
@@ -137,7 +145,13 @@ body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] {
   background-color: transparent;
 }
 
-body[data-dsh-taffy-theme] :is([class*='sidebarCol'], [class*='centerCol'], [class*='detailsCol']) {
+body[data-dsh-taffy-theme] :is(
+  [class*='sidebarCol'],
+  [class*='centerCol'],
+  [class*='detailsCol'],
+  [data-pane='conversation'],
+  [data-pane='sidebar']
+) {
   --dsw-alias-bg-base: transparent;
   --dsw-alias-bg-layer-1: color-mix(in srgb, var(--ds-taffy-cream) 22%, transparent);
   --dsw-alias-bg-layer-2: color-mix(in srgb, #fffdfb 28%, transparent);
@@ -170,8 +184,20 @@ body[data-dsh-taffy-theme] :is([class*='sidebarCol'], [class*='centerCol'], [cla
   font-family: var(--taffy-font);
 }
 
-body[data-dsh-taffy-theme][data-ds-dark-theme] :is([class*='sidebarCol'], [class*='centerCol'], [class*='detailsCol']),
-body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([class*='sidebarCol'], [class*='centerCol'], [class*='detailsCol']) {
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is(
+  [class*='sidebarCol'],
+  [class*='centerCol'],
+  [class*='detailsCol'],
+  [data-pane='conversation'],
+  [data-pane='sidebar']
+),
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is(
+  [class*='sidebarCol'],
+  [class*='centerCol'],
+  [class*='detailsCol'],
+  [data-pane='conversation'],
+  [data-pane='sidebar']
+) {
   --dsw-alias-bg-layer-1: color-mix(in srgb, #2a2340 22%, transparent);
   --dsw-alias-bg-layer-2: color-mix(in srgb, #2a2340 28%, transparent);
   --dsw-alias-bg-layer-3: color-mix(in srgb, #181326 32%, transparent);
@@ -180,21 +206,21 @@ body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([class*='sidebar
   --dsw-alias-border-l2: rgba(185, 167, 232, 0.2);
   --dsw-alias-border-l3: color-mix(in srgb, var(--ds-taffy-gold) 40%, transparent);
   --dsw-alias-brand-primary: var(--ds-taffy-pink-soft);
-  --dsw-alias-brand-text: #fff4fa;
+  --dsw-alias-brand-text: var(--ds-taffy-text);
   --dsw-alias-label-caption: #e8dce8;
   --dsw-alias-label-dimmed: #d4c8d8;
-  --dsw-alias-label-primary-bluish: #fff4fa;
+  --dsw-alias-label-primary-bluish: var(--ds-taffy-text);
   --dsw-alias-label-primary-dimmed: #f4eef4;
   --dsw-alias-label-primary-foreground: #211b32;
   --dsw-alias-label-primary-inverted: #211b32;
-  --dsw-alias-label-primary: #fff4fa;
+  --dsw-alias-label-primary: var(--ds-taffy-text);
   --dsw-alias-label-secondary: #d8cddf;
   --dsw-alias-label-tertiary: #a99db2;
   --dsw-specific-bubble: #2f2744;
   --dsw-specific-bubble-highlight: #3a3250;
   --dsw-specific-sidebar-fill: color-mix(in srgb, #271e37 64%, transparent);
   --dsw-specific-input-major: color-mix(in srgb, #2a2340 88%, transparent);
-  color: #fff4fa;
+  color: var(--ds-taffy-text);
 }
 
 body[data-dsh-taffy-theme] [class*='centerCol'] {
@@ -249,17 +275,14 @@ body[data-dsh-taffy-theme][data-taffy-state='error'] {
 
 body[data-dsh-taffy-theme][data-taffy-veil='thin'] {
   --taffy-veil-strength: 0.08;
-  --taffy-veil-opacity: 0.08;
 }
 
 body[data-dsh-taffy-theme][data-taffy-veil='standard'] {
   --taffy-veil-strength: 0.12;
-  --taffy-veil-opacity: 0.12;
 }
 
 body[data-dsh-taffy-theme][data-taffy-veil='thick'] {
   --taffy-veil-strength: 0.18;
-  --taffy-veil-opacity: 0.18;
 }
 
 body[data-dsh-taffy-theme][data-taffy-frame-opacity='70'] {

@@ -1,0 +1,13 @@
+{
+  "scene": "chat-light",
+  "at": "2026-08-21T10:30:00.000Z",
+  "enabled": true,
+  "selectorMisses": [],
+  "frameWidth": 920,
+  "frameHeight": 640,
+  "frameHidden": false,
+  "frameCompact": false,
+  "phase": "active",
+  "viewportWidth": 1920,
+  "viewportHeight": 1080
+}
