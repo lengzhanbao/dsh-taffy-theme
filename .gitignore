@@ -1,0 +1,12 @@
+node_modules/
+*.log
+*.tgz
+.env
+.env.*
+.DS_Store
+.cache/
+preview/*.png
+lib/**/*.map
+tmp/
+temp/
+/执行计划*.md
