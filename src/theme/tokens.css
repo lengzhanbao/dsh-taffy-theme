@@ -1,0 +1,334 @@
+/* Taffy tokens live on body. Official --dsw-* stay on native DSH panes only. */
+
+body[data-dsh-taffy-theme] {
+  --ds-taffy-cream: #fff7f1;
+  --ds-taffy-cream-deep: #ffe8f0;
+  --ds-taffy-pink: #f29bc2;
+  --ds-taffy-pink-soft: #ffd8e7;
+  --ds-taffy-gold: #e7b957;
+  --ds-taffy-gold-deep: #c9a227;
+  --ds-taffy-charcoal: #493b50;
+  --ds-taffy-ribbon: #c43c3c;
+  --ds-taffy-lens: #91d5e8;
+  --ds-taffy-lavender: #b9a7e8;
+  --ds-taffy-text: #493b50;
+  --ds-taffy-text-on-dark: #fff4fa;
+  --ds-taffy-border: rgba(73, 59, 80, 0.14);
+  --taffy-q-face: none;
+  --taffy-q-send: none;
+  --taffy-q-settings: none;
+  --taffy-q-brand: none;
+  --taffy-q-new: none;
+  --taffy-q-command: none;
+  --taffy-q-stop: none;
+  --taffy-veil-strength: 0.12;
+
+  --ds-agent-idle: var(--ds-taffy-pink);
+  --ds-agent-thinking: var(--ds-taffy-lavender);
+  --ds-agent-tool: var(--ds-taffy-lens);
+  --ds-agent-streaming: var(--ds-taffy-pink-soft);
+  --ds-agent-success: var(--ds-taffy-gold);
+  --ds-agent-error: var(--ds-taffy-ribbon);
+
+  --taffy-sidebar-width: 280px;
+  --taffy-accent: var(--ds-taffy-pink);
+  --taffy-glow: rgba(242, 155, 194, 0.28);
+  --taffy-hairline: color-mix(in srgb, var(--ds-taffy-pink) 35%, transparent);
+  --taffy-motion-scale: 1;
+  --taffy-motion-duration: 1;
+  --taffy-veil: var(--ds-taffy-cream);
+  --taffy-font: "M PLUS Rounded 1c", Nunito, Inter, "Segoe UI", "Noto Sans SC", "PingFang SC", system-ui, sans-serif;
+  --taffy-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --taffy-pink: var(--ds-taffy-pink);
+  --taffy-pink-deep: #dc6f9e;
+  --taffy-ink: var(--ds-taffy-text);
+  --taffy-muted: #817486;
+  --taffy-blue: var(--ds-taffy-lens);
+  --taffy-radius-sm: 8px;
+  --taffy-radius-md: 12px;
+  --taffy-radius-lg: 16px;
+  --taffy-frame-inset: 8px;
+  --taffy-frame-opacity: 0.85;
+  --taffy-panel-opacity: 82;
+  --taffy-plate-art: linear-gradient(
+    90deg,
+    #f29bc2 0%,
+    #ffd8e7 14%,
+    rgba(255, 247, 241, 0.94) 24%,
+    rgba(255, 247, 241, 0.94) 76%,
+    #ffd8e7 86%,
+    #e7b957 100%
+  );
+  --taffy-settings-frame-art: var(--taffy-plate-art);
+  --taffy-character-opacity: 1;
+  --taffy-veil-opacity: var(--taffy-veil-strength);
+  --taffy-acrylic-percent: 70;
+  --taffy-conversation-left: 0px;
+  --taffy-conversation-top: 0px;
+  --taffy-conversation-width: 0px;
+  --taffy-conversation-height: 0px;
+  --taffy-conversation-content-left: 0px;
+  --taffy-conversation-content-width: 0px;
+  --taffy-conversation-viewport-top: 0px;
+  --taffy-conversation-viewport-height: 0px;
+  --taffy-content-left: 0px;
+  --taffy-content-width: 0px;
+  --taffy-viewport-top: 0px;
+  --taffy-viewport-height: 0px;
+  --taffy-composer-top: 0px;
+  --taffy-composer-height: 0px;
+  --taffy-acrylic-bg: color-mix(in srgb, rgb(255, 250, 247) calc(var(--taffy-acrylic-percent) * 1%), transparent);
+  --taffy-acrylic-bg-strong: color-mix(in srgb, rgb(255, 250, 247) calc((var(--taffy-acrylic-percent) + 12) * 1%), transparent);
+  --taffy-acrylic-bg-soft: color-mix(in srgb, rgb(255, 250, 247) calc((var(--taffy-acrylic-percent) - 15) * 1%), transparent);
+  --taffy-acrylic-border: rgba(242, 155, 194, 0.25);
+  --taffy-acrylic-hairline: rgba(242, 155, 194, 0.22);
+  --taffy-acrylic-shadow: rgba(73, 59, 80, 0.12);
+  --taffy-acrylic-blur: 14px;
+  --taffy-acrylic-saturation: 1.05;
+  --taffy-acrylic-light: color-mix(in srgb, rgb(255, 250, 247) calc(var(--taffy-panel-opacity) * 1%), transparent);
+  --taffy-acrylic-dark: color-mix(in srgb, rgb(36, 29, 52) calc(var(--taffy-panel-opacity) * 1%), transparent);
+  --taffy-border-light: rgba(242, 155, 194, 0.34);
+  --taffy-border-dark: rgba(255, 220, 240, 0.2);
+  --taffy-highlight: rgba(255, 255, 255, 0.5);
+  --taffy-shadow: 0 12px 32px rgba(73, 59, 80, 0.12);
+
+  background-color: transparent;
+}
+
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-mint'] {
+  --ds-taffy-cream: #f6fbfc;
+  --ds-taffy-cream-deep: #e8f4f6;
+  --taffy-accent: var(--ds-taffy-lens);
+  --taffy-glow: rgba(145, 213, 232, 0.28);
+  --taffy-veil: #f6fbfc;
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] {
+  --ds-taffy-cream: #211b32;
+  --ds-taffy-cream-deep: #181326;
+  --ds-taffy-text: #fff4fa;
+  --ds-taffy-text-on-dark: #fff4fa;
+  --taffy-veil: #211b32;
+  --taffy-veil-strength: 0.14;
+  --taffy-veil-opacity: var(--taffy-veil-strength);
+  --taffy-panel-opacity: 82;
+  --taffy-glow: rgba(242, 165, 200, 0.22);
+  --taffy-plate-art: linear-gradient(
+    90deg,
+    #dc6f9e 0%,
+    rgba(255, 216, 231, 0.28) 16%,
+    rgba(36, 29, 52, 0.88) 28%,
+    rgba(36, 29, 52, 0.88) 72%,
+    rgba(255, 216, 231, 0.22) 86%,
+    #e7b957 100%
+  );
+  --taffy-settings-frame-art: var(--taffy-plate-art);
+  --taffy-acrylic-bg: color-mix(in srgb, rgb(36, 29, 52) calc(var(--taffy-acrylic-percent) * 1%), transparent);
+  --taffy-acrylic-bg-strong: color-mix(in srgb, rgb(36, 29, 52) calc((var(--taffy-acrylic-percent) + 10) * 1%), transparent);
+  --taffy-acrylic-bg-soft: color-mix(in srgb, rgb(36, 29, 52) calc((var(--taffy-acrylic-percent) - 18) * 1%), transparent);
+  --taffy-acrylic-dark: color-mix(in srgb, rgb(36, 29, 52) calc(var(--taffy-panel-opacity) * 1%), transparent);
+  --taffy-acrylic-border: rgba(255, 244, 250, 0.14);
+  --taffy-acrylic-hairline: rgba(191, 174, 235, 0.22);
+  --taffy-acrylic-shadow: rgba(0, 0, 0, 0.3);
+  --taffy-acrylic-blur: 14px;
+  --taffy-acrylic-saturation: 1.05;
+  --taffy-muted: #a99db2;
+  background-color: transparent;
+}
+
+body[data-dsh-taffy-theme] :is([class*='sidebarCol'], [class*='centerCol'], [class*='detailsCol']) {
+  --dsw-alias-bg-base: transparent;
+  --dsw-alias-bg-layer-1: color-mix(in srgb, var(--ds-taffy-cream) 22%, transparent);
+  --dsw-alias-bg-layer-2: color-mix(in srgb, #fffdfb 28%, transparent);
+  --dsw-alias-bg-layer-3: color-mix(in srgb, var(--ds-taffy-cream-deep) 36%, transparent);
+  --dsw-alias-bg-overlay: color-mix(in srgb, var(--ds-taffy-cream) 28%, transparent);
+  --dsw-alias-border-l1: rgba(73, 59, 80, 0.08);
+  --dsw-alias-border-l2: rgba(73, 59, 80, 0.14);
+  --dsw-alias-border-l2-darkmode-thin: rgba(73, 59, 80, 0.12);
+  --dsw-alias-border-l3: color-mix(in srgb, var(--ds-taffy-pink) 42%, transparent);
+  --dsw-alias-brand-primary: var(--ds-taffy-pink);
+  --dsw-alias-brand-text: var(--ds-taffy-text);
+  --dsw-alias-button-info-fill: var(--ds-taffy-pink);
+  --dsw-alias-button-info-hover: var(--ds-taffy-pink-soft);
+  --dsw-alias-label-caption: #6d5d74;
+  --dsw-alias-label-dimmed: #8a7a90;
+  --dsw-alias-label-primary-bluish: var(--ds-taffy-text);
+  --dsw-alias-label-primary-dimmed: #5c4c62;
+  --dsw-alias-label-primary-foreground: #fff7f1;
+  --dsw-alias-label-primary-inverted: #fff7f1;
+  --dsw-alias-label-primary: var(--ds-taffy-text);
+  --dsw-alias-label-secondary: #74697b;
+  --dsw-alias-label-tertiary: #948a99;
+  --dsw-alias-interactive-bg-hover: rgba(242, 155, 194, 0.12);
+  --dsw-alias-interactive-bg-active: rgba(185, 167, 232, 0.16);
+  --dsw-specific-bubble: #fff4ea;
+  --dsw-specific-bubble-highlight: #ffe4d2;
+  --dsw-specific-sidebar-fill: color-mix(in srgb, #ffd6e8 62%, transparent);
+  --dsw-specific-input-major: color-mix(in srgb, #fffdfb 90%, transparent);
+  color: var(--ds-taffy-text);
+  font-family: var(--taffy-font);
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([class*='sidebarCol'], [class*='centerCol'], [class*='detailsCol']),
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([class*='sidebarCol'], [class*='centerCol'], [class*='detailsCol']) {
+  --dsw-alias-bg-layer-1: color-mix(in srgb, #2a2340 22%, transparent);
+  --dsw-alias-bg-layer-2: color-mix(in srgb, #2a2340 28%, transparent);
+  --dsw-alias-bg-layer-3: color-mix(in srgb, #181326 32%, transparent);
+  --dsw-alias-bg-overlay: color-mix(in srgb, #181326 28%, transparent);
+  --dsw-alias-border-l1: rgba(242, 165, 200, 0.12);
+  --dsw-alias-border-l2: rgba(185, 167, 232, 0.2);
+  --dsw-alias-border-l3: color-mix(in srgb, var(--ds-taffy-gold) 40%, transparent);
+  --dsw-alias-brand-primary: var(--ds-taffy-pink-soft);
+  --dsw-alias-brand-text: #fff4fa;
+  --dsw-alias-label-caption: #e8dce8;
+  --dsw-alias-label-dimmed: #d4c8d8;
+  --dsw-alias-label-primary-bluish: #fff4fa;
+  --dsw-alias-label-primary-dimmed: #f4eef4;
+  --dsw-alias-label-primary-foreground: #211b32;
+  --dsw-alias-label-primary-inverted: #211b32;
+  --dsw-alias-label-primary: #fff4fa;
+  --dsw-alias-label-secondary: #d8cddf;
+  --dsw-alias-label-tertiary: #a99db2;
+  --dsw-specific-bubble: #2f2744;
+  --dsw-specific-bubble-highlight: #3a3250;
+  --dsw-specific-sidebar-fill: color-mix(in srgb, #271e37 64%, transparent);
+  --dsw-specific-input-major: color-mix(in srgb, #2a2340 88%, transparent);
+  color: #fff4fa;
+}
+
+body[data-dsh-taffy-theme] [class*='centerCol'] {
+  --dsw-alias-bg-base: transparent;
+  --dsw-alias-bg-layer-1: color-mix(in srgb, var(--ds-taffy-cream) 12%, transparent);
+  --dsw-alias-bg-layer-2: color-mix(in srgb, #fffdfb 14%, transparent);
+  --dsw-alias-bg-layer-3: color-mix(in srgb, var(--ds-taffy-cream-deep) 16%, transparent);
+  --dsw-alias-bg-overlay: color-mix(in srgb, var(--ds-taffy-cream) 18%, transparent);
+}
+
+/* AppFrame.frame paints --dsw-alias-bg-base. Keep that token transparent so
+   column translucency reveals the wallpaper instead of the host shell. */
+body[data-dsh-taffy-theme] [id='root'] div:has(> [class*='sidebarCol']):has(> [class*='centerCol']) {
+  --dsw-alias-bg-base: transparent;
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [class*='centerCol'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [class*='centerCol'] {
+  --dsw-alias-bg-layer-1: color-mix(in srgb, #2a2340 12%, transparent);
+  --dsw-alias-bg-layer-2: color-mix(in srgb, #2a2340 14%, transparent);
+  --dsw-alias-bg-layer-3: color-mix(in srgb, #181326 16%, transparent);
+  --dsw-alias-bg-overlay: color-mix(in srgb, #181326 18%, transparent);
+}
+
+body[data-dsh-taffy-theme][data-taffy-state='idle'] {
+  --taffy-accent: var(--ds-agent-idle);
+}
+
+body[data-dsh-taffy-theme][data-taffy-state='thinking'] {
+  --taffy-accent: var(--ds-agent-thinking);
+  --taffy-glow: rgba(185, 167, 232, 0.3);
+}
+
+body[data-dsh-taffy-theme][data-taffy-state='tool-calling'] {
+  --taffy-accent: var(--ds-agent-tool);
+  --taffy-glow: rgba(145, 213, 232, 0.3);
+}
+
+body[data-dsh-taffy-theme][data-taffy-state='streaming'] {
+  --taffy-accent: var(--ds-agent-streaming);
+  --taffy-glow: rgba(242, 155, 194, 0.3);
+}
+
+body[data-dsh-taffy-theme][data-taffy-state='success'] {
+  --taffy-accent: var(--ds-agent-success);
+}
+
+body[data-dsh-taffy-theme][data-taffy-state='error'] {
+  --taffy-accent: var(--ds-agent-error);
+  --taffy-glow: rgba(196, 60, 60, 0.3);
+}
+
+body[data-dsh-taffy-theme][data-taffy-veil='thin'] {
+  --taffy-veil-strength: 0.08;
+  --taffy-veil-opacity: 0.08;
+}
+
+body[data-dsh-taffy-theme][data-taffy-veil='standard'] {
+  --taffy-veil-strength: 0.12;
+  --taffy-veil-opacity: 0.12;
+}
+
+body[data-dsh-taffy-theme][data-taffy-veil='thick'] {
+  --taffy-veil-strength: 0.18;
+  --taffy-veil-opacity: 0.18;
+}
+
+body[data-dsh-taffy-theme][data-taffy-frame-opacity='70'] {
+  --taffy-frame-opacity: 0.7;
+}
+
+body[data-dsh-taffy-theme][data-taffy-frame-opacity='85'] {
+  --taffy-frame-opacity: 0.85;
+}
+
+body[data-dsh-taffy-theme][data-taffy-frame-opacity='100'] {
+  --taffy-frame-opacity: 1;
+}
+
+body[data-dsh-taffy-theme][data-taffy-panel-opacity='55'] {
+  --taffy-panel-opacity: 55;
+}
+
+body[data-dsh-taffy-theme][data-taffy-panel-opacity='70'] {
+  --taffy-panel-opacity: 70;
+}
+
+body[data-dsh-taffy-theme][data-taffy-panel-opacity='85'] {
+  --taffy-panel-opacity: 85;
+}
+
+body[data-dsh-taffy-theme][data-taffy-panel-opacity='92'] {
+  --taffy-panel-opacity: 92;
+}
+
+body[data-dsh-taffy-theme][data-taffy-character-opacity='70'] {
+  --taffy-character-opacity: 0.7;
+}
+
+body[data-dsh-taffy-theme][data-taffy-character-opacity='85'] {
+  --taffy-character-opacity: 0.85;
+}
+
+body[data-dsh-taffy-theme][data-taffy-character-opacity='100'] {
+  --taffy-character-opacity: 1;
+}
+
+body[data-dsh-taffy-theme][data-taffy-acrylic-percent='50'] {
+  --taffy-acrylic-percent: 50;
+}
+
+body[data-dsh-taffy-theme][data-taffy-acrylic-percent='70'] {
+  --taffy-acrylic-percent: 70;
+}
+
+body[data-dsh-taffy-theme][data-taffy-acrylic-percent='85'] {
+  --taffy-acrylic-percent: 85;
+}
+
+body[data-dsh-taffy-theme][data-taffy-acrylic-percent='92'] {
+  --taffy-acrylic-percent: 92;
+}
+
+body[data-dsh-taffy-theme][data-dsh-taffy-intensity='low'] {
+  --taffy-motion-scale: 0.6;
+  --taffy-motion-duration: 1.4;
+}
+
+body[data-dsh-taffy-theme][data-dsh-taffy-intensity='high'] {
+  --taffy-motion-scale: 1.2;
+  --taffy-motion-duration: 0.8;
+}
+
+body[data-dsh-taffy-theme][data-dsh-taffy-motion='off'],
+body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'] {
+  --taffy-motion-scale: 0;
+}

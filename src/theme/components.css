@@ -1,0 +1,752 @@
+/* Decorative layers + native DSH chrome. Do not restyle third-party plugin roots. */
+
+body[data-dsh-taffy-theme] [id='root'] {
+  background: transparent;
+}
+
+body[data-dsh-taffy-theme] [id='root'] div:has(> [class*='sidebarCol']):has(> [class*='centerCol']) {
+  background: transparent;
+}
+
+body[data-dsh-taffy-theme] [data-skin-chrome='character-stage'] {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+body[data-dsh-taffy-theme] [data-taffy-wallpaper] {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  opacity: 1;
+}
+
+body[data-dsh-taffy-theme] [data-taffy-wallpaper][data-taffy-asset-error] {
+  opacity: 0;
+}
+
+body[data-dsh-taffy-theme] [data-taffy-veil='curtain'] {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--taffy-veil-opacity, var(--taffy-veil-strength, 0.12));
+  background:
+    radial-gradient(ellipse 50% 42% at 50% 44%, rgba(255, 247, 241, 0.4), transparent 72%),
+    linear-gradient(90deg, rgba(255, 247, 241, 0.22), transparent 18%, transparent 82%, rgba(255, 247, 241, 0.22));
+}
+
+body[data-dsh-taffy-theme] [data-taffy-character] {
+  position: absolute;
+  display: block;
+  z-index: 2;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  object-position: center bottom;
+  pointer-events: none;
+  opacity: var(--taffy-character-opacity, 1);
+  filter:
+    saturate(1.04)
+    contrast(1.02)
+    drop-shadow(0 10px 18px rgba(242, 155, 194, 0.16));
+}
+
+body[data-dsh-taffy-theme] [data-taffy-character][data-taffy-asset-error] {
+  opacity: 0;
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-taffy-character],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-taffy-character] {
+  filter:
+    brightness(1.08)
+    saturate(1.06)
+    contrast(1.06)
+    drop-shadow(0 14px 22px rgba(0, 0, 0, 0.22));
+}
+
+body[data-dsh-taffy-theme] [data-taffy-character='left'] {
+  left: 0;
+  bottom: clamp(-18px, -1.2vh, -4px);
+  translate: calc(var(--taffy-conversation-left, var(--taffy-sidebar-width)) + clamp(10px, 1.6vw, 28px)) 0;
+  height: clamp(520px, 88vh, 1080px);
+  max-width: min(32vw, 460px);
+  transition: none;
+}
+
+body[data-dsh-taffy-theme] [data-taffy-character='right'] {
+  right: calc(var(--taffy-right-panel-width, var(--taffy-frame-right-inset, 0px)) - 8px);
+  bottom: clamp(-16px, -1vh, -4px);
+  height: clamp(500px, 84vh, 1020px);
+  max-width: min(24vw, 340px);
+  object-position: right bottom;
+  transition:
+    right 420ms cubic-bezier(0.22, 0.78, 0.2, 1),
+    height 420ms cubic-bezier(0.22, 0.78, 0.2, 1),
+    opacity 220ms ease;
+}
+
+body[data-dsh-taffy-theme][data-taffy-better-sidebar-open] [data-taffy-character='right'],
+body[data-dsh-taffy-theme][data-taffy-details-open] [data-taffy-character='right'],
+body[data-dsh-taffy-theme][data-dsh-floating-panel-open] [data-taffy-character='right'] {
+  right: calc(var(--taffy-right-panel-width, var(--taffy-frame-right-inset, 0px)) - 6px);
+  height: clamp(360px, 62vh, 780px);
+  opacity: 0.92;
+}
+
+body[data-dsh-taffy-theme][data-taffy-hide-left] [data-taffy-character='left'] {
+  opacity: 0;
+}
+
+body[data-dsh-taffy-theme][data-taffy-hide-right] [data-taffy-character='right'],
+body[data-dsh-taffy-theme][data-taffy-right-crowded] [data-taffy-character='right'] {
+  opacity: 0;
+}
+
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) {
+  position: relative;
+  background: var(--dsw-specific-sidebar-fill);
+}
+
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) [data-taffy-mascot='sidebar'] {
+  position: absolute;
+  left: 50%;
+  top: auto;
+  bottom: calc(var(--taffy-sidebar-footer-height, 56px) + 6px);
+  z-index: 0;
+  width: min(118px, calc(100% - 48px));
+  height: auto;
+  max-height: 15vh;
+  object-fit: contain;
+  object-position: center bottom;
+  border-radius: 0;
+  pointer-events: none;
+  opacity: var(--taffy-character-opacity, 1);
+  translate: -50% 0;
+  filter: drop-shadow(0 6px 12px rgba(73, 59, 80, 0.16));
+}
+
+body[data-dsh-taffy-theme][data-taffy-hide-mascot] [data-taffy-mascot='sidebar'],
+body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-taffy-mascot='sidebar'] {
+  display: none;
+}
+
+body[data-dsh-taffy-theme] [data-taffy-mascot='sidebar'][data-taffy-asset-error] {
+  opacity: 0;
+}
+
+@media (max-width: 1080px) {
+  body[data-dsh-taffy-theme] [data-taffy-character='left'] {
+    height: clamp(380px, 70vh, 720px);
+  }
+
+  body[data-dsh-taffy-theme] [data-taffy-character='right'] {
+    height: clamp(360px, 66vh, 680px);
+  }
+}
+
+@media (max-width: 700px) {
+  body[data-dsh-taffy-theme] [data-taffy-character] {
+    height: clamp(240px, 46vh, 420px);
+    opacity: 0.88;
+  }
+
+  body[data-dsh-taffy-theme] [data-taffy-mascot='sidebar'] {
+    opacity: 0.72;
+    width: 96px;
+  }
+}
+
+body[data-dsh-taffy-theme] [class*='centerCol'] {
+  background: rgba(255, 247, 241, 0.16);
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [class*='centerCol'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [class*='centerCol'] {
+  background: rgba(33, 27, 50, 0.22);
+}
+
+body[data-dsh-taffy-theme] [class*='centerCol'] [data-phase] {
+  background-color: transparent;
+}
+
+body[data-dsh-taffy-theme] [class*='centerCol'] [data-conversation-scroll] {
+  background-color: transparent;
+  border-radius: 22px;
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [class*='centerCol'] [data-conversation-scroll],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [class*='centerCol'] [data-conversation-scroll] {
+  background-color: transparent;
+}
+
+body[data-dsh-taffy-theme] [data-chat-flow],
+body[data-dsh-taffy-theme] [data-composer-card],
+body[data-dsh-taffy-theme] [data-input-mirror],
+body[data-dsh-taffy-theme] [class*='centerCol'] textarea {
+  color: var(--dsw-alias-label-primary);
+  caret-color: var(--ds-taffy-pink);
+}
+
+body[data-dsh-taffy-theme] [data-composer-card] {
+  position: relative;
+  overflow: visible;
+  background: color-mix(in srgb, var(--taffy-acrylic-light) 88%, transparent);
+  border: 1px solid rgba(242, 155, 194, 0.42);
+  border-radius: 16px;
+  box-shadow:
+    inset 0 0 0 1px rgba(231, 185, 87, 0.35),
+    inset 0 1px var(--taffy-highlight);
+  backdrop-filter: blur(12px) saturate(1.06);
+  -webkit-backdrop-filter: blur(12px) saturate(1.06);
+  color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-taffy-theme] [data-composer-card]::before {
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: -2px;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(242, 155, 194, 0.95), rgba(231, 185, 87, 0.95), rgba(242, 155, 194, 0.95), transparent);
+}
+
+body[data-dsh-taffy-theme] [data-composer-card]::after {
+  content: none;
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-composer-card] {
+  background: var(--taffy-acrylic-dark);
+  border-color: var(--taffy-border-dark);
+}
+
+body[data-dsh-taffy-theme] [data-slot='sidebar.settings'] [role='dialog'][aria-modal='true'] {
+  background: var(--ds-taffy-cream);
+  color: var(--ds-taffy-text);
+  --dsw-alias-bg-base: var(--ds-taffy-cream);
+  --dsw-alias-bg-layer-1: var(--ds-taffy-cream);
+  --dsw-alias-bg-layer-2: var(--ds-taffy-cream);
+  --dsw-alias-bg-layer-3: var(--ds-taffy-cream-deep);
+}
+
+body[data-dsh-taffy-theme] .dsh-taffy-general-row,
+[data-dsh-taffy-settings].dsh-taffy-general-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--dsw-alias-border-l2);
+}
+
+body[data-dsh-taffy-theme] .dsh-taffy-general-title {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-taffy-theme] .dsh-taffy-general-note {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-secondary);
+}
+
+body[data-dsh-taffy-theme] .dsh-taffy-slider-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+body[data-dsh-taffy-theme] .dsh-taffy-slider-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-taffy-theme] .dsh-taffy-slider-row input[type='range'] {
+  width: 100%;
+  accent-color: var(--ds-taffy-pink);
+}
+
+body[data-dsh-taffy-theme] .dsh-taffy-general-cubes {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+body[data-dsh-taffy-theme] .dsh-taffy-general-cube {
+  box-sizing: border-box;
+  flex: 1 1 180px;
+  min-height: 82px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 20px 32px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 16px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--dsw-alias-label-primary);
+  cursor: pointer;
+}
+
+body[data-dsh-taffy-theme] .dsh-taffy-general-cube:hover:not(.is-selected) {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+
+body[data-dsh-taffy-theme] .dsh-taffy-general-cube.is-selected {
+  background: var(--dsw-alias-bg-layer-2);
+  border-color: var(--dsw-alias-border-l3);
+}
+
+body[data-dsh-taffy-theme] .dsh-taffy-general-cube:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+body[data-dsh-taffy-theme] .dsh-taffy-clover {
+  width: 16px;
+  height: 16px;
+  color: var(--ds-taffy-pink);
+}
+
+/* Circular chips copy the collapse-sidebar control: 36px, 82% headshot, overflow clip. */
+
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏'],
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar'],
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏'],
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar'],
+body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] > :is(button, [role='button']),
+body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'],
+body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']),
+body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) {
+  position: relative;
+  box-sizing: border-box;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  max-width: 36px;
+  padding: 0;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: visible;
+}
+
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='发送消息'],
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Send message'],
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='停止生成'],
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Stop generating'],
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='命令'],
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Commands'] {
+  position: relative;
+  box-sizing: border-box;
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  min-height: 42px;
+  padding: 0;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: visible;
+}
+
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='命令'],
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Commands'] {
+  overflow: hidden;
+}
+
+body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] > :is(button, [role='button']),
+body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'] {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  min-height: 42px;
+  overflow: visible;
+  border-image: none;
+  border-radius: 50%;
+  font-size: 0;
+}
+
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='发送消息'] > svg,
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Send message'] > svg,
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='停止生成'] > svg,
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Stop generating'] > svg,
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='命令'] > svg,
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Commands'] > svg,
+body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'] svg,
+body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']) > svg,
+body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) > svg,
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏'] > svg,
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar'] > svg,
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏'] > svg,
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar'] > svg {
+  opacity: 0;
+}
+
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='发送消息']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Send message']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='停止生成']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Stop generating']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='命令']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Commands']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand'])::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand'])::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 82% 82%;
+}
+
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='发送消息']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Send message']::after {
+  background-image: var(--taffy-q-send);
+  background-position: center;
+  background-size: 98% 98%;
+}
+
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='停止生成']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Stop generating']::after {
+  background-image: var(--taffy-q-stop);
+  background-position: center;
+  background-size: 98% 98%;
+}
+
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='命令']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Commands']::after {
+  background-image: var(--taffy-q-command);
+}
+
+body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::after {
+  background-image: var(--taffy-q-settings);
+  background-position: center;
+  background-size: 98% 98%;
+}
+
+body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand'])::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand'])::after {
+  background-image: var(--taffy-q-new);
+}
+
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar']::after {
+  background-image: var(--taffy-q-brand);
+}
+
+body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] > :is(button, [role='button']),
+body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog'],
+body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']),
+body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  min-height: 56px;
+  height: auto;
+  padding: 8px 28px;
+  overflow: visible;
+  border-radius: 0;
+  color: var(--ds-taffy-text);
+  background: transparent;
+  border-style: solid;
+  border-width: 0 34px;
+  border-image-source: var(--taffy-settings-frame-art, var(--taffy-plate-art));
+  border-image-slice: 0 220 0 220 fill;
+  border-image-width: 0 34px;
+  border-image-repeat: stretch;
+  box-shadow: none;
+  filter: drop-shadow(0 6px 16px rgba(220, 111, 158, 0.12));
+  font-size: 14px;
+  line-height: 1.2;
+  opacity: 1;
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] > :is(button, [role='button']),
+body[data-dsh-taffy-theme][data-ds-dark-theme]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night']:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] > :is(button, [role='button']),
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night']:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog'],
+body[data-dsh-taffy-theme][data-ds-dark-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']),
+body[data-dsh-taffy-theme][data-ds-dark-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']),
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night']:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']),
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night']:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) {
+  color: var(--ds-taffy-text-on-dark);
+  background: transparent;
+}
+
+body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog']:hover,
+body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']):hover,
+body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']):hover {
+  filter: brightness(1.06) drop-shadow(0 8px 18px rgba(220, 111, 158, 0.16));
+}
+
+body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog']:active,
+body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']):active,
+body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']):active {
+  filter: brightness(0.98);
+}
+
+body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] > :is(button, [role='button'])::before,
+body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::before,
+body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand'])::before,
+body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand'])::before {
+  content: '';
+  flex: 0 0 36px;
+  box-sizing: border-box;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  aspect-ratio: 1;
+  padding: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 82% 82%;
+}
+
+body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] > :is(button, [role='button'])::before,
+body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::before {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  background-image: var(--taffy-q-settings);
+  background-position: center;
+  background-size: 98% 98%;
+}
+
+body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand'])::before,
+body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand'])::before {
+  background-image: var(--taffy-q-new);
+}
+
+body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog'] svg,
+body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']) > svg,
+body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) > svg {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand'] {
+  color: var(--dsw-alias-label-primary);
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-composer-card] button,
+body[data-dsh-taffy-theme][data-ds-dark-theme] [class*='centerCol'] button,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [class*='centerCol'] button,
+body[data-dsh-taffy-theme][data-ds-dark-theme] [class*='sidebarCol'] button,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [class*='sidebarCol'] button {
+  color: color-mix(in srgb, var(--ds-taffy-gold) 58%, var(--ds-taffy-pink));
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button svg,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-composer-card] button svg,
+body[data-dsh-taffy-theme][data-ds-dark-theme] [class*='centerCol'] button svg,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [class*='centerCol'] button svg,
+body[data-dsh-taffy-theme][data-ds-dark-theme] [class*='sidebarCol'] button svg,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [class*='sidebarCol'] button svg {
+  color: color-mix(in srgb, var(--ds-taffy-gold) 62%, var(--ds-taffy-pink));
+  stroke: currentColor;
+}
+
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='发送消息']:focus-visible,
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Send message']:focus-visible,
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='停止生成']:focus-visible,
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Stop generating']:focus-visible,
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='命令']:focus-visible,
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Commands']:focus-visible,
+body[data-dsh-taffy-theme] [data-slot='sidebar.settings'] button[aria-haspopup='dialog']:focus-visible,
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']):focus-visible,
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']):focus-visible,
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏']:focus-visible,
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar']:focus-visible,
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏']:focus-visible,
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar']:focus-visible {
+  outline: 2px solid var(--ds-taffy-pink);
+  outline-offset: 2px;
+}
+
+/* Dark chrome: soft pink/lavender glow on primary controls only. */
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-slot='sidebar.settings'] > :is(button, [role='button']),
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-slot='sidebar.settings'] > :is(button, [role='button']),
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'],
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']),
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']),
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']),
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) {
+  border-color: rgba(185, 167, 232, 0.36);
+  box-shadow:
+    inset 0 1px rgba(255, 244, 250, 0.12),
+    0 0 10px rgba(242, 165, 200, 0.18);
+  filter: drop-shadow(0 0 8px rgba(242, 165, 200, 0.16));
+  transition: box-shadow 140ms ease, filter 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='发送消息'],
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='Send message'],
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='停止生成'],
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='Stop generating'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-composer-card] button[aria-label='发送消息'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-composer-card] button[aria-label='Send message'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-composer-card] button[aria-label='停止生成'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-composer-card] button[aria-label='Stop generating'] {
+  border: 1px solid rgba(242, 165, 200, 0.48);
+  box-shadow:
+    inset 0 1px rgba(255, 244, 250, 0.16),
+    0 0 12px rgba(242, 165, 200, 0.26);
+  transition: box-shadow 140ms ease, border-color 140ms ease, filter 140ms ease, transform 140ms ease;
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏'],
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar'],
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏'],
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar'] {
+  border: 1px solid rgba(185, 167, 232, 0.32);
+  box-shadow:
+    inset 0 1px rgba(255, 244, 250, 0.1),
+    0 0 8px rgba(242, 165, 200, 0.14);
+  transition: box-shadow 140ms ease, border-color 140ms ease, filter 140ms ease, transform 140ms ease;
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-slot='sidebar.settings'] button[aria-haspopup='dialog']:hover,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog']:hover,
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']):hover,
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']):hover,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']):hover,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']):hover {
+  border-color: rgba(255, 205, 225, 0.72);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.2),
+    0 0 14px rgba(242, 165, 200, 0.26);
+  filter: brightness(1.08) drop-shadow(0 0 10px rgba(242, 165, 200, 0.22));
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='发送消息']:hover,
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='Send message']:hover,
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='停止生成']:hover,
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='Stop generating']:hover,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-composer-card] button[aria-label='发送消息']:hover,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-composer-card] button[aria-label='Send message']:hover,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-composer-card] button[aria-label='停止生成']:hover,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-composer-card] button[aria-label='Stop generating']:hover {
+  border-color: rgba(255, 205, 225, 0.82);
+  filter: brightness(1.1);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.24),
+    0 0 18px rgba(242, 165, 200, 0.32);
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏']:hover,
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar']:hover,
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏']:hover,
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar']:hover,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏']:hover,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar']:hover,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏']:hover,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar']:hover {
+  border-color: rgba(255, 205, 225, 0.62);
+  filter: brightness(1.06);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.16),
+    0 0 12px rgba(242, 165, 200, 0.22);
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-slot='sidebar.settings'] button[aria-haspopup='dialog']:active,
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']):active,
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']):active,
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='发送消息']:active,
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='Send message']:active,
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='停止生成']:active,
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='Stop generating']:active,
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏']:active,
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar']:active,
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏']:active,
+body[data-dsh-taffy-theme][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar']:active {
+  transform: scale(1.02);
+  box-shadow:
+    inset 0 2px 6px rgba(8, 4, 16, 0.42),
+    0 0 8px rgba(242, 165, 200, 0.16);
+}
+
+body[data-dsh-taffy-theme][data-taffy-low-power][data-ds-dark-theme] [data-slot='sidebar.settings'] button,
+body[data-dsh-taffy-theme][data-taffy-low-power][data-ds-dark-theme] [data-composer-card] button[aria-label='发送消息'],
+body[data-dsh-taffy-theme][data-taffy-low-power][data-ds-dark-theme] [data-composer-card] button[aria-label='Send message'],
+body[data-dsh-taffy-theme][data-taffy-low-power][data-ds-dark-theme] [data-composer-card] button[aria-label='停止生成'],
+body[data-dsh-taffy-theme][data-taffy-low-power][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']),
+body[data-dsh-taffy-theme][data-taffy-low-power][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏'],
+body[data-dsh-taffy-theme][data-taffy-low-power][data-ds-dark-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏'],
+body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'][data-ds-dark-theme] [data-slot='sidebar.settings'] button,
+body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'][data-ds-dark-theme] [data-composer-card] button[aria-label='发送消息'],
+body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'][data-ds-dark-theme] [data-composer-card] button[aria-label='Send message'] {
+  box-shadow: none;
+  filter: none;
+  animation: none;
+  transition: none;
+}
+
+@media (max-width: 900px) {
+  body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='发送消息'],
+  body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='Send message'],
+  body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='停止生成'] {
+    box-shadow:
+      inset 0 1px rgba(255, 244, 250, 0.12),
+      0 0 8px rgba(242, 165, 200, 0.16);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-dsh-taffy-theme][data-ds-dark-theme] [data-slot='sidebar.settings'] button,
+  body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='发送消息'],
+  body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card] button[aria-label='Send message'] {
+    box-shadow: none;
+    animation: none;
+    transition: none;
+  }
+}
