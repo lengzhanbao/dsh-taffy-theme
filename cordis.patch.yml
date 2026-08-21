@@ -1,0 +1,8 @@
+# Taffy Live Atelier: insert the theme plugin only.
+# Do not replace agent-presets config — that would drop shipped standard/minimal/code/cordis.
+# The Taffy agent composition lives in this package's presets/taffy and is also
+# installed under $DSH_HOME/.agent-presets/taffy (user root).
+- insert:
+    - id: dsh-taffy-theme
+      name: '@dsh-external/dsh-taffy-theme'
+      config: {}
