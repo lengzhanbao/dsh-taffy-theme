@@ -59,6 +59,8 @@
     "assets/taffy/manifest.json",
     "preview/light.webp",
     "preview/dark.webp",
+    "docs/usage.zh.md",
+    "docs/usage.en.md",
     "README.md",
     "LICENSE",
     "NOTICE.md"

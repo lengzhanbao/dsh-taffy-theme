@@ -1,14 +1,27 @@
 # Contributing
 
-This is a DeepSeek Harness **Web UI theme** plugin (`@dsh-external/dsh-taffy-theme`).
+## End users
 
-## Topics
+Install the prebuilt Release — no build step required:
 
-Please keep GitHub topics: `dsh-plugin`, `dsh`, `deepseek-harness`, `theme`, `ui`, `taffy`.
+```bash
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.0.tgz
+```
 
-`dsh-plugin` is required for [awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) and in-session find-plugin search.
+## Developers
 
-## Tests
+1. Clone this repository
+2. Install Node.js 18+
+3. Point `DSH_CHECKOUT` at a local [deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) checkout (the folder that contains `packages/`)
+
+```powershell
+$env:DSH_CHECKOUT = "C:\path\to\deepseek-harness"
+npm install
+npm run build
+npm test
+```
+
+## Verify before publishing
 
 ```bash
 npm test
@@ -16,8 +29,4 @@ npm run build
 npm pack --dry-run
 ```
 
-Confirm `lib/client.js` module id is `@dsh-external/dsh-taffy-theme` (no `@file:` prefix).
-
-## Market listing
-
-Copy `docs/market/lengzhanbao__dsh-taffy-theme.yml` into a PR on `awesome-dsh-plugin/awesome-dsh-plugin` under `data/plugins/`. Category is `theme`. The list requires the GitHub repo to be at least 1 day old with 10+ commits.
+Confirm `lib/client.js` registers as `@dsh-external/dsh-taffy-theme` (no `@file:` prefix).

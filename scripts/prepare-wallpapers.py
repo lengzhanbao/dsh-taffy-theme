@@ -1,13 +1,16 @@
-"""Turn generated atelier plates into compact wallpapers without extra people."""
+"""Optional maintainer script: regenerate wallpaper webp from source plates."""
 from __future__ import annotations
 
+import os
+import sys
 from io import BytesIO
 from pathlib import Path
 
 from PIL import Image, ImageFilter
 
-ROOT = Path(r"E:\DeepSeekHarness\projects\dsh-taffy-theme\assets\taffy")
-CACHE = Path(r"E:\taffy\.cache\downloads")
+ROOT = Path(__file__).resolve().parents[1]
+ASSETS = ROOT / "assets" / "taffy"
+CACHE = Path(os.environ.get("TAFFY_CACHE", ROOT / ".cache" / "wallpaper-src"))
 SIZE = (1920, 1080)
 
 
@@ -30,8 +33,8 @@ def strip_person(image: Image.Image) -> Image.Image:
 
 
 def save_webp(image: Image.Image, name: str) -> None:
-    dest = ROOT / name
-    generated = ROOT / "generated" / name
+    dest = ASSETS / name
+    generated = ASSETS / "generated" / name
     generated.parent.mkdir(parents=True, exist_ok=True)
     image.save(dest, "WEBP", quality=68, method=4)
     image.save(generated, "WEBP", quality=68, method=4)
@@ -39,12 +42,12 @@ def save_webp(image: Image.Image, name: str) -> None:
 
 
 def main() -> None:
-    light_src = CACHE / "assets" / "taffy-atelier-light-empty.png"
-    if not light_src.exists():
-        light_src = Path(r"C:\Users\SYH\.cursor\projects\e-taffy\assets\taffy-atelier-light-empty.png")
-    dark_src = CACHE / "taffy-wallpapers" / "taffy-atelier-dark.png"
-    if not dark_src.exists():
-        dark_src = Path(r"C:\Users\SYH\.cursor\projects\e-taffy\assets\taffy-atelier-dark.png")
+    light_src = Path(sys.argv[1]) if len(sys.argv) > 1 else CACHE / "light.png"
+    dark_src = Path(sys.argv[2]) if len(sys.argv) > 2 else CACHE / "dark.png"
+    if not light_src.is_file():
+        raise SystemExit(f"Missing light source: {light_src}\nPlace plates under {CACHE} or pass paths as argv.")
+    if not dark_src.is_file():
+        raise SystemExit(f"Missing dark source: {dark_src}\nPlace plates under {CACHE} or pass paths as argv.")
 
     light = strip_person(load_rgb(light_src))
     dark = load_rgb(dark_src)

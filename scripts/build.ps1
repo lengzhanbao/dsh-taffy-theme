@@ -2,9 +2,19 @@ $ErrorActionPreference = 'Stop'
 $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
 
-$Checkout = if ($env:DSH_CHECKOUT) { $env:DSH_CHECKOUT } else { 'E:\DeepSeekHarness\src\deepseek-harness' }
+$Checkout = $env:DSH_CHECKOUT
+if ([string]::IsNullOrWhiteSpace($Checkout)) {
+  throw @"
+DSH_CHECKOUT is not set.
+
+End users: install the prebuilt Release .tgz — no build required.
+Developers: set DSH_CHECKOUT to your deepseek-harness checkout (folder containing packages/).
+
+  `$env:DSH_CHECKOUT = 'C:\path\to\deepseek-harness'
+"@
+}
 if (-not (Test-Path "$Checkout\packages")) {
-  throw "DSH checkout not found: $Checkout"
+  throw "DSH checkout not found or invalid: $Checkout (expected packages\ subdirectory)"
 }
 
 function Link-Package($name, $target) {
