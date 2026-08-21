@@ -142,4 +142,5 @@ fs.writeFileSync(path.join(root, 'src/client/bundled-q.ts'), qAssets);
 & node $Tsc -p tsconfig.json
 New-Item -ItemType Directory -Force -Path (Join-Path $Root 'lib\prompt') | Out-Null
 Copy-Item (Join-Path $Root 'src\prompt\taffy-system.md') (Join-Path $Root 'lib\prompt\taffy-system.md') -Force
+& node (Join-Path $Root 'scripts\sync-persona.mjs')
 Write-Host 'host build complete'
