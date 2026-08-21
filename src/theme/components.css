@@ -237,6 +237,12 @@ body[data-dsh-taffy-theme] [data-composer-card] {
   color: var(--ds-taffy-text);
 }
 
+body[data-dsh-taffy-theme][data-taffy-low-power] [data-composer-card] {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: var(--taffy-acrylic-bg-strong);
+}
+
 body[data-dsh-taffy-theme] [data-composer-card]::before {
   content: '';
   position: absolute;

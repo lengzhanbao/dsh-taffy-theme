@@ -13,7 +13,8 @@ export interface AssetManifest {
   }
 }
 
-export const PLUGIN_ASSET_BASE = '/plugins/@dsh-external/dsh-taffy-theme/assets/taffy'
+export const PLUGIN_ASSET_ROUTE_PREFIX = '/plugins/@dsh-external/dsh-taffy-theme/assets'
+export const PLUGIN_ASSET_BASE = `${PLUGIN_ASSET_ROUTE_PREFIX}/taffy`
 
 export function buildAssetUrl(relativePath: string): string {
   const clean = relativePath.replace(/^\/+/, '')

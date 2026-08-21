@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PluginConfig, DEFAULT_SETTINGS, TaffySettingsSchema } from '../src/config.ts'
+import { PluginConfig, DEFAULT_SETTINGS, parseTaffySettings } from '../src/config.ts'
 
 describe('host config', () => {
   it('exposes Cordis-compatible empty schema', () => {
@@ -10,9 +10,9 @@ describe('host config', () => {
   })
 
   it('merges browser settings with defaults', () => {
-    const parsed = TaffySettingsSchema.parse({ enabled: false, displayName: '塔菲' })
+    const parsed = parseTaffySettings({ enabled: false, displayName: '塔菲' })
     expect(parsed.enabled).toBe(false)
     expect(parsed.displayName).toBe('塔菲')
-    expect(parsed.preset).toBe(DEFAULT_SETTINGS.preset)
+    expect(parsed.colors.preset).toBe(DEFAULT_SETTINGS.colors.preset)
   })
 })

@@ -1,10 +1,11 @@
 import type { TaffySettings } from '../state/types'
 import { decorateSidebar } from './mount'
 import { SIDEBAR_SELECTOR, SKIN_OWNER } from './chrome-selectors'
+import { createRafScheduler } from './schedule'
 
 export interface ChromeObserverOptions {
   getSettings: () => TaffySettings
-  onNodes: (nodes: HTMLElement[]) => void
+  onNodes?: (nodes: HTMLElement[]) => void
   onSidebarChange?: () => void
 }
 
@@ -35,9 +36,11 @@ export function createChromeObserver(options: ChromeObserverOptions): { disconne
     clearSidebar(sidebar)
     const nodes = decorateSidebar(settings, sidebar)
     sidebarNodes.set(sidebar, nodes)
-    options.onNodes(nodes)
+    options.onNodes?.(nodes)
     options.onSidebarChange?.()
   }
+
+  const scheduler = createRafScheduler(maybeDecorateSidebar)
 
   const observer = new MutationObserver((mutations) => {
     let sidebarChanged = false
@@ -49,7 +52,7 @@ export function createChromeObserver(options: ChromeObserverOptions): { disconne
         }
       }
     }
-    if (sidebarChanged) maybeDecorateSidebar()
+    if (sidebarChanged) scheduler.schedule()
   })
 
   observer.observe(document.body, { childList: true, subtree: true })
@@ -57,6 +60,7 @@ export function createChromeObserver(options: ChromeObserverOptions): { disconne
 
   return {
     disconnect: () => {
+      scheduler.cancel()
       observer.disconnect()
       for (const sidebar of sidebarNodes.keys()) clearSidebar(sidebar)
       sidebarNodes.clear()

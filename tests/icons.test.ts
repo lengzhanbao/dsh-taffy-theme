@@ -5,24 +5,22 @@ import { describe, expect, it } from 'vitest'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const components = readFileSync(join(root, 'src/theme/components.css'), 'utf8')
-const build = readFileSync(join(root, 'scripts/build.ps1'), 'utf8')
+const bundledQ = readFileSync(join(root, 'src/client/bundled-q.ts'), 'utf8')
 const icons = join(root, 'assets/taffy/icons')
 
 describe('Taffy headshot icons', () => {
-  it('bundles square headshots instead of full-body or caption stickers', () => {
+  it('ships square headshots and resolves them via plugin asset URLs', () => {
+    const bundledQ = readFileSync(join(root, 'src/client/bundled-q.ts'), 'utf8')
     for (const name of ['face-look', 'face-happy', 'face-stop', 'face-portrait', 'face-wink', 'face-new']) {
       expect(existsSync(join(icons, `${name}.webp`)), name).toBe(true)
       expect(existsSync(join(icons, `${name}.png`)), name).toBe(true)
     }
-    expect(build).toContain("assets/taffy/icons/")
-    expect(build).toContain("q('face-look'")
-    expect(build).toContain("q('face-happy'")
-    expect(build).toContain("q('face-stop'")
-    expect(build).toContain("q('face-wink'")
-    expect(build).toContain("q('face-new'")
-    expect(build).not.toContain("q('taffy-01'")
-    expect(build).not.toContain("q('taffy-04'")
-    expect((build.match(/q\('face-look'/g) ?? []).length).toBe(1)
+    expect(bundledQ).toContain("buildAssetUrl('icons/face-look.webp')")
+    expect(bundledQ).toContain("buildAssetUrl('icons/face-happy.webp')")
+    expect(bundledQ).toContain("buildAssetUrl('icons/face-stop.webp')")
+    expect(bundledQ).toContain("buildAssetUrl('icons/face-wink.webp')")
+    expect(bundledQ).toContain("buildAssetUrl('icons/face-new.webp')")
+    expect(bundledQ).not.toContain('data:image/')
   })
 
   it('keeps sidebar and new-session at 36px / 82%, and fills settings and send at 98%', () => {

@@ -8,10 +8,9 @@ import { resetStateAdapter } from '../state/adapter'
 import { applyThemeTokens, restoreThemeTokens, resolveThemeTokens, snapshotThemeTokens } from '../theme/user-theme'
 import { resolveTimePhase, startTimePhaseTicker } from '../theme/time-theme'
 import { loadSettings, saveSettings, subscribeSettings } from './settings-store'
-import { ensureStyleNode, removeStyleNode, updateStyleNode } from './styles'
+import { ensureStyleNode, removeStyleNode } from './styles'
 import {
   clearMetricsStamp,
-  markMetricsStampMounted,
   resetMetricsStampState,
   setMetricsEnabledGetter,
   stampMetrics,
@@ -45,7 +44,7 @@ export function apply(ctx: ClientContext): void {
   let settings = loadSettings()
   let state: TaffyAgentState = 'idle'
   let chromeMounted = false
-  let stateObserver: MutationObserver | undefined
+  let disposeStateObserver: (() => void) | undefined
   let disposeTimePhase: (() => void) | undefined
   let disposeSettingsSub: (() => void) | undefined
   let disposeBackdrop: (() => void) | undefined
@@ -82,7 +81,7 @@ export function apply(ctx: ClientContext): void {
   }
 
   const syncTheme = (): void => {
-    updateStyleNode(document)
+    ensureStyleNode(document)
     if (!settings.enabled) {
       applyRootAttributes(body, settings, state)
       restoreHostStyles()
@@ -120,7 +119,6 @@ export function apply(ctx: ClientContext): void {
     disposeAcrylicSurfaces = startAcrylicSurfaces(document)
     disposeChromeObserver = createChromeObserver({
       getSettings: () => settings,
-      onNodes: () => undefined,
     }).disconnect
     chromeMounted = true
   }
@@ -135,12 +133,11 @@ export function apply(ctx: ClientContext): void {
 
   ctx.effect(() => {
     resetMetricsStampState()
-    markMetricsStampMounted()
     setMetricsEnabledGetter(() => settings.enabled)
     ensureStyleNode(document)
     syncTheme()
     ensureChrome()
-    stateObserver = createStateObserver({
+    disposeStateObserver = createStateObserver({
       onState: (next) => {
         state = next
         if (settings.enabled) body.setAttribute('data-taffy-state', state)
@@ -156,7 +153,8 @@ export function apply(ctx: ClientContext): void {
     })
 
     return () => {
-      stateObserver?.disconnect()
+      disposeStateObserver?.()
+      disposeStateObserver = undefined
       disposeTimePhase?.()
       disposeSettingsSub?.()
       unmountChrome()
@@ -178,6 +176,7 @@ export function apply(ctx: ClientContext): void {
       body.removeAttribute('data-dsh-taffy-motion')
       body.removeAttribute('data-dsh-taffy-reduced-motion')
       body.removeAttribute('data-taffy-veil')
+      body.removeAttribute('data-taffy-low-power')
       body.removeAttribute('data-taffy-acrylic-percent')
       body.removeAttribute('data-taffy-frame-opacity')
       body.removeAttribute('data-taffy-panel-opacity')

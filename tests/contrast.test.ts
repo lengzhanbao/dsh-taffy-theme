@@ -6,6 +6,12 @@ describe('contrast', () => {
     expect(contrastRatio('#ffffff', '#000000')).toBeGreaterThan(10)
   })
 
+  it('rejects invalid hex colors', () => {
+    expect(() => contrastRatio('white', '#000000')).toThrow(/Invalid hex color/)
+    expect(() => contrastRatio('#fff', '#0000008f')).toThrow(/Invalid hex color/)
+    expect(meetsTextContrast('white', '#000000')).toBe(false)
+  })
+
   it('enforces text contrast threshold', () => {
     expect(meetsTextContrast('#f8f7ff', '#090b18')).toBe(true)
     expect(meetsTextContrast('#777777', '#888888')).toBe(false)

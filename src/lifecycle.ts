@@ -3,6 +3,6 @@ export function createLifecycleDisposer(cleanups: Array<() => void>): () => void
   return () => {
     if (disposed) return
     disposed = true
-    for (const cleanup of cleanups.reverse()) cleanup()
+    for (const cleanup of [...cleanups].reverse()) cleanup()
   }
 }

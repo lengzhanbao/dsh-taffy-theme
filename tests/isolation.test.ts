@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { STYLE_ID, ensureStyleNode } from '../src/client/styles.ts'
@@ -107,11 +107,12 @@ describe('plugin isolation', () => {
 
 describe('workspace boundaries', () => {
   it('does not contain Taffy hooks in DSH core source files', () => {
+    const checkout = process.env.DSH_CHECKOUT ?? 'E:/DeepSeekHarness/src/deepseek-harness'
     const files = [
-      'E:/DeepSeekHarness/src/deepseek-harness/packages/client/ui-layout/src/client/AppFrame.tsx',
-      'E:/DeepSeekHarness/src/deepseek-harness/packages/client/ui-theme/src/index.ts',
-      'E:/DeepSeekHarness/src/deepseek-harness/packages/client/runtime/src/index.ts',
-      'E:/DeepSeekHarness/src/deepseek-harness/packages/client/ui-settings/src/index.ts',
+      join(checkout, 'packages/client/ui-layout/src/client/AppFrame.tsx'),
+      join(checkout, 'packages/client/ui-theme/src/index.ts'),
+      join(checkout, 'packages/client/runtime/src/index.ts'),
+      join(checkout, 'packages/client/ui-settings/src/index.ts'),
     ]
     for (const file of files) {
       if (!existsSync(file)) continue

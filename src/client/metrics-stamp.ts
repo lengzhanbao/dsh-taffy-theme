@@ -121,7 +121,3 @@ export function resetMetricsStampState(): void {
   selectorWarned = false
   mountedAt = Date.now()
 }
-
-export function markMetricsStampMounted(): void {
-  mountedAt = Date.now()
-}

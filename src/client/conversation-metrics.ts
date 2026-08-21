@@ -7,9 +7,15 @@ import {
   DETAILS_SELECTOR,
   HERO_SELECTOR,
   SIDEBAR_SELECTOR,
+  STREAMING_SELECTOR,
 } from './chrome-selectors'
 import { restoreInlineStyles, snapshotInlineStyles } from './inline-restore'
 import { stampMetrics } from './metrics-stamp'
+import { createRafScheduler } from './schedule'
+
+const MEASURE_INTERVAL_MS = 16
+const STREAMING_MEASURE_INTERVAL_MS = 120
+const STREAMING_STAMP_INTERVAL_MS = 500
 
 export const CONVERSATION_METRIC_KEYS = [
   '--taffy-conversation-left',
@@ -236,7 +242,7 @@ export function startConversationMetrics(doc: Document, body: HTMLElement): () =
   let composer: HTMLElement | null = null
   let sidebar: HTMLElement | null = null
   let details: HTMLElement | null = null
-  let raf = 0
+  let lastStampAt = 0
   let resizeObserver: ResizeObserver | undefined
   let mutationObserver: MutationObserver | undefined
   let disposed = false
@@ -278,24 +284,24 @@ export function startConversationMetrics(doc: Document, body: HTMLElement): () =
       viewport: nextViewport.getBoundingClientRect(),
       composer: nextComposer?.getBoundingClientRect() ?? null,
     })
-    stampMetrics(doc, body)
+
+    const streaming = doc.querySelector(STREAMING_SELECTOR) !== null
+    scheduler.setMinInterval(streaming ? STREAMING_MEASURE_INTERVAL_MS : MEASURE_INTERVAL_MS)
+    const now = Date.now()
+    if (!streaming || now - lastStampAt >= STREAMING_STAMP_INTERVAL_MS) {
+      stampMetrics(doc, body)
+      lastStampAt = now
+    }
   }
 
-  const schedule = (): void => {
-    if (disposed || raf) return
-    raf = requestAnimationFrame(() => {
-      raf = 0
-      measure()
-    })
-  }
+  const scheduler = createRafScheduler(measure, MEASURE_INTERVAL_MS)
 
-  const onWindowResize = (): void => schedule()
+  const onWindowResize = (): void => scheduler.schedule()
 
   const dispose = (): void => {
     if (disposed) return
     disposed = true
-    if (raf) cancelAnimationFrame(raf)
-    raf = 0
+    scheduler.cancel()
     resizeObserver?.disconnect()
     mutationObserver?.disconnect()
     window.removeEventListener('resize', onWindowResize)
@@ -306,23 +312,23 @@ export function startConversationMetrics(doc: Document, body: HTMLElement): () =
   }
 
   try {
-    resizeObserver = new ResizeObserver(schedule)
+    resizeObserver = new ResizeObserver(() => scheduler.schedule())
     mutationObserver = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         if (mutation.type === 'attributes') {
-          schedule()
+          scheduler.schedule()
           return
         }
         if (mutation.type !== 'childList') continue
         for (const node of mutation.addedNodes) {
           if (touchesTracked(node)) {
-            schedule()
+            scheduler.schedule()
             return
           }
         }
         for (const node of mutation.removedNodes) {
           if (touchesTracked(node) || node === shell || node === content || node === viewport || node === composer) {
-            schedule()
+            scheduler.schedule()
             return
           }
         }

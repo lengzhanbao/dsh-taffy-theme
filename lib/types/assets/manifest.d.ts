@@ -12,5 +12,6 @@ export interface AssetManifest {
         allowedMime: string[];
     };
 }
+export declare const PLUGIN_ASSET_ROUTE_PREFIX = "/plugins/@dsh-external/dsh-taffy-theme/assets";
 export declare const PLUGIN_ASSET_BASE = "/plugins/@dsh-external/dsh-taffy-theme/assets/taffy";
 export declare function buildAssetUrl(relativePath: string): string;

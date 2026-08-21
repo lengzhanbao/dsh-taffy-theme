@@ -8,6 +8,8 @@ import {
   resolveWallpaperUrl,
 } from '../assets/resolve'
 import { SKIN_OWNER } from './chrome-selectors'
+import { veilBucket } from './settings-store'
+import { shouldUseLowPower } from './performance'
 
 const ROOT_ATTR = 'data-dsh-taffy-theme'
 
@@ -71,13 +73,23 @@ function makeMascot(src: string): HTMLImageElement {
   return image
 }
 
-function preloadImage(url: string): Promise<boolean> {
+const Q_PRELOAD_TIMEOUT_MS = 12_000
+
+function preloadImage(url: string, timeoutMs = Q_PRELOAD_TIMEOUT_MS): Promise<boolean> {
   if (!url || url === 'none') return Promise.resolve(false)
   if (url.startsWith('data:image/')) return Promise.resolve(true)
   return new Promise((resolve) => {
     const image = new Image()
-    image.onload = () => resolve(true)
-    image.onerror = () => resolve(false)
+    let settled = false
+    const finish = (ok: boolean): void => {
+      if (settled) return
+      settled = true
+      window.clearTimeout(timer)
+      resolve(ok)
+    }
+    const timer = window.setTimeout(() => finish(false), timeoutMs)
+    image.onload = () => finish(true)
+    image.onerror = () => finish(false)
     image.src = url
   })
 }
@@ -88,7 +100,7 @@ function applyQChromeVars(body: HTMLElement, settings: TaffySettings): void {
   const epoch = ++qChromeEpoch
   const q = resolveQChromeUrls(settings)
   const entries = [
-    ['--taffy-q-face', q.send],
+    ['--taffy-q-face', q.face],
     ['--taffy-q-send', q.send],
     ['--taffy-q-stop', q.stop],
     ['--taffy-q-new', q.newSession],
@@ -128,20 +140,21 @@ export function applyRootAttributes(body: HTMLElement, settings: TaffySettings, 
     body.removeAttribute('data-taffy-hide-right')
     body.removeAttribute('data-taffy-hide-mascot')
     body.removeAttribute('data-taffy-q-ready')
+    body.removeAttribute('data-taffy-low-power')
     clearOpacityVars(body)
     return
   }
 
   body.setAttribute(ROOT_ATTR, '')
   body.setAttribute('data-taffy-state', state)
-  body.setAttribute('data-taffy-preset', settings.preset)
-  body.setAttribute('data-dsh-taffy-intensity', settings.dynamicIntensity)
+  body.setAttribute('data-taffy-preset', settings.colors.preset)
+  body.setAttribute('data-dsh-taffy-intensity', settings.colors.dynamicIntensity)
   body.setAttribute('data-dsh-taffy-motion', settings.motion === 'off' ? 'off' : 'standard')
   body.setAttribute(
     'data-dsh-taffy-reduced-motion',
     settings.reducedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'true' : 'false',
   )
-  body.setAttribute('data-taffy-veil', settings.backgroundVeil)
+  body.setAttribute('data-taffy-veil', veilBucket(settings))
   body.setAttribute('data-taffy-acrylic-percent', String(settings.acrylicPercent))
   body.setAttribute('data-taffy-frame-opacity', String(settings.frameOpacity))
   body.setAttribute('data-taffy-panel-opacity', String(settings.panelOpacity))
@@ -150,6 +163,7 @@ export function applyRootAttributes(body: HTMLElement, settings: TaffySettings, 
   body.toggleAttribute('data-taffy-hide-left', !settings.showLeftCharacter)
   body.toggleAttribute('data-taffy-hide-right', !settings.showRightCharacter)
   body.toggleAttribute('data-taffy-hide-mascot', !settings.showMascot)
+  body.toggleAttribute('data-taffy-low-power', shouldUseLowPower(settings))
   applyQChromeVars(body, settings)
 }
 

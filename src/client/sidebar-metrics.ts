@@ -1,4 +1,5 @@
 import { DETAILS_SELECTOR, RIGHT_DOCK_SELECTOR, SIDEBAR_SELECTOR, SKIN_OWNER } from './chrome-selectors'
+import { createRafScheduler } from './schedule'
 
 
 function measureRightPanelWidth(doc: Document): number {
@@ -100,11 +101,13 @@ export function startSidebarMetrics(doc: Document): () => void {
   }
 
   tryAttach()
-  const mutationObserver = new MutationObserver(tryAttach)
+  const scheduler = createRafScheduler(tryAttach, 48)
+  const mutationObserver = new MutationObserver(() => scheduler.schedule())
   mutationObserver.observe(doc.body, { childList: true, subtree: true })
   doc.defaultView?.addEventListener('resize', writeRightPanel)
 
   return () => {
+    scheduler.cancel()
     sidebarObserver?.disconnect()
     dockObserver?.disconnect()
     mutationObserver.disconnect()

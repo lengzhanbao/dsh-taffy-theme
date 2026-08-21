@@ -10,6 +10,7 @@ export declare function resolveFigureUrls(night: boolean): {
     right: string;
 };
 export declare function resolveQChromeUrls(settings: TaffySettings): {
+    face: string;
     send: string;
     stop: string;
     newSession: string;

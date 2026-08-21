@@ -28,6 +28,11 @@ describe('decorative CSS contracts', () => {
     expect(components).toContain('pointer-events: none')
   })
 
+  it('wires low-power mode from settings and motion prefs', () => {
+    expect(mount).toContain("toggleAttribute('data-taffy-low-power'")
+    expect(mount).toContain('shouldUseLowPower')
+  })
+
   it('does not change official composer stacking', () => {
     expect(components).not.toMatch(/composer-seat[\s\S]{0,80}z-index/)
     expect(components).not.toContain("[data-phase='hero']")
@@ -162,6 +167,7 @@ describe('lifecycle contracts', () => {
     expect(resolve).toContain('BUNDLED_RIGHT_LIGHT')
     expect(resolve).toMatch(/night \? BUNDLED_RIGHT_DARK : BUNDLED_RIGHT_LIGHT/)
     expect(resolve).toContain('BUNDLED_AVATAR_NIGHT')
+    expect(readFileSync(join(root, 'src/client/bundled-assets.ts'), 'utf8')).toContain('buildAssetUrl')
   })
 
   it('never writes or removes official --dsw tokens from applyThemeTokens', () => {

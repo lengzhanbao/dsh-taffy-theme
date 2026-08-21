@@ -12,6 +12,7 @@ import {
 import {
   BUNDLED_Q_BRAND,
   BUNDLED_Q_COMMAND,
+  BUNDLED_Q_FACE,
   BUNDLED_Q_NEW,
   BUNDLED_Q_SEND,
   BUNDLED_Q_SETTINGS,
@@ -70,6 +71,7 @@ export function resolveFigureUrls(night: boolean): { left: string; right: string
 }
 
 export function resolveQChromeUrls(settings: TaffySettings): {
+  face: string
   send: string
   stop: string
   newSession: string
@@ -80,6 +82,7 @@ export function resolveQChromeUrls(settings: TaffySettings): {
   const avatar = resolveAvatarUrl(settings)
   const portrait = resolvePortraitUrl(settings) ?? avatar
   return {
+    face: pickImage(BUNDLED_Q_FACE, avatar),
     send: pickImage(BUNDLED_Q_SEND, avatar),
     stop: pickImage(BUNDLED_Q_STOP, avatar),
     newSession: pickImage(BUNDLED_Q_NEW, avatar),

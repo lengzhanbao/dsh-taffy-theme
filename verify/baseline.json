@@ -2,7 +2,7 @@
   "packageId": "@dsh-external/dsh-taffy-theme",
   "styleId": "dsh-taffy-theme-style",
   "skinId": "dsh-taffy-theme",
-  "clientJsMaxBytes": 8388608,
+  "clientJsMaxBytes": 1200000,
   "contrastMinRatio": 4.5,
   "contrastPairs": [
     ["#141018", "#fffdfb"],
@@ -13,6 +13,9 @@
   "requiredPackageFiles": [
     "lib/index.js",
     "lib/config.js",
+    "lib/assets/route.js",
+    "lib/assets/manifest.js",
+    "lib/assets/trust-fence.js",
     "lib/client.js",
     "cordis.patch.yml",
     "skin.json",

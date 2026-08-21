@@ -355,3 +355,8 @@ body[data-dsh-taffy-theme][data-dsh-taffy-motion='off'],
 body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'] {
   --taffy-motion-scale: 0;
 }
+
+body[data-dsh-taffy-theme][data-taffy-low-power] {
+  --taffy-acrylic-blur: 0px;
+  --taffy-motion-scale: 0;
+}

@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2023"],
+    "types": ["node"]
+  },
+  "include": [
+    "src/index.ts",
+    "src/config.ts",
+    "src/assets/manifest.ts",
+    "src/assets/route.ts",
+    "src/assets/trust-fence.ts",
+    "src/prompt/loader.ts"
+  ]
+}

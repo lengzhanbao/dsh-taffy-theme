@@ -1,6 +1,6 @@
 {
   "name": "@dsh-external/dsh-taffy-theme",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Taffy Live Atelier — candy acrylic DSH Web UI theme with light/dark stage art, character overlays, and a Taffy agent preset.",
   "type": "module",
   "main": "./lib/index.js",
@@ -39,7 +39,7 @@
     "prebuild": "node scripts/verify-assets.mjs",
     "build": "powershell -ExecutionPolicy Bypass -File scripts/build.ps1 && npm run build:client",
     "build:client": "npx tsdown",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.host.json --noEmit",
     "test": "npx vitest run",
     "prepublishOnly": "npm run build && npm test && npm run verify:static && npm run verify:pack"
   },
@@ -58,6 +58,9 @@
   "files": [
     "lib/index.js",
     "lib/config.js",
+    "lib/assets/route.js",
+    "lib/assets/manifest.js",
+    "lib/assets/trust-fence.js",
     "lib/client.js",
     "lib/prompt/taffy-system.md",
     "lib/prompt/loader.js",

@@ -21,8 +21,3 @@ export function ensureStyleNode(doc: Document): HTMLStyleElement {
 export function removeStyleNode(doc: Document): void {
   doc.getElementById(STYLE_ID)?.remove()
 }
-
-export function updateStyleNode(doc: Document): void {
-  const node = ensureStyleNode(doc)
-  node.textContent = THEME_CSS
-}

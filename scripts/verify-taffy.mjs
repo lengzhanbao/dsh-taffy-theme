@@ -111,6 +111,8 @@ const hostSrc = readText('src/index.ts')
 const clientSrc = readText('src/client/index.ts')
 const stylesSrc = readText('src/client/styles.ts')
 check('host name', hostSrc.includes(`export const name = '${BASELINE.packageId}'`))
+check('host inject webServer', hostSrc.includes("inject = ['webServer']"))
+check('host asset route', hostSrc.includes('registerAssetRoute'))
 check('client name', clientSrc.includes(`export const name = '${BASELINE.packageId}'`))
 check('style id', stylesSrc.includes(`export const STYLE_ID = '${BASELINE.styleId}'`))
 

@@ -5,6 +5,7 @@ import {
   SETTINGS_DIALOG_SELECTOR,
   WORKSPACE_SELECTOR,
 } from './chrome-selectors'
+import { createRafScheduler } from './schedule'
 
 
 export function startProjectedState(body: HTMLElement): () => void {
@@ -31,7 +32,8 @@ export function startProjectedState(body: HTMLElement): () => void {
   }
 
   sync()
-  const observer = new MutationObserver(sync)
+  const scheduler = createRafScheduler(sync)
+  const observer = new MutationObserver(() => scheduler.schedule())
   observer.observe(body, {
     attributes: true,
     attributeFilter: ['data-phase', 'data-chat-flow', 'data-dsh-better-sidebar', 'data-dsh-sidebar-collapsed'],
@@ -40,6 +42,7 @@ export function startProjectedState(body: HTMLElement): () => void {
   })
 
   return () => {
+    scheduler.cancel()
     observer.disconnect()
     body.removeAttribute('data-taffy-chat-active')
     body.removeAttribute('data-taffy-conversation-active')

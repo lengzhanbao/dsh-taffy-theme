@@ -1,13 +1,21 @@
-function channel(value: string): number {
-  const hex = value.replace('#', '')
-  const normalized = hex.length === 3
-    ? hex.split('').map((c) => c + c).join('')
-    : hex.slice(0, 6)
-  return parseInt(normalized, 16)
+const HEX_COLOR_RE = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/
+
+function expandHex(hex: string): string {
+  const body = hex.slice(1)
+  if (body.length === 3) return body.split('').map((c) => c + c).join('')
+  return body
+}
+
+function parseHexChannel(hex: string): number | null {
+  if (!HEX_COLOR_RE.test(hex)) return null
+  const normalized = expandHex(hex)
+  const value = Number.parseInt(normalized, 16)
+  return Number.isFinite(value) ? value : null
 }
 
 function luminance(hex: string): number {
-  const num = channel(hex)
+  const num = parseHexChannel(hex)
+  if (num === null) throw new TypeError(`Invalid hex color: ${hex}`)
   const r = ((num >> 16) & 255) / 255
   const g = ((num >> 8) & 255) / 255
   const b = (num & 255) / 255
@@ -16,7 +24,6 @@ function luminance(hex: string): number {
 }
 
 export function contrastRatio(foreground: string, background: string): number {
-  if (!foreground.startsWith('#') || !background.startsWith('#')) return 21
   const l1 = luminance(foreground)
   const l2 = luminance(background)
   const lighter = Math.max(l1, l2)
@@ -25,6 +32,10 @@ export function contrastRatio(foreground: string, background: string): number {
 }
 
 export function meetsTextContrast(foreground: string, background: string, large = false): boolean {
-  const ratio = contrastRatio(foreground, background)
-  return large ? ratio >= 3 : ratio >= 4.5
+  try {
+    const ratio = contrastRatio(foreground, background)
+    return large ? ratio >= 3 : ratio >= 4.5
+  } catch {
+    return false
+  }
 }

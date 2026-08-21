@@ -2,7 +2,7 @@
 import { createElement, useEffect, useState } from 'react'
 import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
 import type { TaffySettings } from '../state/types'
-import { loadSettings, saveSettings, veilFromOpacity } from './settings-store'
+import { loadSettings, saveSettings } from './settings-store'
 
 const SETTINGS_NS = 'settings.taffyTheme'
 
@@ -111,11 +111,7 @@ function TaffyModeRow() {
     createElement(Slider, {
       label: '背景纱',
       value: settings.veilOpacity,
-      onChange: (veilOpacity) => commit({
-        veilOpacity,
-        backgroundVeil: veilFromOpacity(veilOpacity),
-        veilStrength: veilFromOpacity(veilOpacity),
-      }),
+      onChange: (veilOpacity) => commit({ veilOpacity }),
     }),
     createElement(Slider, {
       label: '亚克力透明度',

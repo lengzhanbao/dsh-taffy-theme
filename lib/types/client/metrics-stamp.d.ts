@@ -18,4 +18,3 @@ export declare function readMetricsFromBody(body: HTMLElement, enabled: boolean,
 export declare function stampMetrics(doc: Document, body: HTMLElement, scene?: string): void;
 export declare function clearMetricsStamp(doc: Document): void;
 export declare function resetMetricsStampState(): void;
-export declare function markMetricsStampMounted(): void;
