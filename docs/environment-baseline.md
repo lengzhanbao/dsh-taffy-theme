@@ -1,6 +1,6 @@
 # 环境基线
 
-记录时间：2026-08-22（v0.1.2 待发 Release / dsh-market 收录）
+记录时间：2026-08-22（v0.1.2 已发布；awesome-dsh-plugin PR 待合并）
 
 | 项 | 值 |
 | --- | --- |
@@ -9,7 +9,9 @@
 | Web profile | `E:\DeepSeekHarness\profiles\web` |
 | 默认端口 | `http://127.0.0.1:3080` |
 | Node | ≥ 20（与 DSH 一致） |
-| 已发布 tag | `v0.1.0` @ `03032aa`；`v0.1.1` 若已发则可用作回滚 |
+| Python | ≥ 3.11 + Pillow（仅 `verify:assets` / CI） |
+| PowerShell | 7+ 或 Windows PowerShell 5.1（仅 `npm run build` / `install:*`） |
+| 已发布 tag | `v0.1.2`（latest）；`v0.1.1` 可作回滚 |
 
 ## 对外安装（与 README 一致）
 
@@ -32,11 +34,22 @@ npm run install:dev
 dsh web
 ```
 
+## CI（GitHub Actions）
+
+每次 push / PR 到 `master` 自动执行：
+
+```bash
+npm run ci
+# = verify:assets → verify:static → test → verify:pack
+```
+
+CI **不**跑 `npm run build`（需本机 `DSH_CHECKOUT` + PowerShell 链 DSH 包）。发 tarball 前在 Windows 开发者环境额外跑 `npm run build` 与 `install:release`。
+
 ## 发版前冒烟
 
 ```powershell
-npm test
-npm run verify:pack
+npm run ci
+npm run build
 npm run install:release
 ```
 

@@ -1,5 +1,6 @@
 # Taffy Live Atelier / 塔菲直播工房
 
+[![CI](https://github.com/lengzhanbao/dsh-taffy-theme/actions/workflows/ci.yml/badge.svg)](https://github.com/lengzhanbao/dsh-taffy-theme/actions/workflows/ci.yml)
 [![awesome · DSH plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
 
 粉金亚克力 **DSH Web 主题** — 浅色花房 / 深色舞台立绘、粉金对话框、塔菲 Q 版侧栏，以及可选的 **Taffy 塔菲** Agent 预设。

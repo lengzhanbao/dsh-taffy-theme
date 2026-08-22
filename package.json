@@ -33,6 +33,7 @@
     "verify:static": "node scripts/verify-taffy.mjs",
     "verify:pack": "node scripts/verify-pack.mjs",
     "verify": "node scripts/verify-taffy.mjs",
+    "ci": "npm run verify:assets && npm run verify:static && npm test && npm run verify:pack",
     "capture:hint": "node scripts/capture-hint.mjs",
     "install:dev": "powershell -ExecutionPolicy Bypass -File scripts/install-dev.ps1",
     "install:release": "powershell -ExecutionPolicy Bypass -File scripts/install-release.ps1",
@@ -110,8 +111,7 @@
     "@deepseek-ai/dsh-client-ui-theme": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
     "@deepseek-ai/dsh-settings": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
     "@deepseek-ai/dsh-tools": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0",
-    "react": "^18.2.0",
-    "schemastery": "^3.18.0"
+    "react": "^18.2.0"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
