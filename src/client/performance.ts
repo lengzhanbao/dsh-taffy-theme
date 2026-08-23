@@ -3,6 +3,13 @@ import type { TaffySettings } from '../state/types.js'
 interface NavigatorMemory {
   deviceMemory?: number
 }
+interface NavigatorConnection {
+  saveData?: boolean
+  effectiveType?: string
+}
+interface NavigatorWithConnection extends Navigator, NavigatorMemory {
+  connection?: NavigatorConnection
+}
 
 /** When true, disable blur-heavy acrylic and extra motion work. */
 export function shouldUseLowPower(settings: TaffySettings): boolean {
@@ -14,7 +21,10 @@ export function shouldUseLowPower(settings: TaffySettings): boolean {
   ) {
     return true
   }
-
+  if (typeof navigator !== 'undefined') {
+    const nav = navigator as NavigatorWithConnection
+    if (nav.connection?.saveData === true) return true
+  }
   const nav = navigator as Navigator & NavigatorMemory
   if (
     typeof nav.hardwareConcurrency === 'number'
@@ -24,6 +34,5 @@ export function shouldUseLowPower(settings: TaffySettings): boolean {
   ) {
     return true
   }
-
   return false
 }
