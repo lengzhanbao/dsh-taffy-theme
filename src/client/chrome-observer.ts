@@ -2,6 +2,7 @@ import type { TaffySettings } from '../state/types'
 import { decorateSidebar } from './mount'
 import { SIDEBAR_SELECTOR, SKIN_OWNER } from './chrome-selectors'
 import { createRafScheduler } from './schedule'
+import { createHeroCopySync, touchesHeroCopy } from './hero-copy'
 
 export interface ChromeObserverOptions {
   getSettings: () => TaffySettings
@@ -21,6 +22,7 @@ function touchesSelector(node: Node, selector: string): boolean {
 
 export function createChromeObserver(options: ChromeObserverOptions): { disconnect: () => void } {
   const sidebarNodes = new Map<HTMLElement, HTMLElement[]>()
+  const heroCopy = createHeroCopySync()
 
   const clearSidebar = (sidebar: HTMLElement): void => {
     for (const node of sidebarNodes.get(sidebar) ?? []) node.remove()
@@ -45,9 +47,16 @@ export function createChromeObserver(options: ChromeObserverOptions): { disconne
   const observer = new MutationObserver((mutations) => {
     let sidebarChanged = false
     for (const mutation of mutations) {
+      if (mutation.type === 'characterData') {
+        const parent = mutation.target.parentElement
+        if (parent instanceof Element && parent.matches("[class*='headlineText']")) heroCopy.apply(parent)
+        continue
+      }
       if (mutation.type === 'childList') {
+        if (mutation.target instanceof Element && mutation.target.matches("[class*='headlineText']")) heroCopy.apply(mutation.target)
         for (const node of mutation.addedNodes) {
           if (isSkinOwned(node)) continue
+          if (touchesHeroCopy(node)) heroCopy.apply(node instanceof Element ? node : document)
           if (touchesSelector(node, SIDEBAR_SELECTOR)) sidebarChanged = true
         }
       }
@@ -55,13 +64,15 @@ export function createChromeObserver(options: ChromeObserverOptions): { disconne
     if (sidebarChanged) scheduler.schedule()
   })
 
-  observer.observe(document.body, { childList: true, subtree: true })
+  observer.observe(document.body, { childList: true, characterData: true, subtree: true })
+  heroCopy.apply(document)
   maybeDecorateSidebar()
 
   return {
     disconnect: () => {
       scheduler.cancel()
       observer.disconnect()
+      heroCopy.restore()
       for (const sidebar of sidebarNodes.keys()) clearSidebar(sidebar)
       sidebarNodes.clear()
     },

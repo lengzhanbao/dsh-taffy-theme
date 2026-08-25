@@ -28,6 +28,7 @@ const MISS_GRACE_MS = 3000
 let enabledGetter: () => boolean = () => true
 let selectorWarned = false
 let mountedAt = 0
+let lastMetricsSignature = ''
 
 export function setMetricsEnabledGetter(getter: () => boolean): void {
   enabledGetter = getter
@@ -100,15 +101,17 @@ export function stampMetrics(doc: Document, body: HTMLElement, scene?: string): 
   const node = doc.getElementById(STYLE_ID)
   if (!(node instanceof HTMLStyleElement)) return
   const payload = readMetricsFromBody(body, enabledGetter(), scene)
+  // Timestamp is diagnostic only; unchanged geometry needs no attribute write.
+  const signature = JSON.stringify({ ...payload, at: '' })
+  if (signature === lastMetricsSignature) return
+  lastMetricsSignature = signature
   node.setAttribute('data-taffy-metrics', JSON.stringify(payload))
-  maybeWarnSelectorMisses(doc, payload.enabled)
+  maybeWarnSelectorMisses(payload.enabled, payload.selectorMisses)
 }
 
-function maybeWarnSelectorMisses(doc: Document, enabled: boolean): void {
-  if (!enabled || selectorWarned) return
+function maybeWarnSelectorMisses(enabled: boolean, misses: string[]): void {
+  if (!enabled || selectorWarned || misses.length === 0) return
   if (Date.now() - mountedAt < MISS_GRACE_MS) return
-  const misses = selectorMisses(doc)
-  if (misses.length === 0) return
   console.warn('[dsh-taffy-theme] selector miss:', misses.join(', '))
   selectorWarned = true
 }
@@ -120,4 +123,5 @@ export function clearMetricsStamp(doc: Document): void {
 export function resetMetricsStampState(): void {
   selectorWarned = false
   mountedAt = Date.now()
+  lastMetricsSignature = ''
 }

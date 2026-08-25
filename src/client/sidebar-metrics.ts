@@ -2,6 +2,16 @@ import { DETAILS_SELECTOR, RIGHT_DOCK_SELECTOR, SIDEBAR_SELECTOR, SKIN_OWNER } f
 import { createRafScheduler } from './schedule'
 
 
+const LAYOUT_TRACKED_SELECTOR = [SIDEBAR_SELECTOR, RIGHT_DOCK_SELECTOR].join(', ')
+
+function touchesTrackedLayout(node: Node): boolean {
+  if (!(node instanceof Element)) return false
+  return node.matches(LAYOUT_TRACKED_SELECTOR)
+    || node.closest(LAYOUT_TRACKED_SELECTOR) !== null
+    || node.querySelector(LAYOUT_TRACKED_SELECTOR) !== null
+}
+
+
 function measureRightPanelWidth(doc: Document): number {
   const vw = doc.defaultView?.innerWidth ?? 0
   if (vw <= 0) return 0
@@ -30,6 +40,7 @@ export function startSidebarMetrics(doc: Document): () => void {
 
   let sidebarObserver: ResizeObserver | undefined
   let dockObserver: ResizeObserver | undefined
+  const observedDocks = new Set<Element>()
   let currentSidebar: HTMLElement | null = null
 
   const writeSidebar = (width: number): void => {
@@ -86,10 +97,19 @@ export function startSidebarMetrics(doc: Document): () => void {
   }
 
   const attachDocks = (): void => {
+    const nextDocks = new Set(
+      [...doc.querySelectorAll(RIGHT_DOCK_SELECTOR)].filter((node): node is HTMLElement => node instanceof HTMLElement),
+    )
+    if (nextDocks.size === observedDocks.size && [...nextDocks].every((node) => observedDocks.has(node))) {
+      writeRightPanel()
+      return
+    }
     dockObserver?.disconnect()
+    observedDocks.clear()
     dockObserver = new ResizeObserver(() => writeRightPanel())
-    for (const node of doc.querySelectorAll(RIGHT_DOCK_SELECTOR)) {
-      if (node instanceof HTMLElement) dockObserver.observe(node)
+    for (const node of nextDocks) {
+      dockObserver.observe(node)
+      observedDocks.add(node)
     }
     writeRightPanel()
   }
@@ -102,7 +122,16 @@ export function startSidebarMetrics(doc: Document): () => void {
 
   tryAttach()
   const scheduler = createRafScheduler(tryAttach, 48)
-  const mutationObserver = new MutationObserver(() => scheduler.schedule())
+  const mutationObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type !== 'childList') continue
+      if (touchesTrackedLayout(mutation.target)
+        || [...mutation.addedNodes, ...mutation.removedNodes].some(touchesTrackedLayout)) {
+        scheduler.schedule()
+        return
+      }
+    }
+  })
   mutationObserver.observe(doc.body, { childList: true, subtree: true })
   doc.defaultView?.addEventListener('resize', writeRightPanel)
 

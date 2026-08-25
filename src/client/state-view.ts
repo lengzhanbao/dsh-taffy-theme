@@ -19,14 +19,13 @@ export function createStateObserver(options: StateViewOptions): () => void {
   let lastEmitAt = 0
 
   const readSignals = (): void => {
+    const now = Date.now()
+    if (now - lastEmitAt < AGENT_THROTTLE_MS) return
     const activeConversation = body.querySelector(ACTIVE_SELECTOR) !== null
     const chatFlow = body.querySelector(CHAT_FLOW_SELECTOR)
     const composerPhase = chatFlow?.getAttribute('data-phase') ?? null
     const streaming = body.querySelector(STREAMING_SELECTOR) !== null
     const hasToolCall = body.querySelector(TOOL_CALL_SELECTOR) !== null
-
-    const now = Date.now()
-    if (now - lastEmitAt < AGENT_THROTTLE_MS) return
     lastEmitAt = now
 
     mapDomSignals({

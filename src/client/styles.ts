@@ -6,7 +6,8 @@ export const THEME_CSS = `${tokensCss}\n${surfacesCss}\n${badgesCss}\n${componen
 export function ensureStyleNode(doc: Document): HTMLStyleElement {
   const existing = doc.getElementById(STYLE_ID)
   if (existing instanceof HTMLStyleElement) {
-    existing.textContent = THEME_CSS
+    // Reassigning the same large stylesheet forces a CSS parse on every settings commit.
+    if (existing.textContent !== THEME_CSS) existing.textContent = THEME_CSS
     return existing
   }
   const style = doc.createElement('style')

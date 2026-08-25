@@ -17,7 +17,7 @@ export const PLUGIN_ASSET_ROUTE_PREFIX = '/plugins/@dsh-external/dsh-taffy-theme
 export const PLUGIN_ASSET_BASE = `${PLUGIN_ASSET_ROUTE_PREFIX}/taffy`
 
 /** Bumped when shipped art changes so browsers skip the 24h asset cache. */
-export const ASSET_SET_VERSION = '2026-08-22-fill-q'
+export const ASSET_SET_VERSION = '2026-08-25-hero-avatar'
 
 export function buildAssetUrl(relativePath: string): string {
   const clean = relativePath.replace(/^\/+/, '')

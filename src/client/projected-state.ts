@@ -8,6 +8,23 @@ import {
 import { createRafScheduler } from './schedule'
 
 
+const STATE_TRACKED_SELECTOR = [
+  ACTIVE_SELECTOR,
+  CHAT_FLOW_SELECTOR,
+  WORKSPACE_SELECTOR,
+  BETTER_SIDEBAR_SELECTOR,
+  SETTINGS_DIALOG_SELECTOR,
+  '[data-dsh-floating-panel]',
+].join(', ')
+
+function touchesTrackedState(node: Node): boolean {
+  if (!(node instanceof Element)) return false
+  return node.matches(STATE_TRACKED_SELECTOR)
+    || node.closest(STATE_TRACKED_SELECTOR) !== null
+    || node.querySelector(STATE_TRACKED_SELECTOR) !== null
+}
+
+
 export function startProjectedState(body: HTMLElement): () => void {
   const sync = (): void => {
     const conversationFlow = body.querySelector(`${ACTIVE_SELECTOR} ${CHAT_FLOW_SELECTOR}`) !== null
@@ -33,7 +50,19 @@ export function startProjectedState(body: HTMLElement): () => void {
 
   sync()
   const scheduler = createRafScheduler(sync)
-  const observer = new MutationObserver(() => scheduler.schedule())
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type === 'attributes') {
+        scheduler.schedule()
+        return
+      }
+      if (mutation.type !== 'childList') continue
+      if ([...mutation.addedNodes, ...mutation.removedNodes].some(touchesTrackedState)) {
+        scheduler.schedule()
+        return
+      }
+    }
+  })
   observer.observe(body, {
     attributes: true,
     attributeFilter: ['data-phase', 'data-chat-flow', 'data-dsh-better-sidebar', 'data-dsh-sidebar-collapsed'],

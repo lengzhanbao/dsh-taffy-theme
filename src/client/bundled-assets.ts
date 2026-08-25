@@ -10,3 +10,6 @@ export const BUNDLED_LEFT_LIGHT = buildAssetUrl('left-light.webp')
 export const BUNDLED_RIGHT_LIGHT = buildAssetUrl('right-light.webp')
 export const BUNDLED_LEFT_DARK = buildAssetUrl('left-dark.webp')
 export const BUNDLED_RIGHT_DARK = buildAssetUrl('right-dark.webp')
+
+
+export const BUNDLED_HERO_AVATAR = buildAssetUrl('hero-avatar.webp')

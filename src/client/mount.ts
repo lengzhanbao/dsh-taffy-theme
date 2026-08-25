@@ -7,6 +7,7 @@ import {
   resolveQChromeUrls,
   resolveWallpaperUrl,
 } from '../assets/resolve'
+import { BUNDLED_HERO_AVATAR, BUNDLED_PORTRAIT } from './bundled-assets'
 import { SKIN_OWNER } from './chrome-selectors'
 import { veilBucket } from './settings-store'
 import { shouldUseLowPower } from './performance'
@@ -14,6 +15,7 @@ import { shouldUseLowPower } from './performance'
 const ROOT_ATTR = 'data-dsh-taffy-theme'
 
 const Q_VARS = [
+  '--taffy-hero-avatar',
   '--taffy-q-face',
   '--taffy-q-send',
   '--taffy-q-stop',
@@ -102,12 +104,28 @@ function preloadImage(url: string, timeoutMs = Q_PRELOAD_TIMEOUT_MS): Promise<bo
   })
 }
 
+type QChromeEntry = readonly [key: string, url: string]
+const Q_READY_ATTR = 'data-taffy-q-ready'
+const appliedQChrome = new WeakMap<HTMLElement, string>()
+const pendingQChrome = new WeakMap<HTMLElement, string>()
+const preloadedQImages = new Map<string, Promise<boolean>>()
 let qChromeEpoch = 0
 
+function preloadQImage(url: string): Promise<boolean> {
+  if (!url || url === 'none' || url.startsWith('data:image/')) return Promise.resolve(Boolean(url) && url !== 'none')
+  const cached = preloadedQImages.get(url)
+  if (cached) return cached
+  const loaded = preloadImage(url)
+  void loaded.then((ok) => {
+    if (!ok) preloadedQImages.delete(url)
+  })
+  preloadedQImages.set(url, loaded)
+  return loaded
+}
+
 function applyQChromeVars(body: HTMLElement, settings: TaffySettings): void {
-  const epoch = ++qChromeEpoch
   const q = resolveQChromeUrls(settings)
-  const entries = [
+  const entries: readonly QChromeEntry[] = [
     ['--taffy-q-face', q.face],
     ['--taffy-q-send', q.send],
     ['--taffy-q-stop', q.stop],
@@ -116,21 +134,34 @@ function applyQChromeVars(body: HTMLElement, settings: TaffySettings): void {
     ['--taffy-q-brand', q.brand],
     ['--taffy-q-brand-right', q.brandRight],
     ['--taffy-q-command', q.command],
-  ] as const
+  ]
 
-  body.removeAttribute('data-taffy-q-ready')
+  const signature = JSON.stringify(entries)
+  const alreadyApplied = appliedQChrome.get(body) === signature
+    && entries.every(([key, url]) => body.style.getPropertyValue(key) === `url("${url}")`)
+    && body.hasAttribute(Q_READY_ATTR)
+  if (alreadyApplied || pendingQChrome.get(body) === signature) return
+
+  const epoch = ++qChromeEpoch
+  pendingQChrome.set(body, signature)
+  body.removeAttribute(Q_READY_ATTR)
   for (const [key] of entries) body.style.setProperty(key, 'none')
 
   void Promise.all(entries.map(async ([key, url]) => {
-    const ok = await preloadImage(url)
+    const ok = await preloadQImage(url)
     if (epoch !== qChromeEpoch) return false
     body.style.setProperty(key, ok ? `url("${url}")` : 'none')
     return ok
   })).then((loaded) => {
     if (epoch !== qChromeEpoch) return
-    if (loaded.every(Boolean)) body.setAttribute('data-taffy-q-ready', '')
+    if (loaded.every(Boolean)) appliedQChrome.set(body, signature)
+    else appliedQChrome.delete(body)
+    if (loaded.every(Boolean)) body.setAttribute(Q_READY_ATTR, '')
+  }).finally(() => {
+    if (pendingQChrome.get(body) === signature) pendingQChrome.delete(body)
   })
 }
+
 
 export function applyRootAttributes(body: HTMLElement, settings: TaffySettings, state: TaffyAgentState): void {
   if (!settings.enabled) {
@@ -150,6 +181,7 @@ export function applyRootAttributes(body: HTMLElement, settings: TaffySettings, 
     body.removeAttribute('data-taffy-hide-right')
     body.removeAttribute('data-taffy-hide-mascot')
     body.removeAttribute('data-taffy-q-ready')
+    appliedQChrome.delete(body)
     body.removeAttribute('data-taffy-low-power')
     clearOpacityVars(body)
     return
@@ -171,6 +203,7 @@ export function applyRootAttributes(body: HTMLElement, settings: TaffySettings, 
   body.setAttribute('data-taffy-character-opacity', String(settings.characterOpacity))
   body.setAttribute('data-taffy-scene', 'fused')
   applyOpacityVars(body, settings)
+  body.style.setProperty('--taffy-hero-avatar', `url("${BUNDLED_HERO_AVATAR}")`)
   body.toggleAttribute('data-taffy-hide-left', !settings.showLeftCharacter)
   body.toggleAttribute('data-taffy-hide-right', !settings.showRightCharacter)
   body.toggleAttribute('data-taffy-hide-mascot', !settings.showMascot)

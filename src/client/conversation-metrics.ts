@@ -188,36 +188,40 @@ export function writeConversationMetrics(
   },
 ): void {
   const hidden = rects.content.width < FRAME_HIDDEN_MIN || rects.viewport.height < FRAME_HIDDEN_MIN
-  body.style.setProperty('--taffy-conversation-left', `${Math.round(rects.shell.left)}px`)
-  body.style.setProperty('--taffy-conversation-top', `${Math.round(rects.shell.top)}px`)
-  body.style.setProperty('--taffy-conversation-width', `${Math.round(rects.shell.width)}px`)
-  body.style.setProperty('--taffy-conversation-height', `${Math.round(rects.shell.height)}px`)
-  body.style.setProperty('--taffy-conversation-content-left', `${Math.round(rects.content.left)}px`)
-  body.style.setProperty('--taffy-conversation-content-width', `${Math.round(rects.content.width)}px`)
-  body.style.setProperty('--taffy-conversation-viewport-top', `${Math.round(rects.viewport.top)}px`)
-  body.style.setProperty('--taffy-conversation-viewport-height', `${Math.round(rects.viewport.height)}px`)
-  body.style.setProperty('--taffy-content-left', `${Math.round(rects.content.left)}px`)
-  body.style.setProperty('--taffy-content-width', `${Math.round(rects.content.width)}px`)
-  body.style.setProperty('--taffy-viewport-top', `${Math.round(rects.viewport.top)}px`)
-  body.style.setProperty('--taffy-viewport-height', `${Math.round(rects.viewport.height)}px`)
   const frame = computeFrameBox(rects)
-  body.style.setProperty('--taffy-frame-left', `${frame.left}px`)
-  body.style.setProperty('--taffy-frame-top', `${frame.top}px`)
-  body.style.setProperty('--taffy-frame-width', `${frame.width}px`)
-  body.style.setProperty('--taffy-frame-height', `${frame.height}px`)
-  const composerTop = rects.composer && rects.composer.height > 24
-    ? Math.round(rects.composer.top)
-    : frame.top + frame.height
-  const composerHeight = rects.composer && rects.composer.height > 24
-    ? Math.round(rects.composer.height)
-    : 0
-  body.style.setProperty('--taffy-composer-top', `${composerTop}px`)
-  body.style.setProperty('--taffy-composer-height', `${composerHeight}px`)
+  const hasComposer = Boolean(rects.composer && rects.composer.width > 40 && rects.composer.height > 24)
+  const composerTop = hasComposer && rects.composer ? Math.round(rects.composer.top) : frame.top + frame.height
+  const composerHeight = hasComposer && rects.composer ? Math.round(rects.composer.height) : 0
   const vw = body.ownerDocument.defaultView?.innerWidth ?? 0
   const fromContent = rects.content.width > 40
     ? Math.max(0, Math.round(vw - (rects.content.left + rects.content.width)))
     : 0
-  body.style.setProperty('--taffy-frame-right-inset', `${fromContent}px`)
+
+  // Avoid redundant custom-property writes; each one can invalidate style/layout.
+  const metrics: Array<[string, string]> = [
+    ['--taffy-conversation-left', `${Math.round(rects.shell.left)}px`],
+    ['--taffy-conversation-top', `${Math.round(rects.shell.top)}px`],
+    ['--taffy-conversation-width', `${Math.round(rects.shell.width)}px`],
+    ['--taffy-conversation-height', `${Math.round(rects.shell.height)}px`],
+    ['--taffy-conversation-content-left', `${Math.round(rects.content.left)}px`],
+    ['--taffy-conversation-content-width', `${Math.round(rects.content.width)}px`],
+    ['--taffy-conversation-viewport-top', `${Math.round(rects.viewport.top)}px`],
+    ['--taffy-conversation-viewport-height', `${Math.round(rects.viewport.height)}px`],
+    ['--taffy-content-left', `${Math.round(rects.content.left)}px`],
+    ['--taffy-content-width', `${Math.round(rects.content.width)}px`],
+    ['--taffy-viewport-top', `${Math.round(rects.viewport.top)}px`],
+    ['--taffy-viewport-height', `${Math.round(rects.viewport.height)}px`],
+    ['--taffy-frame-left', `${frame.left}px`],
+    ['--taffy-frame-top', `${frame.top}px`],
+    ['--taffy-frame-width', `${frame.width}px`],
+    ['--taffy-frame-height', `${frame.height}px`],
+    ['--taffy-composer-top', `${composerTop}px`],
+    ['--taffy-composer-height', `${composerHeight}px`],
+    ['--taffy-frame-right-inset', `${fromContent}px`],
+  ]
+  for (const [key, value] of metrics) {
+    if (body.style.getPropertyValue(key) !== value) body.style.setProperty(key, value)
+  }
   body.toggleAttribute('data-taffy-frame-hidden', hidden)
   body.toggleAttribute('data-taffy-frame-compact', !hidden && rects.content.width < FRAME_COMPACT_WIDTH)
 }

@@ -50,7 +50,7 @@ node -e @"
 const fs = require('fs');
 const path = require('path');
 const root = process.cwd();
-const read = (f) => fs.readFileSync(path.join(root, f), 'utf8');
+const read = (f) => fs.readFileSync(path.join(root, f), 'utf8').replace(/\r\n/g, '\n');
 const css = [
   'export const tokensCss = ' + JSON.stringify(read('src/theme/tokens.css')) + ';',
   'export const surfacesCss = ' + JSON.stringify(read('src/theme/taffy-surfaces.css')) + ';',

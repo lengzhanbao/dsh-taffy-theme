@@ -1,5 +1,5 @@
 {
-  "assetSetVersion": "2026-08-22-fill-q",
+  "assetSetVersion": "2026-08-25-hero-avatar",
   "creamBackground": "#fff7f1",
   "limits": {
     "avatarBytes": 1048576,
@@ -58,10 +58,23 @@
       "bboxAreaRatioMin": 0.95,
       "darkEdgeRatioMax": 0.02,
       "creamFringeGate": true
+    },
+    "hero-avatar.webp": {
+      "width": 474,
+      "height": 474,
+      "bytes": 34402,
+      "opaqueRatioMin": 0.5,
+      "bboxAreaRatioMin": 0.9,
+      "darkEdgeRatioMax": 0.02,
+      "creamFringeGate": false
     }
   },
   "wallpaper": {
-    "wallpaper-light.webp": { "bytes": 165906 },
-    "wallpaper-dark.webp": { "bytes": 146858 }
+    "wallpaper-light.webp": {
+      "bytes": 165906
+    },
+    "wallpaper-dark.webp": {
+      "bytes": 146858
+    }
   }
 }

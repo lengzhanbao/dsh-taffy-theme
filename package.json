@@ -69,7 +69,7 @@
     "skin.json",
     "presets",
     "assets/taffy/*.webp",
-    "assets/taffy/icons",
+    "assets/taffy/icons/*.webp",
     "assets/taffy/LICENSE.txt",
     "assets/taffy/manifest.json",
     "assets/taffy/baseline.json",
