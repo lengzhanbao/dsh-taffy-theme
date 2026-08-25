@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased
+
+### 视觉 / Hero
+- 首页大标题文案改为 **关注塔菲喵！关注塔菲谢谢喵！**（原"探索未至之境预览版"）
+- 标题粉金渐变：亮色玫瑰金（#c99a27→#b8860b）、暗色亮粉金（#ffb8d6→#ffd060），深浅主题字色分明、白底可读
+- 标题左侧图标换成圆形 **塔菲喵大头照**（金边 + 粉描边）
+- 纯 CSS 动态特效（尊重 `prefers-reduced-motion`）：
+  - 加载时标题与头像轻轻上浮淡入
+  - 头像金粉光晕随浮动呼吸
+  - 标题粉金渐变缓动流光 + 周期高光扫过
+
+### 性能
+- CSS 注入去重、Q 图标预加载缓存、MutationObserver 过滤、metrics stamp 去重
+- 启动 `boot veil` 消除闪白；`saveData` 弱网下自动熔断动效
+
+### 工程
+- 新增 GitHub Actions：verify / test / pack 门禁（CI）
+- Q chrome、融合舞台、更安静的侧栏装饰
+- 刷新 GitHub 预览图（浅色/深色粉金 hero：`preview/light-v2.webp`、`preview/dark-v2.webp`，cache-bust）
+
+---
 ## 0.1.2 — 2026-08-21
 
 ### 修复
