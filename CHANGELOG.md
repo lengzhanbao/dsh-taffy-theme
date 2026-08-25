@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.2 — 2026-08-25
 
 ### 视觉 / Hero
 - 首页大标题文案改为 **关注塔菲喵！关注塔菲谢谢喵！**（原"探索未至之境预览版"）
@@ -11,7 +11,15 @@
   - 头像金粉光晕随浮动呼吸
   - 标题粉金渐变缓动流光 + 周期高光扫过
 
+### 修复
+- 图片 URL 加载：host 侧注册 `/plugins/@dsh-external/dsh-taffy-theme/assets/` 静态路由（DSH 默认只提供 `client.js`）
+- Release tarball 补全 `lib/assets/route.js` / `manifest.js` / `trust-fence.js`
+- `verify:pack` tarball 静态检查 + 开发树 host import 探针
+- `build.ps1` host 编译失败时立即中止；`typecheck` 使用 `tsconfig.host.json`
+- 资产路由增加 loopback Host 校验（非 127.0.0.1/localhost 返回 403）
+
 ### 性能
+- 接通 `data-taffy-low-power`：减动效 / 低内存设备自动关 blur 与动画
 - CSS 注入去重、Q 图标预加载缓存、MutationObserver 过滤、metrics stamp 去重
 - 启动 `boot veil` 消除闪白；`saveData` 弱网下自动熔断动效
 
@@ -21,28 +29,6 @@
 - 刷新 GitHub 预览图（浅色/深色粉金 hero：`preview/light-v2.webp`、`preview/dark-v2.webp`，cache-bust）
 
 ---
-## 0.1.2 — 2026-08-21
-
-### 修复
-
-- 图片 URL 加载：host 侧注册 `/plugins/@dsh-external/dsh-taffy-theme/assets/` 静态路由（DSH 默认只提供 `client.js`）
-- Release tarball 补全 `lib/assets/route.js` / `manifest.js` / `trust-fence.js`
-- `verify:pack` tarball 静态检查 + 开发树 host import 探针
-- `build.ps1` host 编译失败时立即中止；`typecheck` 使用 `tsconfig.host.json`
-- 资产路由增加 loopback Host 校验（非 127.0.0.1/localhost 返回 403）
-
-### 性能
-
-- 接通 `data-taffy-low-power`：减动效 / 低内存设备自动关 blur 与动画
-- `chrome-observer` / `projected-state` / `sidebar-metrics` / `state-view` 合并到 rAF + 最小间隔
-- 流式对话时 `conversation-metrics` 降频（120ms）并节流 metrics stamp
-
-### 说明
-
-- 更新插件后需**重启** `dsh web`（host 路由不会 HMR 热更新）
-
----
-
 ## 0.1.1 — 2026-08-21
 
 ### 修复
