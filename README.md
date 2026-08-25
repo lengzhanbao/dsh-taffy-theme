@@ -34,7 +34,7 @@ dsh web
 
 | 浅色 Light | 深色 Dark |
 | --- | --- |
-| ![Light](preview/light.webp) | ![Dark](preview/dark.webp) |
+| ![Light](preview/light-v2.webp) | ![Dark](preview/dark-v2.webp) |
 
 ## 简介
 
