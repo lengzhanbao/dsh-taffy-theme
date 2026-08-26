@@ -23,6 +23,7 @@ function touchesSelector(node: Node, selector: string): boolean {
 export function createChromeObserver(options: ChromeObserverOptions): { disconnect: () => void } {
   const sidebarNodes = new Map<HTMLElement, HTMLElement[]>()
   const heroCopy = createHeroCopySync(() => options.getSettings().heroHeadline)
+  const heroSync = createRafScheduler(() => heroCopy.apply(document))
 
   const clearSidebar = (sidebar: HTMLElement): void => {
     for (const node of sidebarNodes.get(sidebar) ?? []) node.remove()
@@ -49,14 +50,14 @@ export function createChromeObserver(options: ChromeObserverOptions): { disconne
     for (const mutation of mutations) {
       if (mutation.type === 'characterData') {
         const parent = mutation.target.parentElement
-        if (parent instanceof Element && parent.matches("[class*='headlineText']")) heroCopy.apply(parent)
+        if (parent instanceof Element && parent.matches("[class*='headlineText']")) heroSync.schedule()
         continue
       }
       if (mutation.type === 'childList') {
-        if (mutation.target instanceof Element && mutation.target.matches("[class*='headlineText']")) heroCopy.apply(mutation.target)
+        if (mutation.target instanceof Element && mutation.target.matches("[class*='headlineText']")) heroSync.schedule()
         for (const node of mutation.addedNodes) {
           if (isSkinOwned(node)) continue
-          if (touchesHeroCopy(node)) heroCopy.apply(node instanceof Element ? node : document)
+          if (touchesHeroCopy(node)) heroSync.schedule()
           if (touchesSelector(node, SIDEBAR_SELECTOR)) sidebarChanged = true
         }
       }
@@ -70,6 +71,7 @@ export function createChromeObserver(options: ChromeObserverOptions): { disconne
 
   return {
     disconnect: () => {
+      heroSync.cancel()
       scheduler.cancel()
       observer.disconnect()
       heroCopy.restore()

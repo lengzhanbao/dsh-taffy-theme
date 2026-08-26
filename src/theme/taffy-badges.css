@@ -302,7 +302,7 @@ body[data-dsh-taffy-theme] [data-phase='hero'] [class*='headlineText'] {
   -webkit-text-fill-color: transparent;
   paint-order: stroke fill;
   -webkit-text-stroke: 0.6px rgba(122, 36, 74, 0.45);
-  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.78)) drop-shadow(0 3px 8px rgba(242, 155, 194, 0.22));
+  filter: drop-shadow(0 2px 6px rgba(242, 155, 194, 0.30));
   background-size: 300% 100%, 200% 100%;
   animation: taffy-hero-shimmer 7s ease-in-out infinite alternate;
 }
@@ -316,7 +316,7 @@ body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-phase='hero'] 
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 1px 0 rgba(33, 27, 50, 0.55)) drop-shadow(0 3px 8px rgba(231, 185, 87, 0.16));
+  filter: drop-shadow(0 2px 6px rgba(231, 185, 87, 0.20));
   -webkit-text-stroke: 0.5px rgba(255, 206, 140, 0.22);
   background-size: 300% 100%, 200% 100%;
   animation: taffy-hero-shimmer 7s ease-in-out infinite alternate;
@@ -354,3 +354,7 @@ body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) [ar
   }
 }
 
+body[data-dsh-taffy-theme]:is([data-taffy-low-power], [data-dsh-taffy-motion='off'], [data-dsh-taffy-reduced-motion='true'])
+  :is([data-phase='hero'] [class*='headline'], [data-phase='hero'] [class*='headlineText'], [data-phase='hero'] [class*='headline']:has(> [class*='fish']) > [class*='fish']) {
+  animation: none;
+}
