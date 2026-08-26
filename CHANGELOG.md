@@ -11,6 +11,7 @@
   - 头像金粉光晕随浮动呼吸
   - 标题粉金渐变缓动流光 + 周期高光扫过
 - 标题加 `-webkit-text-stroke` 描边，亮色白底保底可读（`paint-order: stroke fill` 已在）
+- 新增个性化：标题文案与头像图片地址可在「塔菲工房 → 个性化」自定义，留空即恢复默认塔菲
 
 ### 修复
 - 图片 URL 加载：host 侧注册 `/plugins/@dsh-external/dsh-taffy-theme/assets/` 静态路由（DSH 默认只提供 `client.js`）

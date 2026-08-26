@@ -17,6 +17,26 @@ describe('hero copy sync', () => {
     headline.remove()
   })
 
+  it('applies a settings-driven headline and still restores the original', () => {
+    const headline = document.createElement('span')
+    headline.className = 'hero_headlineText'
+    headline.textContent = '探索未至之境'
+    document.body.append(headline)
+
+    let custom = '自定义标题喵'
+    const heroCopy = createHeroCopySync(() => custom)
+    heroCopy.apply(document.body)
+    expect(headline.textContent).toBe('自定义标题喵')
+
+    custom = '换一句喵'
+    heroCopy.apply(document.body)
+    expect(headline.textContent).toBe('换一句喵')
+
+    heroCopy.restore()
+    expect(headline.textContent).toBe('探索未至之境')
+    headline.remove()
+  })
+
   it('detects either a mounted headline or a wrapper containing one', () => {
     const headline = document.createElement('span')
     headline.className = 'hero_headlineText'

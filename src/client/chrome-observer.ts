@@ -22,7 +22,7 @@ function touchesSelector(node: Node, selector: string): boolean {
 
 export function createChromeObserver(options: ChromeObserverOptions): { disconnect: () => void } {
   const sidebarNodes = new Map<HTMLElement, HTMLElement[]>()
-  const heroCopy = createHeroCopySync()
+  const heroCopy = createHeroCopySync(() => options.getSettings().heroHeadline)
 
   const clearSidebar = (sidebar: HTMLElement): void => {
     for (const node of sidebarNodes.get(sidebar) ?? []) node.remove()

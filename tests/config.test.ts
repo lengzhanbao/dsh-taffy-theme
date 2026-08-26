@@ -15,4 +15,9 @@ describe('host config', () => {
     expect(parsed.displayName).toBe('塔菲')
     expect(parsed.colors.preset).toBe(DEFAULT_SETTINGS.colors.preset)
   })
+
+  it('keeps the taffy hero headline as the default and allows overrides', () => {
+    expect(DEFAULT_SETTINGS.heroHeadline).toBe('关注塔菲喵！关注塔菲谢谢喵！')
+    expect(parseTaffySettings({ heroHeadline: '喵呜' }).heroHeadline).toBe('喵呜')
+  })
 })

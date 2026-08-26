@@ -470,6 +470,30 @@ body[data-dsh-taffy-theme] .dsh-taffy-general-row,
   accent-color: var(--ds-taffy-pink, #f29bc2);
 }
 
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-text-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-text-row input[type='text'] {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--dsw-alias-border-l2, rgba(73, 59, 80, 0.14));
+  border-radius: 10px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--dsw-alias-label-primary);
+}
+
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-text-row input[type='text']:focus {
+  outline: none;
+  border-color: var(--ds-taffy-pink, #f29bc2);
+}
+
 :is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-general-cubes {
   display: flex;
   align-items: stretch;

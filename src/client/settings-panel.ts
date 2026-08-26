@@ -3,6 +3,7 @@ import { createElement, useEffect, useState } from 'react'
 import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
 import type { TaffySettings } from '../state/types'
 import { loadSettings, saveSettings } from './settings-store'
+import { DEFAULT_HERO_HEADLINE } from './hero-copy'
 
 const SETTINGS_NS = 'settings.taffyTheme'
 
@@ -70,6 +71,31 @@ function Slider({
   )
 }
 
+
+function TextField({
+  label,
+  value,
+  placeholder,
+  onChange,
+}: {
+  label: string
+  value: string
+  placeholder?: string
+  onChange: (value: string) => void
+}) {
+  return createElement('label', { className: 'dsh-taffy-text-row' },
+    createElement('span', { className: 'dsh-taffy-slider-head' },
+      createElement('span', null, label),
+    ),
+    createElement('input', {
+      type: 'text',
+      value,
+      placeholder,
+      onInput: (event) => onChange(event.currentTarget.value),
+    }),
+  )
+}
+
 function TaffyModeRow() {
   const [settings, setSettings] = useState(loadSettings)
 
@@ -128,6 +154,19 @@ function TaffyModeRow() {
       label: '立绘透明度',
       value: settings.characterOpacity,
       onChange: (characterOpacity) => commit({ characterOpacity }),
+    }),
+    createElement('div', { className: 'dsh-taffy-general-title' }, '个性化'),
+    createElement(TextField, {
+      label: '标题文案',
+      value: settings.heroHeadline,
+      placeholder: DEFAULT_HERO_HEADLINE,
+      onChange: (heroHeadline) => commit({ heroHeadline: heroHeadline.trim() || DEFAULT_HERO_HEADLINE }),
+    }),
+    createElement(TextField, {
+      label: '头像图片地址',
+      value: settings.avatar === 'default' ? '' : settings.avatar,
+      placeholder: '留空使用默认塔菲头像',
+      onChange: (avatar) => commit({ avatar: avatar.trim() || 'default' }),
     }),
     createElement('div', { className: 'dsh-taffy-general-title' }, '减弱动效'),
     createElement('div', { className: 'dsh-taffy-general-cubes' },

@@ -8,6 +8,7 @@ import {
   resolveWallpaperUrl,
 } from '../assets/resolve'
 import { BUNDLED_HERO_AVATAR, BUNDLED_PORTRAIT } from './bundled-assets'
+import { isAllowedImageProtocol } from '../assets/validate'
 import { SKIN_OWNER } from './chrome-selectors'
 import { veilBucket } from './settings-store'
 import { shouldUseLowPower } from './performance'
@@ -203,7 +204,10 @@ export function applyRootAttributes(body: HTMLElement, settings: TaffySettings, 
   body.setAttribute('data-taffy-character-opacity', String(settings.characterOpacity))
   body.setAttribute('data-taffy-scene', 'fused')
   applyOpacityVars(body, settings)
-  body.style.setProperty('--taffy-hero-avatar', `url("${BUNDLED_HERO_AVATAR}")`)
+  const heroAvatar = settings.avatar !== 'default' && isAllowedImageProtocol(settings.avatar)
+    ? settings.avatar
+    : BUNDLED_HERO_AVATAR
+  body.style.setProperty('--taffy-hero-avatar', `url("${heroAvatar}")`)
   body.toggleAttribute('data-taffy-hide-left', !settings.showLeftCharacter)
   body.toggleAttribute('data-taffy-hide-right', !settings.showRightCharacter)
   body.toggleAttribute('data-taffy-hide-mascot', !settings.showMascot)
