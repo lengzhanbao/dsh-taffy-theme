@@ -119,6 +119,24 @@ check('style id', stylesSrc.includes(`export const STYLE_ID = '${BASELINE.styleI
 if (existsSync(join(ROOT, 'lib/client.js'))) {
   const clientJs = readText('lib/client.js')
   check('client bundle id', clientJs.includes(BASELINE.packageId))
+  // 构建漂移门禁：产物必须含最新源 CSS，否则说明改了 src/theme 没重新 build
+  const themeMap = [
+    ['tokens.css', 'tokensCss'],
+    ['taffy-surfaces.css', 'surfacesCss'],
+    ['taffy-badges.css', 'badgesCss'],
+    ['components.css', 'componentsCss'],
+    ['motion.css', 'motionCss'],
+  ]
+  const extractCss = (text, name) => {
+    const m = text.match(new RegExp(name + '\\s*=\\s*"((?:\\\\.|[^"\\\\])*)"', 's'))
+    if (!m) return null
+    try { return JSON.parse('"' + m[1] + '"') } catch { return null }
+  }
+  for (const [file, name] of themeMap) {
+    const src = readText(`src/theme/${file}`).replace(/\r\n/g, '\n')
+    const built = extractCss(clientJs, name)
+    check(`lib 含最新 ${file}`, built !== null && built === src, built === null ? '产物未找到 ' + name : '源 CSS 与构建产物不一致，需重新 build')
+  }
   const size = statSync(join(ROOT, 'lib/client.js')).size
   check(
     `lib/client.js 体积 ≤ ${BASELINE.clientJsMaxBytes}`,

@@ -10,6 +10,7 @@
   - 加载时标题与头像轻轻上浮淡入
   - 头像金粉光晕随浮动呼吸
   - 标题粉金渐变缓动流光 + 周期高光扫过
+- 标题加 `-webkit-text-stroke` 描边，亮色白底保底可读（`paint-order: stroke fill` 已在）
 
 ### 修复
 - 图片 URL 加载：host 侧注册 `/plugins/@dsh-external/dsh-taffy-theme/assets/` 静态路由（DSH 默认只提供 `client.js`）
@@ -27,6 +28,7 @@
 - 新增 GitHub Actions：verify / test / pack 门禁（CI）
 - Q chrome、融合舞台、更安静的侧栏装饰
 - 刷新 GitHub 预览图（浅色/深色粉金 hero：`preview/light-v2.webp`、`preview/dark-v2.webp`，cache-bust）
+- 新增构建漂移门禁：`verify:static` 比对产物内联源 CSS 与 `src/theme` 当前内容，改样式未重新 build 即报错（含 5 项检查）
 
 ---
 ## 0.1.1 — 2026-08-21
