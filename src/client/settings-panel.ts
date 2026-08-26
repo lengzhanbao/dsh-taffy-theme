@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { createElement, useEffect, useState } from 'react'
+import { createElement, useEffect, useRef, useState } from 'react'
 import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
 import type { TaffySettings } from '../state/types'
 import { loadSettings, saveSettings } from './settings-store'
@@ -109,10 +109,25 @@ function TaffyModeRow() {
     }
   }, [])
 
+  const commitNow = (patch: Partial<TaffySettings>) => {
+    setSettings((prev) => ({ ...prev, ...patch }))
+    saveSettings({ ...loadSettings(), ...patch })
+  }
+
+  const commitRef = useRef(commitNow)
+  commitRef.current = commitNow
+
+  const textTimer = useRef(0)
+  useEffect(() => () => window.clearTimeout(textTimer.current), [])
+
+  const commitText = (patch: Partial<TaffySettings>) => {
+    window.clearTimeout(textTimer.current)
+    textTimer.current = window.setTimeout(() => commitRef.current(patch), 300)
+  }
+
   const commit = (patch: Partial<TaffySettings>) => {
-    const next = { ...settings, ...patch }
-    setSettings(next)
-    saveSettings(next)
+    if ('heroHeadline' in patch || 'avatar' in patch) return commitText(patch)
+    commitNow(patch)
   }
 
   return createElement('div', {

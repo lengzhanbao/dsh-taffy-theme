@@ -24,7 +24,7 @@
 - 接通 `data-taffy-low-power`：减动效 / 低内存设备自动关 blur 与动画
 - CSS 注入去重、Q 图标预加载缓存、MutationObserver 过滤、metrics stamp 去重
 - 启动 `boot veil` 消除闪白；`saveData` 弱网下自动熔断动效
-- 流畅度：hero 动效接入低功耗 / 减动效 / 关闭动效开关；标题阴影合并为单层；observer 文案同步 rAF 合帧
+- 流畅度：hero 动效接入低功耗 / 减动效 / 关闭动效开关；标题阴影合并为单层；observer 文案同步 rAF 合帧；设置面板文本输入防抖 300ms，避免逐键全量重同步
 
 ### 工程
 - 新增 GitHub Actions：verify / test / pack 门禁（CI）
