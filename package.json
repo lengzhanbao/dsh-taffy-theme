@@ -1,6 +1,6 @@
 {
   "name": "@dsh-external/dsh-taffy-theme",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Taffy Live Atelier / 塔菲直播工房 — candy acrylic DSH Web theme: light conservatory & dark stage art, gold-pink chat frame, Taffy overlays, optional agent preset.",
   "type": "module",
   "main": "./lib/index.js",
