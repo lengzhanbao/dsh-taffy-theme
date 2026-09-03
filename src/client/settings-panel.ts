@@ -159,10 +159,8 @@ function TaffyModeRow() {
       value: settings.acrylicPercent,
       onChange: (acrylicPercent) => commit({ acrylicPercent }),
     }),
-    createElement('div', { className: 'dsh-taffy-general-title' }, '立绘'),
+    createElement('div', { className: 'dsh-taffy-general-title' }, '侧栏装饰'),
     createElement('div', { className: 'dsh-taffy-general-cubes' },
-      createElement(Cube, { selected: settings.showLeftCharacter, label: '左侧', onClick: () => commit({ showLeftCharacter: !settings.showLeftCharacter }) }),
-      createElement(Cube, { selected: settings.showRightCharacter, label: '右侧', onClick: () => commit({ showRightCharacter: !settings.showRightCharacter }) }),
       createElement(Cube, { selected: settings.showMascot, label: '加油喵', onClick: () => commit({ showMascot: !settings.showMascot }) }),
     ),
     createElement(Slider, {

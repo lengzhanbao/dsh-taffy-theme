@@ -38,7 +38,7 @@ dsh web
 
 ## 简介
 
-**Taffy Live Atelier** 为 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Web 提供虚拟直播工房式界面：浅色花房与深色霓虹舞台、粉金亚克力对话框、塔菲 Q 版侧栏与左右立绘。资源全部本地打包，不依赖 CDN；**只改外观**，不影响对话逻辑与其他插件。
+**Taffy Live Atelier** 为 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Web 提供虚拟直播工房式界面：浅色花房与深色霓虹舞台、粉金亚克力对话框、塔菲 Q 版侧栏。资源全部本地打包，不依赖 CDN；**只改外观**，不影响对话逻辑与其他插件。
 
 - 架构思路参考 [maid-atelier](https://github.com/Small-tailqwq/dsh-deep-whale/tree/main/maid-atelier)，**未复制**其代码与资产
 - `--dsw-*` token 限定在 DSH 列容器内；亚克力 **opt-in**，降低误伤第三方插件风险

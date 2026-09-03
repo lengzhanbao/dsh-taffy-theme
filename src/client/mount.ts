@@ -208,8 +208,6 @@ export function applyRootAttributes(body: HTMLElement, settings: TaffySettings, 
     ? settings.avatar
     : BUNDLED_HERO_AVATAR
   body.style.setProperty('--taffy-hero-avatar', `url("${heroAvatar}")`)
-  body.toggleAttribute('data-taffy-hide-left', !settings.showLeftCharacter)
-  body.toggleAttribute('data-taffy-hide-right', !settings.showRightCharacter)
   body.toggleAttribute('data-taffy-hide-mascot', !settings.showMascot)
   body.toggleAttribute('data-taffy-low-power', shouldUseLowPower(settings))
   applyQChromeVars(body, settings)

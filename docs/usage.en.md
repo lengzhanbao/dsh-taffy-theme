@@ -41,8 +41,6 @@ Stored in browser `localStorage` (`dsh-taffy-theme:v1`). Defaults restore on uni
 | Panel opacity | 82% | Sidebar, chat column, composer backgrounds |
 | Background veil | 10% | Wash over wallpaper — higher = easier to read |
 | Acrylic opacity | 70% | Only acrylic-marked surfaces |
-| Left portrait | On | Large character on the left |
-| Right portrait | On | Character on the right |
 | Cheer mascot | On | Chibi mascot in the sidebar |
 | Portrait opacity | 100% | Overall opacity for portraits and mascot |
 | Reduced motion | Off | Disables looping glows and breathe animations |
