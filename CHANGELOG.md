@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.1.4 — 2026-09-03
+
+### 动画与流畅度（与 Raiden 对齐，按玻璃拟态动效规范）
+
+- 持续动画只走合成器：星光层 `background-position` 改 `translate3d` + `opacity`
+- 纱幕呼吸 `saturate` 滤镜改 `opacity` 脉冲，全屏重绘降为透明度合成
+- 标题浮动 `box-shadow` 逐帧绘制精简为纯 `transform`，静态光环保留在基类
+- 标题渐变流光周期 7s → 8.5s（渐变周期不低于 8 秒）
+- 发送按钮光晕减弱并放缓 2.8s → 3.4s
+- `will-change: transform, opacity` 仅加在星光/标题/发送按钮上，滤镜类动画不加
+- `prefers-reduced-motion` 补上星光层；窗口 resize 时星光/纱幕/边框一并暂停
+
+### 工程
+
+- 同步 `lib` 构建产物（`heroHeadline` 配置与新版 asset 版本号此前只进了 `src`）
+- 重新生成 `src/client/theme-css.ts` 与 `lib/client.js`
+
 ## 0.1.3 — 2026-09-02
 
 ### 视觉 / Hero

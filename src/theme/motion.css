@@ -1,9 +1,23 @@
 body[data-dsh-taffy-theme][data-taffy-viewport-resizing] [data-taffy-character],
+body[data-dsh-taffy-theme][data-taffy-viewport-resizing] [data-taffy-sparkles],
+body[data-dsh-taffy-theme][data-taffy-viewport-resizing] [data-taffy-veil='curtain'],
 body[data-dsh-taffy-theme][data-taffy-viewport-resizing] [data-skin-chrome='atelier-frame'],
 body[data-dsh-taffy-theme][data-taffy-viewport-resizing] [data-skin-chrome='sidebar-trim'] {
   transition: none;
   filter: none;
   animation: none;
+}
+
+/* Compositor hints: keep these infinite animations on transform/opacity only,
+   and nudge the browser to promote them to their own layer. Filter/box-shadow
+   keyframes elsewhere intentionally stay off will-change (too costly). */
+body[data-dsh-taffy-theme] [data-taffy-sparkles],
+body[data-dsh-taffy-theme] [data-phase='hero'] [class*='headline'],
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='发送消息'],
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Send message'],
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='停止生成'],
+body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Stop generating'] {
+  will-change: transform, opacity;
 }
 
 @keyframes taffy-q-pop {
@@ -17,20 +31,20 @@ body[data-dsh-taffy-theme][data-taffy-viewport-resizing] [data-skin-chrome='side
 }
 
 @keyframes taffy-sparkle-drift {
-  0%, 100% { background-position: 12% 18%, 78% 32%, 42% 72%; opacity: 0.42; }
-  50% { background-position: 18% 28%, 70% 24%, 48% 64%; opacity: 0.68; }
+  0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.42; }
+  50% { transform: translate3d(1.6%, -1.2%, 0); opacity: 0.68; }
 }
 
 @keyframes taffy-send-glow {
   0%, 100% {
     box-shadow:
       inset 0 1px rgba(255, 255, 255, 0.62),
-      0 6px 16px rgba(220, 111, 158, 0.18);
+      0 4px 12px rgba(220, 111, 158, 0.14);
   }
   50% {
     box-shadow:
-      inset 0 1px rgba(255, 255, 255, 0.72),
-      0 8px 18px rgba(220, 111, 158, 0.28);
+      inset 0 1px rgba(255, 255, 255, 0.68),
+      0 6px 14px rgba(220, 111, 158, 0.2);
   }
 }
 
@@ -40,8 +54,8 @@ body[data-dsh-taffy-theme][data-taffy-viewport-resizing] [data-skin-chrome='side
 }
 
 @keyframes taffy-veil-breathe {
-  0%, 100% { filter: saturate(1); }
-  50% { filter: saturate(1.04); }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.86; }
 }
 
 @keyframes taffy-status-flash {
@@ -75,7 +89,7 @@ body[data-dsh-taffy-theme]:not([data-taffy-low-power]):not([data-dsh-taffy-motio
 
 body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='发送消息'],
 body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Send message'] {
-  animation: taffy-send-glow calc(2.8s * var(--taffy-motion-duration, 1)) ease-in-out infinite;
+  animation: taffy-send-glow calc(3.4s * var(--taffy-motion-duration, 1)) ease-in-out infinite;
 }
 
 body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='发送消息']:hover:not(:disabled),
@@ -148,6 +162,7 @@ body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'] :is([data-pane=
 
 @media (prefers-reduced-motion: reduce) {
   body[data-dsh-taffy-theme] [data-taffy-character],
+  body[data-dsh-taffy-theme] [data-taffy-sparkles],
   body[data-dsh-taffy-theme] [data-taffy-veil='curtain'],
   body[data-dsh-taffy-theme] [data-skin-chrome],
   body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='发送消息'],

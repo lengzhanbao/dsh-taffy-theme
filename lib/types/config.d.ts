@@ -34,6 +34,7 @@ export declare const TaffySettingsSchema: z<Schemastery.ObjectS<{
     enabled: z<boolean, boolean>;
     displayName: z<string, string>;
     subtitle: z<string, string>;
+    heroHeadline: z<string, string>;
     avatar: z<string, string>;
     portrait: z<string, string>;
     timePhaseEnabled: z<boolean, boolean>;
@@ -80,6 +81,7 @@ export declare const TaffySettingsSchema: z<Schemastery.ObjectS<{
     enabled: z<boolean, boolean>;
     displayName: z<string, string>;
     subtitle: z<string, string>;
+    heroHeadline: z<string, string>;
     avatar: z<string, string>;
     portrait: z<string, string>;
     timePhaseEnabled: z<boolean, boolean>;
