@@ -59,10 +59,12 @@
   "files": [
     "lib/index.js",
     "lib/config.js",
+    "lib/boot-taffy.js",
     "lib/assets/route.js",
     "lib/assets/manifest.js",
     "lib/assets/trust-fence.js",
     "lib/client.js",
+    "lib/types/**/*.d.ts",
     "lib/prompt/taffy-system.md",
     "lib/prompt/loader.js",
     "cordis.patch.yml",

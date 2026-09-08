@@ -20,7 +20,7 @@
 dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.3/dsh-external-dsh-taffy-theme-0.1.3.tgz
 ```
 
-若 `latest` 尚未指向 0.1.2，可改用固定版本：
+固定版本链接（长期有效，与上方相同）：
 
 ```bash
 dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.3/dsh-external-dsh-taffy-theme-0.1.3.tgz

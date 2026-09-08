@@ -65,14 +65,14 @@ gh release create v0.1.2 E:\taffy\.cache\downloads\dsh-external-dsh-taffy-theme-
 
 ## 补充说明
 
-- 安装：`dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/latest/download/dsh-external-dsh-taffy-theme-0.1.2.tgz`
+- 安装：`dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.3/dsh-external-dsh-taffy-theme-0.1.3.tgz`
 - 无需 API Key；要求 DSH Web `0.1.0-rc.6+`
 - 截图：README 中 `preview/light.webp`、`preview/dark.webp`
 ```
 
 ## 发版后
 
-- [ ] README / install 文档中的 `latest` 链接可下载
+- [ ] README / install 文档中的固定版本链接可下载
 - [ ] `dsh plugin add ...latest...` 在干净 profile 冒烟通过
 - [ ] awesome-dsh-plugin PR（`docs/market/lengzhanbao__dsh-taffy-theme.yml`）
 

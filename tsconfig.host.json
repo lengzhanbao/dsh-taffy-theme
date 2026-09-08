@@ -7,6 +7,7 @@
   "include": [
     "src/index.ts",
     "src/config.ts",
+    "src/boot-taffy.ts",
     "src/assets/manifest.ts",
     "src/assets/route.ts",
     "src/assets/trust-fence.ts",

@@ -2,6 +2,17 @@
 
 ## 0.1.4 — 2026-09-03
 
+### 打包修复（v0.1.3 tarball 缺文件，本地正常但市场包启动失败）
+
+- `package.json` 的 `files` 白名单补上 `lib/boot-taffy.js`：`lib/index.js`
+  引用了它，但白名单漏掉导致 `npm pack` 把它排除，DSH 加载时报
+  `ERR_MODULE_NOT_FOUND ... boot-taffy.js`。本地开发目录文件齐全所以
+  一切正常，只有解包后的 tarball 会炸 —— 这就是"本地行、线上崩"的原因。
+- 同理补上 `lib/types/**/*.d.ts`（`exports` 指向的类型定义此前也不在包内）。
+- `verify:pack` 新增两道门：扫描包内所有 `.js` 的相对 import 并确认目标
+  都在包里；host 探针改为从解包后的 tarball 里 import（以前测的是开发
+  目录，永远是绿的）。Windows 下 `tar` 解包的盘符路径问题一并修了。
+
 ### 动画与流畅度（与 Raiden 对齐，按玻璃拟态动效规范）
 
 - 持续动画只走合成器：星光层 `background-position` 改 `translate3d` + `opacity`

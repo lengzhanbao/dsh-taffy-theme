@@ -9,9 +9,11 @@ import {
   readFileSync,
   readdirSync,
   rmSync,
+  statSync,
+  symlinkSync,
   writeFileSync,
 } from 'node:fs'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, extname, join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { tmpdir } from 'node:os'
 
@@ -19,6 +21,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const REQUIRED = [
   'package/lib/index.js',
   'package/lib/config.js',
+  'package/lib/boot-taffy.js',
   'package/lib/assets/route.js',
   'package/lib/assets/manifest.js',
   'package/lib/assets/trust-fence.js',
@@ -31,6 +34,49 @@ const REQUIRED = [
   'package/assets/taffy/avatar.webp',
 ]
 
+function collectJsFiles(dir, out = []) {
+  for (const entry of readdirSync(dir)) {
+    const full = join(dir, entry)
+    if (statSync(full).isDirectory()) {
+      collectJsFiles(full, out)
+    } else if (extname(entry) === '.js') {
+      out.push(full)
+    }
+  }
+  return out
+}
+
+/**
+ * Scan every shipped .js for relative imports and confirm each target resolves
+ * to a file inside the packed tarball. Catches files/ omissions like the
+ * missing lib/boot-taffy.js that broke the v0.1.3 release.
+ */
+function checkRelativeImports(pkgRoot) {
+  const jsFiles = collectJsFiles(join(pkgRoot, 'lib'))
+  const missing = []
+  for (const file of jsFiles) {
+    const src = readFileSync(file, 'utf8')
+    const specifiers = new Set()
+    for (const match of src.matchAll(/(?:import|export)\s[^'"]*?from\s*['"]([^'"]+)['"]/g)) {
+      specifiers.add(match[1])
+    }
+    for (const match of src.matchAll(/import\s*\(\s*['"]([^'"]+)['"]/g)) {
+      specifiers.add(match[1])
+    }
+    for (const spec of specifiers) {
+      if (!spec.startsWith('.')) continue
+      const base = resolve(dirname(file), spec)
+      const candidates = extname(base)
+        ? [base]
+        : [base, `${base}.js`, `${base}.json`, join(base, 'index.js')]
+      if (!candidates.some((candidate) => existsSync(candidate))) {
+        missing.push(`${file} -> ${spec}`)
+      }
+    }
+  }
+  return missing
+}
+
 let failures = 0
 let checks = 0
 
@@ -42,13 +88,20 @@ function check(label, ok, detail = '') {
 }
 
 const work = mkdtempSync(join(tmpdir(), 'taffy-pack-'))
-const tgz = join(work, 'pack.tgz')
 
 try {
+  // Clean stale tarballs first so the find() below cannot pick up an old pack.
+  for (const name of readdirSync(ROOT)) {
+    if (name.endsWith('.tgz')) rmSync(join(ROOT, name), { force: true })
+  }
   execSync('npm pack --pack-destination .', { cwd: ROOT, stdio: 'pipe' })
   const packed = readdirSync(ROOT).find((name) => name.endsWith('.tgz'))
   if (!packed) throw new Error('npm pack produced no .tgz')
-  execSync(`tar -xf "${join(ROOT, packed)}" -C "${work}"`, { stdio: 'pipe' })
+  // --force-local: GNU tar treats "E:..." drive paths as remote hosts otherwise;
+  // forward slashes: msys tar mangles backslash separators.
+  const toPosix = (p) => p.replace(/\\/g, '/')
+  const packedAbs = toPosix(join(ROOT, packed))
+  execSync(`tar --force-local -xf "${packedAbs}" -C "${toPosix(work)}"`, { stdio: 'pipe' })
   rmSync(join(ROOT, packed), { force: true })
 
   console.log('pack 门控：tarball 内容 / host 可加载性')
@@ -69,17 +122,38 @@ try {
   check('tarball route 引用 manifest', routeSrc.includes('./manifest.js'))
   check('tarball manifest 声明 asset 前缀', manifestSrc.includes('PLUGIN_ASSET_ROUTE_PREFIX'))
 
+  const missingImports = checkRelativeImports(pkgRoot)
+  check(
+    'tarball 内所有 .js 相对 import 目标存在',
+    missingImports.length === 0,
+    missingImports.join('; '),
+  )
+
   const probe = join(work, 'probe.mjs')
-  const indexUrl = pathToFileURL(join(ROOT, 'lib/index.js')).href
-  const probeCode = `import { Config, name, inject, apply } from '${indexUrl}';\nif (name !== '@dsh-external/dsh-taffy-theme') throw new Error('bad name');\nif (!Array.isArray(inject) || !inject.includes('webServer')) throw new Error('missing webServer inject');\nif (typeof apply !== 'function') throw new Error('apply missing');\nif (!Config?.['~standard']?.validate) throw new Error('Config schema missing');\nconst result = Config['~standard'].validate({});\nif (result.issues) throw new Error(JSON.stringify(result.issues));\nconsole.log('host-import-ok');\n`
-  writeFileSync(probe, probeCode)
+  const tarballIndexUrl = pathToFileURL(join(pkgRoot, 'lib/index.js')).href
+  const tarballPrompt = `import { Config, name, inject, apply } from '${tarballIndexUrl}';\nimport { injectBootTaffy } from '${pathToFileURL(join(pkgRoot, 'lib/boot-taffy.js')).href}';\nif (name !== '@dsh-external/dsh-taffy-theme') throw new Error('bad name');\nif (!Array.isArray(inject) || !inject.includes('webServer')) throw new Error('missing webServer inject');\nif (typeof apply !== 'function') throw new Error('apply missing');\nif (typeof injectBootTaffy !== 'function') throw new Error('boot-taffy missing from tarball');\nif (typeof injectBootTaffy('<html><body></body></html>') !== 'string') throw new Error('boot-taffy broken');\nif (!Config?.['~standard']?.validate) throw new Error('Config schema missing');\nconst result = Config['~standard'].validate({});\nif (result.issues) throw new Error(JSON.stringify(result.issues));\nconsole.log('tarball-host-import-ok');\n`
+  writeFileSync(probe, tarballPrompt)
   check('dev tree 含 schemastery', existsSync(join(ROOT, 'node_modules/schemastery')))
-  const out = execSync(`node "${probe}"`, {
-    cwd: ROOT,
-    encoding: 'utf8',
-    stdio: ['pipe', 'pipe', 'pipe'],
-  })
-  check('dev tree host index 可独立 import', out.includes('host-import-ok'))
+  // Simulate installed deps so the tarball import resolves bare specifiers
+  // (e.g. schemastery) exactly like a real host install would.
+  // 'junction' works on Windows; on POSIX Node maps it to a dir symlink.
+  const linkedModules = join(pkgRoot, 'node_modules')
+  if (!existsSync(linkedModules)) {
+    symlinkSync(join(ROOT, 'node_modules'), linkedModules, process.platform === 'win32' ? 'junction' : 'dir')
+  }
+  let tarballImportOk = false
+  let tarballImportDetail = ''
+  try {
+    const tarballOut = execSync(`node "${probe}"`, {
+      cwd: ROOT,
+      encoding: 'utf8',
+      stdio: ['pipe', 'pipe', 'pipe'],
+    })
+    tarballImportOk = tarballOut.includes('tarball-host-import-ok')
+  } catch (error) {
+    tarballImportDetail = String(error?.stderr ?? error?.message ?? error).split('\n').slice(0, 3).join(' ')
+  }
+  check('tarball 内 host index 可独立 import', tarballImportOk, tarballImportDetail)
 } finally {
   rmSync(work, { recursive: true, force: true })
 }
