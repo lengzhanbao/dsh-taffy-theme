@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.5 — 2026-09-10
+
+### 兼容 DSH 0.1.5-rc.1
+
+- `peerDependencies` 各 `@deepseek-ai/*` 范围追加 `^0.1.5-rc.1`（此前上限 `<0.2.0-0`
+  prerelease 线）。主题只用稳定 API（cordis / slots / webServer），无需改代码。
+
 ## 0.1.4 — 2026-09-03
 
 ### 打包修复（v0.1.3 tarball 缺文件，本地正常但市场包启动失败）
