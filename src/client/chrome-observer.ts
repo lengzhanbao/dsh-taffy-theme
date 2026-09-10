@@ -2,7 +2,7 @@ import type { TaffySettings } from '../state/types'
 import { decorateSidebar } from './mount'
 import { SIDEBAR_SELECTOR, SKIN_OWNER } from './chrome-selectors'
 import { createRafScheduler } from './schedule'
-import { createHeroCopySync, touchesHeroCopy } from './hero-copy'
+import { createHeroCopySync, HERO_SCOPE_SELECTOR, touchesHeroCopy } from './hero-copy'
 
 export interface ChromeObserverOptions {
   getSettings: () => TaffySettings
@@ -50,11 +50,11 @@ export function createChromeObserver(options: ChromeObserverOptions): { disconne
     for (const mutation of mutations) {
       if (mutation.type === 'characterData') {
         const parent = mutation.target.parentElement
-        if (parent instanceof Element && parent.matches("[class*='headlineText']")) heroSync.schedule()
+        if (parent instanceof Element && parent.closest(HERO_SCOPE_SELECTOR)) heroSync.schedule()
         continue
       }
       if (mutation.type === 'childList') {
-        if (mutation.target instanceof Element && mutation.target.matches("[class*='headlineText']")) heroSync.schedule()
+        if (mutation.target instanceof Element && mutation.target.closest(HERO_SCOPE_SELECTOR)) heroSync.schedule()
         for (const node of mutation.addedNodes) {
           if (isSkinOwned(node)) continue
           if (touchesHeroCopy(node)) heroSync.schedule()
