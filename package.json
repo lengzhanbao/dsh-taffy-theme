@@ -1,6 +1,6 @@
 {
   "name": "@dsh-external/dsh-taffy-theme",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Taffy Live Atelier / 塔菲直播工房 — candy acrylic DSH Web theme: light conservatory & dark stage art, gold-pink chat frame, Taffy overlays, optional agent preset.",
   "type": "module",
   "main": "./lib/index.js",
@@ -92,8 +92,8 @@
     },
     "client": {
       "inject": [
-        "@deepseek-ai/dsh-client-runtime",
         "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-renderer",
         "@deepseek-ai/dsh-client-ui-slots"
       ],
       "platform": "web"
@@ -104,15 +104,15 @@
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.1",
-    "@deepseek-ai/dsh-agent-presets": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0 || ^0.1.5-rc.1",
-    "@deepseek-ai/dsh-client-locale": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0 || ^0.1.5-rc.1",
-    "@deepseek-ai/dsh-client-runtime": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0 || ^0.1.5-rc.1",
-    "@deepseek-ai/dsh-client-ui-settings": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0 || ^0.1.5-rc.1",
-    "@deepseek-ai/dsh-client-ui-settings-general": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0 || ^0.1.5-rc.1",
-    "@deepseek-ai/dsh-client-ui-slots": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0 || ^0.1.5-rc.1",
-    "@deepseek-ai/dsh-client-ui-theme": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0 || ^0.1.5-rc.1",
-    "@deepseek-ai/dsh-settings": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0 || ^0.1.5-rc.1",
-    "@deepseek-ai/dsh-tools": ">=0.0.1-rc.1 <0.1.0 || >=0.1.0-rc.1 <0.2.0-0 || ^0.1.5-rc.1",
+    "@deepseek-ai/dsh-agent-presets": ">=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-client-locale": ">=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-client-ui-renderer": ">=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-client-ui-settings": ">=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-client-ui-settings-general": ">=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-client-ui-slots": ">=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-client-ui-theme": ">=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-settings": ">=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-tools": ">=0.1.0-rc.1 <0.2.0-0",
     "react": "^18.2.0"
   },
   "devDependencies": {

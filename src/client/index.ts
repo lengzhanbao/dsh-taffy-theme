@@ -2,7 +2,10 @@
  * Browser client entry for @dsh-external/dsh-taffy-theme.
  * Host apply() is empty; this file owns chrome, CSS, and General-row settings.
  */
-import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
+import type { Context as ClientContext } from '@deepseek-ai/cordis'
+// Type-only Context merges for ctx.locale / ctx.slots (client bundle purity).
+import type {} from '@deepseek-ai/dsh-client-locale/client'
+import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
 import type { TaffyAgentState } from '../state/types'
 import { resetStateAdapter } from '../state/adapter'
 import { applyThemeTokens, restoreThemeTokens, resolveThemeTokens, snapshotThemeTokens } from '../theme/user-theme'

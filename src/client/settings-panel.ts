@@ -1,6 +1,8 @@
 // @ts-nocheck
 import { createElement, useEffect, useRef, useState } from 'react'
-import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
+import type { Context as ClientContext } from '@deepseek-ai/cordis'
+import type {} from '@deepseek-ai/dsh-client-locale/client'
+import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
 import type { TaffySettings } from '../state/types'
 import { loadSettings, saveSettings } from './settings-store'
 import { DEFAULT_HERO_HEADLINE } from './hero-copy'

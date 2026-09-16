@@ -9,8 +9,10 @@ const PLUGIN_ID = '@dsh-external/dsh-taffy-theme'
   'react-dom',
   'react-dom/client',
   '@deepseek-ai/cordis',
-  '@deepseek-ai/dsh-client-runtime/client',
   '@deepseek-ai/dsh-client-locale',
+  '@deepseek-ai/dsh-client-locale/client',
+  '@deepseek-ai/dsh-client-ui-renderer',
+  '@deepseek-ai/dsh-client-ui-renderer/client',
   '@deepseek-ai/dsh-client-ui-slots',
 ]
 

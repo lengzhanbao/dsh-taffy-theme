@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.8 — 2026-09-16
+
+### 兼容 DSH 0.1.6-alpha（去掉 `dsh-client-runtime`）
+
+- ClientContext 改从 `@deepseek-ai/cordis` 引入；补 locale / ui-renderer 的 type-only Context merge
+- `dsh.client.inject`：去掉已删除的 `@deepseek-ai/dsh-client-runtime`，改依赖 `dsh-client-ui-renderer`
+- peerDependencies 收拢为 `>=0.1.0-rc.1 <0.2.0-0`（覆盖 0.1.5 / 0.1.6-alpha）
+
 ## 0.1.7 — 2026-09-16
 
 ### 粉金金粉装饰 + 侧栏板框
