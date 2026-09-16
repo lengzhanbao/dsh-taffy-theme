@@ -636,21 +636,73 @@ body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] :is([data-pane='sideb
   overflow: visible;
 }
 
+/* Whale-style gold-rim toggle — keep native SVG, no face crop */
 body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏'],
 body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar'],
 body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏'],
 body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar'] {
   position: relative;
   box-sizing: border-box;
-  width: 48px;
-  height: 48px;
-  min-width: 48px;
-  min-height: 48px;
-  max-width: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  max-width: 40px;
   padding: 0;
   aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--ds-taffy-gold) 78%, transparent);
   border-radius: 50%;
+  color: #d9b45e;
+  background: linear-gradient(145deg, rgba(255, 200, 220, 0.55), rgba(199, 64, 120, 0.42));
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 247, 241, 0.72),
+    0 3px 10px rgba(73, 59, 80, 0.16);
   overflow: visible;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease,
+    box-shadow 150ms ease,
+    filter 150ms ease;
+}
+
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏'] > svg,
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar'] > svg,
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏'] > svg,
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar'] > svg {
+  display: block;
+  width: 54%;
+  height: 54%;
+  opacity: 1;
+  color: inherit;
+  stroke: currentColor;
+  fill: none;
+  /* Panel glyph is left-weighted; slight optical nudge. */
+  transform: translate(0.5px, 0);
+}
+
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏']:is(:hover, :focus-visible),
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar']:is(:hover, :focus-visible),
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏']:is(:hover, :focus-visible),
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar']:is(:hover, :focus-visible) {
+  color: #efd9a0;
+  border-color: color-mix(in srgb, var(--ds-taffy-gold) 92%, white);
+  background: linear-gradient(145deg, rgba(255, 224, 236, 0.72), rgba(216, 85, 143, 0.55));
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.55),
+    0 0 0 2px rgba(231, 185, 87, 0.14),
+    0 4px 12px rgba(73, 59, 80, 0.22);
+  filter: none;
+}
+
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏']::after,
+body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar']::after {
+  content: none;
 }
 
 body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='发送消息'],
@@ -696,11 +748,7 @@ body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-
 body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Commands'] > svg,
 body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'] svg,
 body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']) > svg,
-body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) > svg,
-body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏'] > svg,
-body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar'] > svg,
-body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏'] > svg,
-body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar'] > svg {
+body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) > svg {
   opacity: 0;
 }
 
@@ -712,11 +760,7 @@ body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-
 body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Commands']::after,
 body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::after,
 body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand'])::after,
-body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand'])::after,
-body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏']::after,
-body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar']::after,
-body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏']::after,
-body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar']::after {
+body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand'])::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -759,25 +803,6 @@ body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :
   background-image: var(--taffy-q-new);
 }
 
-body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏']::after,
-body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar']::after,
-body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏']::after,
-body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar']::after {
-  background-image: var(--taffy-q-brand-right);
-  background-size: 95% 95%;
-  background-position: 42% center;
-}
-
-/* expanded: keep original size, move slightly toward center */
-body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏']::after,
-body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar']::after,
-body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏']::after,
-body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar']::after {
-  background-image: var(--taffy-q-brand-right);
-  background-position: 42% center;
-  background-size: 135% 135%;
-}
-
 
 body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] > :is(button, [role='button']),
 body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog'],
@@ -791,10 +816,12 @@ body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane=
   justify-content: center;
   gap: 8px;
   width: 100%;
+  max-width: 100%;
   min-width: 0;
-  min-height: 56px;
+  min-height: 64px;
   height: auto;
-  padding: 8px 16px;
+  margin: 0;
+  padding: 11px 16px 17px;
   overflow: hidden;
   border-radius: 14px;
   color: var(--ds-taffy-text);
@@ -825,10 +852,10 @@ body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane=
     var(--taffy-gold-corner-tr) top 0 right 0 / 34px 34px no-repeat,
     var(--taffy-gold-corner-bl) bottom 0 left 0 / 34px 34px no-repeat,
     var(--taffy-gold-corner-br) bottom 0 right 0 / 34px 34px no-repeat,
-    var(--taffy-gold-bow-art) top 1px center / 42px 15px no-repeat,
-    var(--taffy-gold-jewel-art) bottom 2px center / 12px 12px no-repeat,
-    var(--taffy-gold-dust-bar) top 0 center / min(190px, 72%) 14px no-repeat,
-    var(--taffy-gold-dust-bar) bottom 0 center / min(170px, 64%) 14px no-repeat,
+    var(--taffy-gold-jewel-art) top 1px center / 12px 12px no-repeat,
+    var(--taffy-gold-jewel-art) bottom 1px center / 12px 12px no-repeat,
+    var(--taffy-gold-dust-bar) top 0 center / min(180px, 68%) 12px no-repeat,
+    var(--taffy-gold-dust-bar) bottom 0 center / min(180px, 68%) 12px no-repeat,
     var(--taffy-gold-dust-edge);
   opacity: 1;
   filter: saturate(1.4) brightness(1.45) drop-shadow(0 0 5px rgba(242, 160, 184, 0.55));
@@ -889,25 +916,21 @@ body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rai
   overflow: hidden;
   pointer-events: none;
   background-repeat: no-repeat;
-  background-position: center;
-  background-size: 118% 118%;
+  background-position: center 42%;
+  background-size: 100% 100%;
 }
 
 body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] > :is(button, [role='button'])::before,
 body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::before {
-  flex: 0 0 44px;
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  min-height: 44px;
   background-image: var(--taffy-q-settings);
-  background-position: center;
-  background-size: 122% 122%;
+  background-position: center 34%;
+  background-size: 100% 100%;
 }
 
 body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand'])::before,
 body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand'])::before {
   background-image: var(--taffy-q-new);
+  background-position: center 46%;
 }
 
 body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog'] svg,
@@ -1060,11 +1083,18 @@ body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='side
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar'],
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏'],
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar'] {
-  border: 1px solid rgba(185, 167, 232, 0.32);
+  color: #efd9a0;
+  border: 1px solid rgba(231, 185, 87, 0.78);
+  background: linear-gradient(145deg, rgba(216, 85, 143, 0.52), rgba(56, 24, 48, 0.88));
   box-shadow:
-    inset 0 1px rgba(255, 244, 250, 0.1),
-    0 0 8px rgba(242, 165, 200, 0.14);
-  transition: box-shadow 140ms ease, border-color 140ms ease, filter 140ms ease, transform 140ms ease;
+    inset 0 0 0 2px rgba(28, 16, 28, 0.78),
+    0 3px 10px rgba(0, 0, 0, 0.28);
+  transition:
+    color 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease,
+    box-shadow 150ms ease,
+    filter 150ms ease;
 }
 
 body[data-dsh-taffy-theme][data-ds-dark-theme] [data-slot='sidebar.settings'] button[aria-haspopup='dialog']:hover,
@@ -1099,11 +1129,14 @@ body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='side
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar']:hover,
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏']:hover,
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar']:hover {
-  border-color: rgba(255, 205, 225, 0.62);
-  filter: brightness(1.06);
+  color: #fff1ce;
+  border-color: rgba(244, 218, 164, 0.94);
+  background: linear-gradient(145deg, rgba(242, 155, 194, 0.62), rgba(90, 36, 64, 0.92));
+  filter: none;
   box-shadow:
-    inset 0 1px rgba(255, 255, 255, 0.16),
-    0 0 12px rgba(242, 165, 200, 0.22);
+    inset 0 0 0 2px rgba(28, 16, 28, 0.7),
+    0 0 0 2px rgba(231, 185, 87, 0.14),
+    0 4px 12px rgba(0, 0, 0, 0.32);
 }
 
 body[data-dsh-taffy-theme][data-ds-dark-theme] [data-slot='sidebar.settings'] button[aria-haspopup='dialog']:active,
