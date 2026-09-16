@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.9 — 2026-09-16
+
+### Whale 式侧栏折叠 + 板内对齐
+
+- 侧栏展开/收起：去掉 `face-pet` 裁切头像，改粉金边框 + 原生 panel SVG
+- 「新会话」「设置」板：加高内边距、统一脸图尺寸与锚点，上下金粉条同宽对称
+- `build.ps1`：优先用 `typescript/bin/tsc`，避免 Windows 下误用 `tsc.cmd` 导致 host 编译失败
+
 ## 0.1.8 — 2026-09-16
 
 ### 兼容 DSH 0.1.6-alpha（去掉 `dsh-client-runtime`）
