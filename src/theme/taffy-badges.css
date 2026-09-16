@@ -1,5 +1,17 @@
 /* Taffy conversation stage: pink outer, gold inner, curtains, candy corners. */
 
+/* Outer atelier stage frame: hidden — keep native composer only */
+body[data-dsh-taffy-theme] [data-skin-chrome='atelier-frame'],
+body[data-dsh-taffy-theme] [data-skin-chrome='taffy-top-curtain'],
+body[data-dsh-taffy-theme] [data-skin-chrome='taffy-bottom-curtain'],
+body[data-dsh-taffy-theme] [data-taffy-frame-badge],
+body[data-dsh-taffy-theme] [data-taffy-frame-corners],
+body[data-dsh-taffy-theme] [data-taffy-frame-corner] {
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
 body[data-dsh-taffy-theme] [data-skin-chrome='atelier-frame'] {
   position: fixed;
   z-index: 0;
@@ -14,23 +26,26 @@ body[data-dsh-taffy-theme] [data-skin-chrome='atelier-frame'] {
   bottom: auto;
   border: 2.5px solid rgba(242, 155, 194, var(--taffy-frame-opacity, 1));
   border-radius: 26px;
-  background: var(--taffy-acrylic-light);
+  background: transparent;
   opacity: 1;
   transition: none;
   box-shadow:
     inset 0 0 0 1.5px rgba(231, 185, 87, 0.78),
-    0 0 0 1px rgba(185, 167, 232, 0.38),
-    0 10px 24px rgba(242, 155, 194, 0.14);
+    0 0 0 1px rgba(185, 167, 232, 0.38);
+}
+
+/* gold-dust along frame ring only (same size, no grow) */
+body[data-dsh-taffy-theme] [data-skin-chrome='atelier-frame']::after {
+  content: none;
 }
 
 body[data-dsh-taffy-theme][data-ds-dark-theme] [data-skin-chrome='atelier-frame'],
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-skin-chrome='atelier-frame'] {
   border-color: rgba(242, 165, 200, var(--taffy-frame-opacity, 1));
-  background: var(--taffy-acrylic-dark);
+  background: transparent;
   box-shadow:
     inset 0 0 0 1.5px rgba(231, 185, 87, 0.62),
-    0 0 0 1px rgba(185, 167, 232, 0.32),
-    0 10px 24px rgba(33, 27, 50, 0.22);
+    0 0 0 1px rgba(185, 167, 232, 0.32);
 }
 
 body[data-dsh-taffy-theme][data-taffy-frame-hidden] [data-skin-chrome='atelier-frame'],
@@ -86,7 +101,7 @@ body[data-dsh-taffy-theme] [data-taffy-frame-badge] {
   height: 32px;
   translate: -50% 0;
   pointer-events: none;
-  opacity: 0;
+  opacity: 0.9;
   border-radius: 999px;
   background:
     radial-gradient(circle at 22% 54%, #ffd8e7 0 8px, transparent 9px),
@@ -198,6 +213,7 @@ body[data-dsh-taffy-theme][data-taffy-frame-compact] [data-taffy-frame-badge] {
 }
 
 body[data-dsh-taffy-theme] [data-skin-chrome='sidebar-trim'] {
+  --taffy-sidebar-frame-line: 2px;
   position: fixed;
   z-index: 0;
   pointer-events: none;
@@ -206,6 +222,22 @@ body[data-dsh-taffy-theme] [data-skin-chrome='sidebar-trim'] {
   bottom: 0;
   width: var(--taffy-sidebar-width, 280px);
   overflow: visible;
+  /* Gold seam bars — pink-gold mix */
+  background:
+    linear-gradient(90deg, rgba(242, 160, 184, 0.28), rgba(239, 176, 122, 0.95), rgba(255, 224, 236, 0.95), rgba(242, 155, 194, 0.9), rgba(239, 176, 122, 0.95), rgba(242, 160, 184, 0.28))
+      left 48px top 10px / calc(100% - 96px) var(--taffy-sidebar-frame-line) no-repeat,
+    linear-gradient(90deg, rgba(242, 160, 184, 0.26), rgba(239, 176, 122, 0.92), rgba(242, 155, 194, 0.7), rgba(239, 176, 122, 0.92), rgba(242, 160, 184, 0.26))
+      left 48px bottom 10px / calc(100% - 96px) var(--taffy-sidebar-frame-line) no-repeat,
+    linear-gradient(180deg, rgba(242, 160, 184, 0.24), rgba(239, 176, 122, 0.92), rgba(255, 224, 236, 0.85), rgba(242, 155, 194, 0.75), rgba(239, 176, 122, 0.92), rgba(242, 160, 184, 0.24))
+      left 10px top 48px / var(--taffy-sidebar-frame-line) calc(100% - 96px) no-repeat,
+    linear-gradient(180deg, rgba(242, 160, 184, 0.24), rgba(239, 176, 122, 0.92), rgba(242, 155, 194, 0.65), rgba(239, 176, 122, 0.92), rgba(242, 160, 184, 0.24))
+      right 10px top 48px / var(--taffy-sidebar-frame-line) calc(100% - 96px) no-repeat,
+    var(--taffy-gold-dust-bar) left 48px top 2px / 180px 16px no-repeat,
+    var(--taffy-gold-dust-bar) right 48px top 2px / 180px 16px no-repeat,
+    var(--taffy-gold-dust-bar) left 48px bottom 2px / 180px 16px no-repeat,
+    var(--taffy-gold-dust-bar) right 48px bottom 2px / 180px 16px no-repeat,
+    var(--taffy-gold-jewel-art) left 6px center / 16px 16px no-repeat,
+    var(--taffy-gold-jewel-art) right 6px center / 16px 16px no-repeat;
 }
 
 body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-skin-chrome='sidebar-trim'] {
@@ -219,49 +251,76 @@ body[data-dsh-taffy-theme] [data-taffy-sidebar-ornament] {
 }
 
 body[data-dsh-taffy-theme] [data-taffy-sidebar-corner] {
-  width: 28px;
-  height: 28px;
-  border: 1.5px solid rgba(231, 185, 87, 0.58);
+  width: 52px;
+  height: 52px;
+  border: 0;
+  background: var(--taffy-gold-corner-art) center / 100% 100% no-repeat;
+  filter: drop-shadow(0 1px 2px rgba(73, 59, 80, 0.22));
+  opacity: 1;
 }
 
+/* Keep top corners hidden — avoid stacking on brand Q */
 body[data-dsh-taffy-theme] [data-taffy-sidebar-corner='top-left'],
 body[data-dsh-taffy-theme] [data-taffy-sidebar-corner='top-right'] {
   display: none;
 }
 
 body[data-dsh-taffy-theme] [data-taffy-sidebar-corner='bottom-left'] {
-  bottom: 10px;
-  left: 10px;
-  border-right: 0;
-  border-top: 0;
-  border-radius: 0 0 0 10px;
+  bottom: 6px;
+  left: 6px;
+  transform: scaleY(-1);
 }
 
 body[data-dsh-taffy-theme] [data-taffy-sidebar-corner='bottom-right'] {
-  bottom: 10px;
-  right: 10px;
-  border-left: 0;
-  border-top: 0;
-  border-radius: 0 0 10px 0;
+  bottom: 6px;
+  right: 6px;
+  transform: scale(-1);
 }
 
 body[data-dsh-taffy-theme] [data-taffy-sidebar-ornament='ribbon'] {
-  display: none;
+  left: 22px;
+  right: 22px;
+  top: 52px;
+  height: 18px;
+  background:
+    var(--taffy-gold-bow-art) center / 40px 16px no-repeat,
+    var(--taffy-gold-dust-bar) center / 100% 14px no-repeat,
+    linear-gradient(90deg, transparent, rgba(242, 160, 184, 0.65) 14% 86%, transparent) center 8px / 100% 1px no-repeat;
+  opacity: 0.95;
 }
 
 body[data-dsh-taffy-theme] [data-taffy-sidebar-ornament='swag'] {
   left: 18px;
   right: 18px;
-  bottom: 58px;
-  height: 28px;
+  bottom: 56px;
+  height: 34px;
   background:
-    linear-gradient(90deg, transparent, rgba(231, 185, 87, 0.55) 12% 88%, transparent) center 10px / 100% 1px no-repeat,
-    linear-gradient(90deg, transparent, rgba(242, 155, 194, 0.4) 18% 82%, transparent) center 13px / 100% 1px no-repeat;
+    var(--taffy-gold-jewel-art) center 18px / 14px 14px no-repeat,
+    var(--taffy-gold-dust-bar) center 2px / 100% 14px no-repeat,
+    linear-gradient(90deg, transparent, rgba(239, 176, 122, 0.7) 12% 88%, transparent) center 16px / 100% 1.2px no-repeat,
+    linear-gradient(90deg, transparent, rgba(242, 155, 194, 0.55) 18% 82%, transparent) center 19px / 100% 1px no-repeat,
+    radial-gradient(circle at 18% 78%, rgba(242, 160, 184, 0.9) 0 1.2px, transparent 1.8px),
+    radial-gradient(circle at 50% 72%, rgba(255, 224, 236, 0.95) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 82% 78%, rgba(239, 176, 122, 0.85) 0 1.1px, transparent 1.7px);
 }
 
 body[data-dsh-taffy-theme][data-ds-dark-theme] [data-taffy-sidebar-ornament='ribbon'],
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-taffy-sidebar-ornament='ribbon'] {
-  display: none;
+  opacity: 1;
+  filter: saturate(1.2) brightness(1.2) drop-shadow(0 0 4px rgba(242, 160, 184, 0.4));
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-skin-chrome='sidebar-trim'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-skin-chrome='sidebar-trim'] {
+  filter: saturate(1.2) brightness(1.2) drop-shadow(0 0 4px rgba(242, 160, 184, 0.32));
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-taffy-sidebar-corner],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-taffy-sidebar-corner],
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-taffy-sidebar-ornament='swag'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-taffy-sidebar-ornament='swag'] {
+  filter: saturate(1.22) brightness(1.24) drop-shadow(0 0 5px rgba(242, 160, 184, 0.42));
+  opacity: 1;
 }
 
 
@@ -277,20 +336,22 @@ body[data-dsh-taffy-theme] [data-phase='hero'] [class*='previewBadge'] {
 body[data-dsh-taffy-theme] [data-phase='hero'] [class*='headline']:has(> [class*='fish']) > [class*='fish'] {
   width: 36px;
   height: 36px;
-  border: 2px solid rgba(231, 185, 87, 0.78);
+  border: 2px solid rgba(242, 160, 184, 0.88);
   border-radius: 50%;
-  outline: 1.5px solid rgba(242, 155, 194, 0.42);
+  outline: 1.5px solid rgba(239, 176, 122, 0.45);
   outline-offset: 3px;
   background:
     var(--taffy-hero-avatar) center / cover no-repeat,
     color-mix(in srgb, var(--ds-taffy-cream) 62%, transparent);
   box-shadow:
-    0 0 0 6px rgba(242, 155, 194, 0.12),
+    0 0 0 6px rgba(242, 155, 194, 0.14),
     0 4px 12px rgba(73, 59, 80, 0.16);
   animation: taffy-hero-bob 4.5s ease-in-out infinite;
 }
 
-body[data-dsh-taffy-theme] [data-phase='hero'] [class*='headlineText'] {
+body[data-dsh-taffy-theme] [data-phase='hero'] [class*='headlineText'],
+body[data-dsh-taffy-theme] [data-phase='hero'] [class*='titleGroup'] > span:first-child {
+  position: relative;
   color: var(--taffy-pink-deep);
   font-weight: 900;
   letter-spacing: 0.02em;
@@ -307,8 +368,30 @@ body[data-dsh-taffy-theme] [data-phase='hero'] [class*='headlineText'] {
   animation: taffy-hero-shimmer 8.5s ease-in-out infinite alternate;
 }
 
+/* Tiny pink-gold dust under hero title */
+body[data-dsh-taffy-theme] [data-phase='hero'] [class*='titleGroup'] {
+  position: relative;
+}
+
+body[data-dsh-taffy-theme] [data-phase='hero'] [class*='titleGroup']::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  width: min(220px, 70%);
+  height: 14px;
+  translate: -50% 0;
+  pointer-events: none;
+  background:
+    var(--taffy-gold-bow-art) center / 36px 14px no-repeat,
+    var(--taffy-gold-dust-bar) center / 100% 12px no-repeat;
+  opacity: 0.92;
+}
+
 body[data-dsh-taffy-theme][data-ds-dark-theme] [data-phase='hero'] [class*='headlineText'],
-body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-phase='hero'] [class*='headlineText'] {
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-phase='hero'] [class*='headlineText'],
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-phase='hero'] [class*='titleGroup'] > span:first-child,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-phase='hero'] [class*='titleGroup'] > span:first-child {
   color: #ffd8e7;
   background-image:
     linear-gradient(105deg, transparent 42%, rgba(255, 245, 235, 0.6) 50%, transparent 58%),

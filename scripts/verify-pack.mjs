@@ -97,11 +97,16 @@ try {
   execSync('npm pack --pack-destination .', { cwd: ROOT, stdio: 'pipe' })
   const packed = readdirSync(ROOT).find((name) => name.endsWith('.tgz'))
   if (!packed) throw new Error('npm pack produced no .tgz')
-  // --force-local: GNU tar treats "E:..." drive paths as remote hosts otherwise;
-  // forward slashes: msys tar mangles backslash separators.
+  // GNU tar treats "E:..." drive paths as remote hosts unless --force-local.
+  // Windows bsdtar (System32) rejects that flag — probe once, then extract.
   const toPosix = (p) => p.replace(/\\/g, '/')
   const packedAbs = toPosix(join(ROOT, packed))
-  execSync(`tar --force-local -xf "${packedAbs}" -C "${toPosix(work)}"`, { stdio: 'pipe' })
+  const destAbs = toPosix(work)
+  const tarHelp = execSync('tar --help', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
+  const tarCmd = tarHelp.includes('--force-local')
+    ? `tar --force-local -xf "${packedAbs}" -C "${destAbs}"`
+    : `tar -xf "${packedAbs}" -C "${destAbs}"`
+  execSync(tarCmd, { stdio: 'pipe' })
   rmSync(join(ROOT, packed), { force: true })
 
   console.log('pack 门控：tarball 内容 / host 可加载性')

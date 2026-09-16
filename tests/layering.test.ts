@@ -80,6 +80,21 @@ describe('decorative CSS contracts', () => {
     expect(badges).toMatch(/sidebar-corner='top-right'\][\s\S]{0,80}display:\s*none/)
   })
 
+  it('paints gold-dust filigree on sidebar bars and composer rim', () => {
+    expect(tokens).toContain('--taffy-gold-corner-art')
+    expect(tokens).toContain('--taffy-gold-dust-bar')
+    expect(tokens).toContain('--taffy-gold-dust-edge')
+    expect(tokens).toContain('--taffy-gold-bow-art')
+    expect(tokens).toContain('--taffy-gold-jewel-art')
+    expect(badges).toContain('var(--taffy-gold-corner-art)')
+    expect(badges).toContain('var(--taffy-gold-dust-bar)')
+    expect(badges).toContain('var(--taffy-gold-bow-art)')
+    expect(components).toContain('var(--taffy-gold-corner-tr)')
+    expect(components).toContain('var(--taffy-gold-bow-art)')
+    expect(components).toContain('mask-composite: exclude')
+    expect(components).toMatch(/\[data-composer-card\]::before[\s\S]{0,200}inset:\s*-6px\s*-5px\s*-5px/)
+  })
+
   it('scopes native DSH tokens to app columns instead of body', () => {
     const bodyRule = tokens.match(/body\[data-dsh-taffy-theme\] \{[\s\S]*?\n\}/)
     expect(bodyRule?.[0]).not.toMatch(/--dsw-/)

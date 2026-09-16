@@ -91,7 +91,7 @@ describe('Taffy headshot icons', () => {
   it('replaces the hero fish with a round avatar and pink-gold headline', () => {
     const badges = readFileSync(join(root, 'src/theme/taffy-badges.css'), 'utf8')
     expect(badges).toContain('var(--taffy-hero-avatar) center / cover no-repeat')
-    expect(badges).toMatch(/headlineText[\s\S]{0,400}background-clip:\s*text/)
+    expect(badges).toMatch(/headlineText[\s\S]{0,500}background-clip:\s*text/)
     expect(badges).toMatch(/linear-gradient\([\s\S]{0,180}#c99a27[\s\S]{0,120}#b8860b/)
   })
 })

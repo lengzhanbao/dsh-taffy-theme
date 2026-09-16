@@ -46,10 +46,17 @@ export function createHeroCopySync(getHeadline: () => string = () => DEFAULT_HER
       for (const node of collectHeadlineNodes(root)) {
         const text = node.textContent ?? ''
         const known = originals.get(node)
-        // 只换官方默认文案：用户自定义标题 / 已替换的不碰
-        if (known ? text !== known.applied : !HOST_HEADLINES.has(text.trim())) continue
-        if (known) known.applied = headline
-        else originals.set(node, { original: text, applied: headline })
+        if (known) {
+          // 设置改标题：已托管节点跟新文案；宿主又改回默认时也重贴
+          if (text !== known.applied && !HOST_HEADLINES.has(text.trim())) continue
+          if (text === headline && known.applied === headline) continue
+          known.applied = headline
+          node.textContent = headline
+          continue
+        }
+        // 只换官方默认文案：用户自定义标题不碰
+        if (!HOST_HEADLINES.has(text.trim())) continue
+        originals.set(node, { original: text, applied: headline })
         node.textContent = headline
       }
     },
