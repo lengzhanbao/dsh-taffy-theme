@@ -32,7 +32,11 @@ Link-Package '@deepseek-ai\dsh-tools' "$Checkout\packages\core\tools"
 Link-Package '@deepseek-ai\dsh-settings' "$Checkout\packages\core\settings"
 Link-Package '@deepseek-ai\dsh-agent-presets' "$Checkout\packages\preset\agent-presets"
 Link-Package '@deepseek-ai\dsh-client-ui-slots' "$Checkout\packages\client\ui-slots"
-Link-Package '@deepseek-ai\dsh-client-runtime' "$Checkout\packages\client\runtime"
+if (Test-Path "$Checkout\packages\client\ui-renderer") {
+  Link-Package '@deepseek-ai\dsh-client-ui-renderer' "$Checkout\packages\client\ui-renderer"
+} elseif (Test-Path "$Checkout\packages\client\runtime") {
+  Link-Package '@deepseek-ai\dsh-client-runtime' "$Checkout\packages\client\runtime"
+}
 Link-Package '@deepseek-ai\dsh-client-locale' "$Checkout\packages\client\locale"
 Link-Package '@deepseek-ai\dsh-client-ui-theme' "$Checkout\packages\client\ui-theme"
 Link-Package '@deepseek-ai\dsh-client-ui-settings' "$Checkout\packages\client\ui-settings"

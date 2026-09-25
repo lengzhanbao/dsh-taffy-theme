@@ -34,7 +34,11 @@ link_pkg @deepseek-ai/dsh-tools packages/core/tools
 link_pkg @deepseek-ai/dsh-settings packages/core/settings
 link_pkg @deepseek-ai/dsh-agent-presets packages/preset/agent-presets
 link_pkg @deepseek-ai/dsh-client-ui-slots packages/client/ui-slots
-link_pkg @deepseek-ai/dsh-client-runtime packages/client/runtime
+if [ -d "$CHECKOUT/packages/client/ui-renderer" ]; then
+  link_pkg @deepseek-ai/dsh-client-ui-renderer packages/client/ui-renderer
+elif [ -d "$CHECKOUT/packages/client/runtime" ]; then
+  link_pkg @deepseek-ai/dsh-client-runtime packages/client/runtime
+fi
 link_pkg @deepseek-ai/dsh-client-locale packages/client/locale
 link_pkg @deepseek-ai/dsh-client-ui-theme packages/client/ui-theme
 link_pkg @deepseek-ai/dsh-client-ui-settings packages/client/ui-settings
