@@ -20,7 +20,7 @@
 
 ```powershell
 cd E:\DeepSeekHarness\profiles\web
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.3/dsh-external-dsh-taffy-theme-0.1.3.tgz
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.9/dsh-external-dsh-taffy-theme-0.1.9.tgz
 dsh web
 ```
 

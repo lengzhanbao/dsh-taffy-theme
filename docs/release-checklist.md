@@ -1,4 +1,4 @@
-# v0.1.2 发版清单
+# v0.1.9 发版清单
 
 ## 发版前
 
@@ -20,8 +20,8 @@ npm run install:release
 
 ```bash
 git add -A
-git commit -m "docs: align release docs and install URLs to v0.1.2"
-git tag v0.1.2
+git commit -m "docs: align release docs and install URLs to v0.1.9"
+git tag v0.1.9
 git push origin master --tags
 ```
 
@@ -29,19 +29,19 @@ git push origin master --tags
 
 ## GitHub Release
 
-1. **New release** → tag `v0.1.2`
-2. Title: `v0.1.2 — 静态资源路由、精简 client bundle、性能节流`
-3. 附上 [CHANGELOG.md](../CHANGELOG.md) 中 **0.1.2** 条目
-4. 上传资产：`npm pack` 生成的 `dsh-external-dsh-taffy-theme-0.1.2.tgz`
+1. **New release** → tag `v0.1.9`
+2. Title: `v0.1.9 — 静态资源路由、精简 client bundle、性能节流`
+3. 附上 [CHANGELOG.md](../CHANGELOG.md) 中 **0.1.9** 条目
+4. 上传资产：`npm pack` 生成的 `dsh-external-dsh-taffy-theme-0.1.9.tgz`
 5. 确认 `latest` 指向本 Release
 
 或使用 gh：
 
 ```bash
 npm pack --pack-destination E:\taffy\.cache\downloads
-gh release create v0.1.2 E:\taffy\.cache\downloads\dsh-external-dsh-taffy-theme-0.1.2.tgz \
-  --title "v0.1.2 — 静态资源路由、精简 client bundle、性能节流" \
-  --notes "$(sed -n '/^## 0.1.2/,/^---/p' CHANGELOG.md | head -n -1)"
+gh release create v0.1.9 E:\taffy\.cache\downloads\dsh-external-dsh-taffy-theme-0.1.9.tgz \
+  --title "v0.1.9 — 静态资源路由、精简 client bundle、性能节流" \
+  --notes "$(sed -n '/^## 0.1.9/,/^---/p' CHANGELOG.md | head -n -1)"
 ```
 
 ## GitHub 仓库（dsh-market 收录）
@@ -65,7 +65,7 @@ gh release create v0.1.2 E:\taffy\.cache\downloads\dsh-external-dsh-taffy-theme-
 
 ## 补充说明
 
-- 安装：`dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.3/dsh-external-dsh-taffy-theme-0.1.3.tgz`
+- 安装：`dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.9/dsh-external-dsh-taffy-theme-0.1.9.tgz`
 - 无需 API Key；要求 DSH Web `0.1.0-rc.6+`
 - 截图：README 中 `preview/light.webp`、`preview/dark.webp`
 ```
@@ -79,5 +79,5 @@ gh release create v0.1.2 E:\taffy\.cache\downloads\dsh-external-dsh-taffy-theme-
 ## 回滚
 
 ```bash
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.1/dsh-external-dsh-taffy-theme-0.1.1.tgz
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.9/dsh-external-dsh-taffy-theme-0.1.9.tgz
 ```

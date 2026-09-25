@@ -3,21 +3,21 @@
 [![CI](https://github.com/lengzhanbao/dsh-taffy-theme/actions/workflows/ci.yml/badge.svg)](https://github.com/lengzhanbao/dsh-taffy-theme/actions/workflows/ci.yml)
 [![awesome · DSH plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
 
-粉金亚克力 **DSH Web 主题** — 浅色花房 / 深色舞台立绘、粉金对话框、塔菲 Q 版侧栏，以及可选的 **Taffy 塔菲** Agent 预设。
+粉金亚克力 **DSH Web 主题** — 浅色花房 / 深色舞台立绘、粉金对话框与金粉花纹、塔菲 Q 版侧栏，以及可选的 **Taffy 塔菲** Agent 预设。
 
 | | |
 | --- | --- |
 | Package | `@dsh-external/dsh-taffy-theme` |
-| Version | `0.1.2` |
+| Version | `0.1.9` |
 | Platform | DSH **Web** profile only |
-| Requires | DeepSeek Harness `0.1.0-rc.6`+ |
+| Requires | DeepSeek Harness `0.1.0-rc.6`+（兼容 `0.1.5` / `0.1.6-alpha`） |
 
 ## 下载即用
 
 **普通用户只需一条命令，无需克隆仓库或本地构建。**
 
 ```bash
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.3/dsh-external-dsh-taffy-theme-0.1.3.tgz
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.9/dsh-external-dsh-taffy-theme-0.1.9.tgz
 dsh web
 ```
 
@@ -43,7 +43,13 @@ dsh web
 - 架构思路参考 [maid-atelier](https://github.com/Small-tailqwq/dsh-deep-whale/tree/main/maid-atelier)，**未复制**其代码与资产
 - `--dsw-*` token 限定在 DSH 列容器内；亚克力 **opt-in**，降低误伤第三方插件风险
 
-## 稳定性说明（0.1.2）
+### 近期视觉（0.1.7–0.1.9）
+
+- **粉金金粉花纹**：输入框 / 侧栏 / 「新会话」「设置」板框角饰与尘条（不撑大边框）
+- **Whale 式侧栏折叠**：展开/收起为粉金边框 + 原生 panel SVG（不再用裁切头像）
+- **可读性默认抬高**：纱幕 / 亚克力 / 面板更实；兼容 DSH `0.1.6-alpha`（`dsh-client-ui-renderer`）
+
+## 稳定性说明
 
 | 面向 | 说明 |
 | --- | --- |
@@ -81,4 +87,4 @@ npm run install:release
 
 ## English
 
-Candy-pink acrylic theme for DSH Web: light conservatory, dark neon stage, gold-pink chat frame, and Taffy character overlays. Install with the command above, then see [docs/install.en.md](docs/install.en.md) and [docs/usage.en.md](docs/usage.en.md).
+Candy-pink acrylic theme for DSH Web: light conservatory, dark neon stage, gold-pink chat frame with filigree, and Taffy character overlays. Sidebar collapse uses a whale-style gold-rim native SVG (no cropped face sticker). Install with the command above, then see [docs/install.en.md](docs/install.en.md) and [docs/usage.en.md](docs/usage.en.md).

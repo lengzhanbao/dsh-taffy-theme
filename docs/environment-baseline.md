@@ -1,29 +1,29 @@
 # 环境基线
 
-记录时间：2026-08-22（v0.1.2 已发布；awesome-dsh-plugin PR 待合并）
+记录时间：2026-09-25（v0.1.9 已发布）
 
 | 项 | 值 |
 | --- | --- |
 | DSH_HOME | `E:\DeepSeekHarness` |
-| 当前版本 | `0.1.2`（本地已 commit；GitHub Release / tag 待打） |
+| 当前版本 | `0.1.9`（本地已 commit；GitHub Release / tag 待打） |
 | Web profile | `E:\DeepSeekHarness\profiles\web` |
 | 默认端口 | `http://127.0.0.1:3080` |
 | Node | ≥ 20（与 DSH 一致） |
 | Python | ≥ 3.11 + Pillow（仅 `verify:assets` / CI） |
 | PowerShell | 7+ 或 Windows PowerShell 5.1（仅 `npm run build` / `install:*`） |
-| 已发布 tag | `v0.1.2`（latest）；`v0.1.1` 可作回滚 |
+| 已发布 tag | `v0.1.9`（latest）；`v0.1.1` 可作回滚 |
 
 ## 对外安装（与 README 一致）
 
 ```bash
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.3/dsh-external-dsh-taffy-theme-0.1.3.tgz
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.9/dsh-external-dsh-taffy-theme-0.1.9.tgz
 dsh web
 ```
 
 固定版本：
 
 ```bash
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.3/dsh-external-dsh-taffy-theme-0.1.3.tgz
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.9/dsh-external-dsh-taffy-theme-0.1.9.tgz
 ```
 
 ## 开发者 link
