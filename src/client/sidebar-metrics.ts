@@ -35,7 +35,7 @@ export function startSidebarMetrics(doc: Document): () => void {
   sheet.dataset.skinChrome = 'sidebar-width-rule'
   sheet.dataset.skinOwner = SKIN_OWNER
   doc.head.append(sheet)
-  sheet.sheet?.insertRule('body { --taffy-sidebar-width: 280px; --taffy-details-width: 0px; --taffy-right-panel-width: 0px; --taffy-sidebar-footer-height: 56px; }')
+  sheet.sheet?.insertRule('body { --taffy-sidebar-width: 280px; --taffy-sidebar-left: 0px; --taffy-sidebar-top: 0px; --taffy-sidebar-height: 100%; --taffy-details-width: 0px; --taffy-right-panel-width: 0px; --taffy-sidebar-footer-height: 56px; }')
   const widthRule = sheet.sheet?.cssRules[0] as CSSStyleRule | undefined
 
   let sidebarObserver: ResizeObserver | undefined
@@ -49,6 +49,22 @@ export function startSidebarMetrics(doc: Document): () => void {
     widthRule.style.setProperty('--taffy-sidebar-width', `${rounded}px`)
     const size = rounded <= 120 ? 'rail' : rounded <= 220 ? 'narrow' : 'wide'
     doc.body.dataset.taffySidebarSize = size
+  }
+
+  /**
+   * The trim is mounted on document.body, so it cannot inherit the sidebar's
+   * box. Anchoring it to the viewport origin (left:0; top:0; bottom:0) only
+   * works while the sidebar happens to start at (0,0) — with a desktop titlebar
+   * or any inset it painted outside the column. Publish the real rectangle.
+   */
+  const writeSidebarBounds = (sidebar: HTMLElement): void => {
+    if (!widthRule) return
+    const rect = sidebar.getBoundingClientRect()
+    if (rect.width <= 0 || rect.height <= 0) return
+    writeSidebar(rect.width)
+    widthRule.style.setProperty('--taffy-sidebar-left', `${Math.round(rect.left)}px`)
+    widthRule.style.setProperty('--taffy-sidebar-top', `${Math.round(rect.top)}px`)
+    widthRule.style.setProperty('--taffy-sidebar-height', `${Math.round(rect.height)}px`)
   }
 
   const writeFooter = (sidebar: HTMLElement): void => {
@@ -86,11 +102,11 @@ export function startSidebarMetrics(doc: Document): () => void {
     if (currentSidebar === sidebar) return
     sidebarObserver?.disconnect()
     currentSidebar = sidebar
-    writeSidebar(sidebar.getBoundingClientRect().width)
+    writeSidebarBounds(sidebar)
     writeFooter(sidebar)
     sidebarObserver = new ResizeObserver((entries) => {
       const entry = entries.at(-1)
-      if (entry) writeSidebar(entry.contentRect.width)
+      if (entry && currentSidebar?.isConnected) writeSidebarBounds(currentSidebar)
       writeFooter(sidebar)
     })
     sidebarObserver.observe(sidebar)

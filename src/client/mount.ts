@@ -218,6 +218,9 @@ export function applyRootAttributes(body: HTMLElement, settings: TaffySettings, 
   // the absence of both, and every :not([...ornate]) rule matched it and "off"
   // alike — which is exactly why the two levels looked identical.
   body.setAttribute('data-taffy-sidebar-decor', settings.sidebarDecoration)
+  // Same value under the name the V2 patch series uses, so either selector
+  // vocabulary works on this tree.
+  body.setAttribute('data-taffy-sidebar-decoration', settings.sidebarDecoration)
   body.toggleAttribute('data-taffy-low-power', shouldUseLowPower(settings))
   applyQChromeVars(body, settings)
 }

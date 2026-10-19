@@ -1268,9 +1268,19 @@ body[data-dsh-taffy-theme] {
    侧栏水印与边框等级**解耦**：关掉边框不再连带隐藏用户选的侧栏水印。 */
 
 body[data-dsh-taffy-theme] [data-skin-chrome='sidebar-trim'] {
+  /* Follow the measured sidebar rect, not the window origin. overflow:hidden is
+     the second line of defence: even a stale rectangle cannot paint outside. */
+  position: fixed;
+  left: var(--taffy-sidebar-left, 0px);
+  top: var(--taffy-sidebar-top, 0px);
+  width: var(--taffy-sidebar-width, 280px);
+  height: var(--taffy-sidebar-height, 100%);
+  right: auto;
+  bottom: auto;
   overflow: hidden;
   padding: 0;
   background-repeat: no-repeat;
+  pointer-events: none;
 }
 
 /* 角饰与缎带属于「悬空大花纹」，三档一律不画。 */
@@ -1289,12 +1299,12 @@ body[data-dsh-taffy-theme] {
 
 /* 关闭：没有任何额外边框。 */
 body[data-dsh-taffy-theme][data-taffy-sidebar-decor='off'] [data-skin-chrome='sidebar-trim'] {
-  background-image: none;
+  background: none;
 }
 
 /* 简约 · 柔光：一条细微粉紫侧线 + 底部一段短光线。 */
 body[data-dsh-taffy-theme][data-taffy-sidebar-decor='simple'] [data-skin-chrome='sidebar-trim'] {
-  background-image:
+  background:
     linear-gradient(180deg, transparent 5%, var(--taffy-edge-pink) 20% 78%, transparent 95%)
       left top / 1px 100% no-repeat,
     linear-gradient(90deg, transparent 10%, var(--taffy-edge-pink-soft) 50%, transparent 90%)
@@ -1304,7 +1314,7 @@ body[data-dsh-taffy-theme][data-taffy-sidebar-decor='simple'] [data-skin-chrome=
 
 /* 完整 · 细框：左右两条淡香槟金细线 + 上下短线，轻盈星金边。 */
 body[data-dsh-taffy-theme][data-taffy-sidebar-decor='full'] [data-skin-chrome='sidebar-trim'] {
-  background-image:
+  background:
     linear-gradient(180deg, transparent 7%, var(--taffy-edge-gold) 22% 78%, transparent 93%)
       left top / 1px 100% no-repeat,
     linear-gradient(180deg, transparent 7%, var(--taffy-edge-gold) 22% 78%, transparent 93%)

@@ -197,6 +197,7 @@ function applyTheme(ctx: ClientContext): void {
     body.removeAttribute('data-taffy-right-crowded')
     body.removeAttribute('data-taffy-q-ready')
     body.removeAttribute('data-taffy-sidebar-decor')
+    body.removeAttribute('data-taffy-sidebar-decoration')
     body.removeAttribute('data-taffy-bubble')
     body.removeAttribute('data-taffy-bubble-border')
     body.removeAttribute('data-taffy-composer')
@@ -272,3 +273,4 @@ function applyTheme(ctx: ClientContext): void {
     console.error('[dsh-taffy-theme] first-run settings persist failed', error)
   }
 }
+

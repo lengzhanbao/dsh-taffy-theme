@@ -104,7 +104,7 @@ describe('native sidebar controls stay untouched', () => {
     const off = bodyFor('off')
     const simple = bodyFor('simple')
     const full = bodyFor('full')
-    expect(off).toContain('background-image: none')
+    expect(off).toContain('background: none')
     expect(simple).not.toBe(full)
     expect(off).not.toBe(simple)
     // "simple" is one hairline plus a short bottom glow; "full" frames all four
@@ -127,3 +127,4 @@ describe('native sidebar controls stay untouched', () => {
     expect(css).not.toMatch(/sidebar-decor='off'\][^{]*data-taffy-sidebar-watermark/)
   })
 })
+
