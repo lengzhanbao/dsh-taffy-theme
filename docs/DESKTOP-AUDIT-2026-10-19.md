@@ -161,3 +161,46 @@ attachments/  cache/  dsh-runtimes/  profiles/  sessions/  storages/
 - 未修改 `E:\DeepSeekHarness` 下任何文件；
 - 未在 `desktop` profile 安装/卸载任何插件；
 - 未运行桌面应用。
+
+---
+
+## 7. 追加调查（第二轮）：桌面版自带 CLI，第三阶段可无 GUI 完成
+
+### 7.1 找到桌面版自己的 `dsh` CLI
+
+| 事实 | 证据 |
+| --- | --- |
+| 桌面版自带 CLI | `E:\Deepseek harness\resources\runtime\cli\bin\dsh.cmd` |
+| 另有运行时 bin | `resources\runtime\bin\node.cmd`、`resources\runtime\cli\command-manager.js`（22.5 KB） |
+| CLI 报告版本 | `dsh --version` → **`0.2.1-rc.2`**，exit 0 |
+| **尊重 `DSH_HOME`** | 把 `DSH_HOME` 指向临时目录后运行，未写入 `E:\DeepSeekHarness` |
+
+### 7.2 但 desktop profile 必须由桌面应用初始化
+
+用该 CLI 直接安装会失败：
+
+```
+dsh: Error: Open DeepSeek Harness Desktop once to initialize its profile,
+     then fully quit it before running dsh plugin --profile desktop.
+```
+
+这解释了 §2.2 的疑问 —— `profiles/desktop` 里没有 `node_modules` / lockfile，是因为**它不是给 CLI 从零创建的**，必须由应用本体初始化一次。
+
+### 7.3 因此第三阶段的正确流程
+
+1. `DSH_HOME` 指向隔离副本目录，**启动一次 `DeepSeek Harness.exe`** 让它初始化 profile；
+2. **完全退出**桌面应用；
+3. 用 `resources/runtime/cli/bin/dsh.cmd` + 同一 `DSH_HOME` 执行安装 / 启用 / 停用 / 卸载；
+4. 再次启动桌面应用，观察主题实际渲染（浅色、深色、reduced-motion、不同窗口宽度与缩放）。
+
+**第 1 步会弹出 GUI 窗口**，需用户同意；其余步骤可完全脚本化。
+
+### 7.4 走不通的路（记录以免重复踩坑）
+
+- ❌ **直接解析 `app.asar` 头部**：本次尝试 3 次均失败。头部 pickle 的长度字段取值有误，`JSON.parse` 抛错时把整个缓冲区打进了 stdout，两次刷掉大量输出。**不要再用 stdout 承载这类解析结果**，且不要复用失败解析得出的偏移量（第 3 次就是复用了前一阶段的坏偏移，导致 `main.js` 区域读出来全是 0 命中）。
+- ❌ **指望 Host 包在 `app.asar.unpacked` 里**：`resources/app.asar.unpacked/dsh/node_modules/@deepseek-ai` 只有 **3 个** 原生扩展包，DSH Host 确实打包在 asar 内部。
+- ✅ **正确方向**：不要自己解 asar，**用桌面版自带的 CLI**。
+
+### 7.5 仍未验证
+
+桌面应用本体在真实窗口中的渲染、主题切换、设置持久化、卸载回归 —— 都需要 §7.3 的第 1、4 步，尚未执行。
