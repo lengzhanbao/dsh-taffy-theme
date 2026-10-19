@@ -204,3 +204,17 @@ dsh: Error: Open DeepSeek Harness Desktop once to initialize its profile,
 ### 7.5 仍未验证
 
 桌面应用本体在真实窗口中的渲染、主题切换、设置持久化、卸载回归 —— 都需要 §7.3 的第 1、4 步，尚未执行。
+### 7.6 结论文证：CLI 无法绕过 GUI 创建 desktop profile
+
+在**空的隔离 `DSH_HOME`** 上直接跑：
+
+```
+$ dsh --profile desktop --dump-config
+error: profile "desktop" is managed exclusively by the Electron application
+```
+
+对照：`--profile web --dump-config` 会**自动从内置模板创建** `profiles/web`（本会话前面已实测）。
+
+**结论**：`desktop` profile **由 Electron 应用独占管理**，CLI 既不能创建也不能在未初始化时管理它。因此 §7.3 的第 1 步（启动一次桌面应用）**没有任何命令行替代方案** —— 这是硬约束，不是我的操作问题。
+
+即第三阶段的完整前置条件是：**必须先由桌面应用本体初始化一次 profile**。
