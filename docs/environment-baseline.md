@@ -54,3 +54,19 @@ npm run install:release
 ```
 
 更新插件 tarball 后需**重启** `dsh web`（host 静态路由不 HMR）。
+
+---
+
+## Note: which profile?
+
+Every `--profile web` command above targets the **browser** DSH. **DSH Desktop
+uses the `desktop` profile instead**, and installing into the wrong profile has
+no effect.
+
+| You are using | profile | data dir (measured on this machine) |
+| --- | --- | --- |
+| DSH Desktop app | `desktop` | `E:\DeepSeekHarness` |
+| Browser DSH (`dsh web`) | `web` | `C:\Users\SYH\.dsh` |
+
+`web` is verified on DSH 0.2.1-rc.2; the `desktop` profile has not had a real
+install test yet. See `docs/DESKTOP-AUDIT-2026-10-19.md`.

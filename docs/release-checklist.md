@@ -81,3 +81,19 @@ gh release create v0.1.9 E:\taffy\.cache\downloads\dsh-external-dsh-taffy-theme-
 ```bash
 dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.9/dsh-external-dsh-taffy-theme-0.1.9.tgz
 ```
+
+---
+
+## Note: which profile?
+
+Every `--profile web` command above targets the **browser** DSH. **DSH Desktop
+uses the `desktop` profile instead**, and installing into the wrong profile has
+no effect.
+
+| You are using | profile | data dir (measured on this machine) |
+| --- | --- | --- |
+| DSH Desktop app | `desktop` | `E:\DeepSeekHarness` |
+| Browser DSH (`dsh web`) | `web` | `C:\Users\SYH\.dsh` |
+
+`web` is verified on DSH 0.2.1-rc.2; the `desktop` profile has not had a real
+install test yet. See `docs/DESKTOP-AUDIT-2026-10-19.md`.
