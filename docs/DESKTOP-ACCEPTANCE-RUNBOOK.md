@@ -4,9 +4,14 @@
 目标：在**真实 Electron 渲染进程**（`dsh-app://app`）里观测 Taffy 是否挂载并正常渲染。
 
 > 为什么需要你亲自跑：桌面版有单实例锁，同一 Windows 账户下起不了第二个实例
-> （实测 `--user-data-dir` 不生效，新进程立即退出），而 `E:\DeepSeekHarness\profiles\desktop`
-> 是当前桌面实例正在使用的 profile，只可读不可写入安装。所以最后这一步只能由你在
-> 自己的会话里完成。
+> （实测 `--user-data-dir` 不生效，新进程立即退出），而 `E:\DeepSeekHarness\profiles\desktop` 
+> 是当前桌面实例正在使用的 profile，只可读不可写入安装。所以这一步只能由你发起。
+>
+> **两条路线，选一条**：
+> - **路线 A（推荐）**：新开一个 Windows 账户做账户级隔离，不碰你现有环境；
+>   你只负责建账户、装插件、带 CDP 启动，探针与证据我来收。见下方「路线 A」。
+> - **路线 B**：就在你当前实例跑，最快，但有配置层改动（有备份与一条命令回滚）。
+>   见下方第 0–9 步。
 
 **代价**：第 2 步要完全退出桌面版，当前对话所在的进程会结束。重新打开桌面版后，
 对话记录仍在，可以继续。
@@ -56,6 +61,113 @@
 安装门与素材路由 200 就是这么测出来的）。它能证明**宿主服务、装载门、路由注册**，
 但跑的不是 `dsh-app://app` 渲染进程，**不能**作为桌面渲染兼容的证据。
 要观测渲染进程，只有带 `--remote-debugging-port` 启动真实桌面实例这一条路。
+
+---
+
+## 路线 A：第二 Windows 账户（真正的账户级隔离）
+
+本机是 Windows 11 家庭版，没有 Windows Sandbox / Hyper-V。但**不需要虚拟机** ——
+`DSH_HOME` 是**用户级**环境变量（实测 `DSH_HOME [User] = E:\DeepSeekHarness`，
+`[Machine]` 未设置），而 Electron 的 userData 本来就在 `%APPDATA%` 下按用户隔离。
+换一个账户就同时换掉了：
+
+| 隔离项 | 为什么自动隔离 |
+| --- | --- |
+| Electron userData | `%APPDATA%` 按用户分离 |
+| **单实例锁** | 锁挂在 userData 上 → 天然不冲突，**不需要绕过任何东西** |
+| `DSH_HOME` | 用户级变量不跨账户继承 |
+| 插件安装位置 / profiles / sessions / storages | 全部落在该账户自己的 `DSH_HOME` |
+| 你现有的 `E:\DeepSeekHarness` | 完全不被触碰 |
+
+已验证的前提：`BUILTIN\Users` 对 `E:\`、`E:\Deepseek harness` 及其子目录有
+**ReadAndExecute**，所以新账户能执行桌面版、能读 tarball。
+
+### A1. 建账户（在 SYH 会话，需要一次 UAC）
+
+```powershell
+Start-Process pwsh -Verb RunAs -ArgumentList '-NoExit','-Command',
+  'net user DshTest <你定的密码> /add'
+```
+
+**不要**把它加进 Administrators。用完删掉即可（见 A6）。
+
+### A2. 切到该账户
+
+开始菜单 → 用户头像 → 切换用户。**快速用户切换不会结束 SYH 的会话**，
+当前对话与那个带单实例锁的桌面实例都继续活着。
+
+### A3. 在新账户里钉死 DSH_HOME（关键，别跳）
+
+在新账户的 PowerShell 里：
+
+```powershell
+# 持久化为「用户级」，这样开始菜单启动的 app 也继承得到
+[Environment]::SetEnvironmentVariable('DSH_HOME', 'C:\DSH-Test', 'User')
+$env:DSH_HOME = 'C:\DSH-Test'   # 当前会话也生效
+```
+
+> **陷阱**：只在 PowerShell 会话里临时设 `$env:DSH_HOME`，然后从开始菜单启动 app，
+> app 不继承它 —— 结果插件装进 A 目录、运行却读 B 目录，验收结论全错。
+> 所以必须持久化，并且 A4/A5 也从**设过变量的同一个窗口**启动。
+
+### A4. 首次启动初始化 profile，然后完全退出
+
+```powershell
+Start-Process 'E:\Deepseek harness\DeepSeek Harness.exe'
+```
+
+等界面完全起来 → 菜单退出 → 确认：
+
+```powershell
+Get-Process 'DeepSeek Harness' -ErrorAction SilentlyContinue | Measure-Object | Select-Object -ExpandProperty Count
+# 期望 0
+Test-Path 'C:\DSH-Test\profiles\desktop'
+# 期望 True —— 若为 False，说明 DSH_HOME 没被采纳，停下告诉我，别继续
+```
+
+那个 `Test-Path` 是本路线的**自检闸门**：它确保插件会装进这个一次性目录，
+而不是别处。
+
+### A5. 装插件 + 带 CDP 启动
+
+```powershell
+& 'E:\Deepseek harness\resources\runtime\cli\bin\dsh.cmd' `
+    plugin --profile desktop add 'E:\Deepseek harness\dsh-taffy-theme\dsh-external-dsh-taffy-theme-0.1.9.tgz'
+
+Select-String -Path 'C:\DSH-Test\profiles\desktop\package.json' -Pattern 'taffy'   # 确认写入
+
+Start-Process 'E:\Deepseek harness\DeepSeek Harness.exe' -ArgumentList '--remote-debugging-port=9333'
+```
+
+启动参数里**必须**有 `--remote-debugging-port=9333`，否则探针连不上。
+
+### A6. 回到 SYH 会话，我来收证据
+
+TCP 回环是整机范围的，不按会话隔离 —— 所以**我在 SYH 会话里就能探到新账户那个
+`dsh-app://app` 渲染进程**。切回来告诉我，我跑：
+
+```powershell
+cd 'E:\Deepseek harness\dsh-taffy-theme'
+node scripts/desktop-accept.mjs light      # 我跑
+# 你在新账户里切成深色 → 切回来告诉我
+node scripts/desktop-accept.mjs dark       # 我跑
+```
+
+第 6 步的人工清单同样在新账户里对照。收尾时卸载并删账户：
+
+```powershell
+& 'E:\Deepseek harness\resources\runtime\cli\bin\dsh.cmd' plugin --profile desktop remove @dsh-external/dsh-taffy-theme
+# 回到 SYH 会话，提权执行：
+Start-Process pwsh -Verb RunAs -ArgumentList '-NoExit','-Command','net user DshTest /delete'
+Remove-Item 'C:\DSH-Test' -Recurse -Force
+```
+
+---
+
+## 路线 B：就在当前实例跑
+
+即下面第 0–9 步的原始流程。同一台机器、同一个账户，代价是插件进入你日常环境
+（第 3 步有配置层备份，第 8 步一条命令回滚）。
 
 ---
 
@@ -256,3 +368,4 @@ Get-Content 'E:\Deepseek harness\dsh-taffy-theme\.cache\desktop-accept-report.js
 | 装完界面里完全没变化 | 插件未被启用 | 看应用内插件管理界面是否需要手动启用 |
 | 有 `data-taffy-asset-error` | 素材 404 | 把探针打印的图片 URL 发我，对照 `DESKTOP-RUNTIME-EVIDENCE.md` §2 |
 | 立绘在但尺寸是 `0x0` | 图未解码 | 等 2 秒重跑；仍为 0 说明取回的不是有效 webp |
+
