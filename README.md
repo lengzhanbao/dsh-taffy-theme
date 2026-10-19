@@ -9,19 +9,34 @@
 | --- | --- |
 | Package | `@dsh-external/dsh-taffy-theme` |
 | Version | `0.1.9` |
-| Platform | DSH **Web** profile only |
-| Requires | DeepSeek Harness `0.1.0-rc.6`+（兼容 `0.1.5` / `0.1.6-alpha`） |
+| Platform | DSH **Web** profile 或 **Desktop** profile —— 见下方「选对 profile」 |
+| Requires | `engines.dsh`：`>=0.1.6-alpha.1 <0.2.0 \|\| >=0.2.1-rc.2 <0.3.0` |
+
+## 选对 profile
+
+**桌面版与浏览器版跑的是两个不同的 profile。装错地方就不会生效**（本机实测）：
+
+| 你在用 | profile 名 | 数据目录 |
+| --- | --- | --- |
+| **DSH Desktop 应用** | `desktop` | 例如 `E:\DeepSeekHarness` |
+| 浏览器里的 DSH Web（`dsh web`） | `web` | 例如 `C:\Users\SYH\.dsh` |
+
+> ⚠️ **验证状态**：`web` profile 已在 DSH 0.2.1-rc.2 上完成安装、启动与浏览器端验收（见 `docs/COMPAT-0.2.x-2026-10-19.md`）。
+> **`desktop` profile 尚未完成实机安装验证**（见 `docs/DESKTOP-AUDIT-2026-10-19.md`）—— 桌面版的目标 profile 是 `desktop`，但本插件还没有在真实桌面运行时上跑过。
 
 ## 下载即用
 
 **普通用户只需一条命令，无需克隆仓库或本地构建。**
 
 ```bash
+# 浏览器版 DSH Web
 dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.9/dsh-external-dsh-taffy-theme-0.1.9.tgz
-dsh web
+
+# 桌面版 DSH Desktop（目标 profile 是 desktop；本插件在该环境尚未验证）
+dsh plugin --profile desktop add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.9/dsh-external-dsh-taffy-theme-0.1.9.tgz
 ```
 
-然后：**设置 → 通用 → Taffy 模式** 打开总开关，浏览器 **硬刷新**（Ctrl+F5）。
+然后：**设置 → 通用 → Taffy 模式** 打开总开关，再 **硬刷新**（`Ctrl+F5`；桌面版请完全重启应用）。
 
 | 文档 | 说明 |
 | --- | --- |
@@ -60,6 +75,7 @@ dsh web
 ## 卸载
 
 ```bash
+# 换成你安装时用的 profile（web 或 desktop）
 dsh plugin --profile web remove @dsh-external/dsh-taffy-theme
 ```
 

@@ -6,11 +6,15 @@
 
 | 项目 | 要求 |
 | --- | --- |
-| 平台 | [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) **Web** profile |
-| DSH 版本 | `0.1.0-rc.6` 或更高 |
-| 其他 | 已能正常打开 `dsh web`（默认 `http://127.0.0.1:3080`） |
+| 平台 | DSH **Web** profile 或 **Desktop** profile —— 见下方 profile 说明 |
+| DSH 版本 | 由 `engines.dsh` 判定：`>=0.1.6-alpha.1 <0.2.0 \|\| >=0.2.1-rc.2 <0.3.0` |
+| 其他 | 已能正常打开 DSH（浏览器版 `dsh web` 默认 `http://127.0.0.1:3080`；桌面版为应用窗口） |
 
-> 仅支持 **Web** 界面，不支持纯 CLI / 其他 profile。
+> ⚠️ **选对 profile**：桌面版用 `desktop`，浏览器版用 `web`。**装错 profile 不会生效**（本机实测：桌面版数据目录只有 `desktop`，浏览器版是 `web`）。
+>
+> **验证状态**：`web` profile 已在 DSH `0.2.1-rc.2` 上完成安装、启动与浏览器端验收（见 [COMPAT-0.2.x-2026-10-19.md](COMPAT-0.2.x-2026-10-19.md)）；**`desktop` profile 尚未完成实机安装验证**（见 [DESKTOP-AUDIT-2026-10-19.md](DESKTOP-AUDIT-2026-10-19.md)）。
+>
+> 不支持纯 CLI —— 没有 Web/桌面界面时本主题无意义。
 
 ## 安装（推荐）
 
