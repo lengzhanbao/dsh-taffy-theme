@@ -13,13 +13,16 @@ describe('desktop sidebar decoration controls', () => {
     expect(css).toContain('grid-template-columns: repeat(3, minmax(0, 1fr))')
   })
 
-  it('does not hide the native rail icons in off/simple modes', () => {
-    expect(css).toContain("[data-taffy-sidebar-ornate][data-taffy-q-ready][data-taffy-sidebar-size='rail']")
-    expect(css).not.toContain("body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'] svg")
+  it('cannot hide native rail icons at any level, because the rules are gone', () => {
+    // The patch gated those rules behind [data-taffy-sidebar-ornate]; the
+    // follow-up removed them outright, which is stronger: no level, now or
+    // later, can hide a native icon.
+    expect(css).not.toMatch(/data-taffy-sidebar-ornate[^{}]*button/)
   })
 
-  it('restores the brand icon/text rather than generating a large 56px heading', () => {
-    expect(css).toContain("button[class*='brand']::after")
-    expect(css).toContain('content: none;')
+  it('no longer generates a brand heading or a 56px brand avatar', () => {
+    expect(css).not.toContain("content: 'taffy-harness'")
+    expect(css).not.toMatch(/button\[class\*='brand'\][^{}]*\{[^}]*width:\s*56px/)
+    expect(css).not.toMatch(/button\[class\*='brand'\][^{}]*\{[^}]*font-size:\s*0/)
   })
 })

@@ -280,7 +280,7 @@ function TaffyModeRow() {
       value: settings.acrylicPercent,
       onChange: (acrylicPercent) => commit({ acrylicPercent }),
     }),
-    createElement('div', { className: 'dsh-taffy-general-title' }, '侧栏装饰'),
+    createElement('div', { className: 'dsh-taffy-general-title' }, '塔菲角色装饰'),
     createElement('div', { className: 'dsh-taffy-general-cubes' },
       createElement(Cube, { selected: settings.showMascot, label: '加油喵', onClick: () => commit({ showMascot: !settings.showMascot }) }),
     ),
@@ -303,7 +303,7 @@ function TaffyModeRow() {
       onSelect: (backgroundFunctional) => commit({ backgroundFunctional }),
     }),
     createElement(Choice, {
-      label: '侧栏装饰',
+      label: '侧栏装饰等级',
       value: settings.sidebarDecoration,
       options: DECORATION_OPTIONS,
       onSelect: (sidebarDecoration) => commit({ sidebarDecoration }),
@@ -362,4 +362,5 @@ export function registerSettingsPanel(ctx: ClientContext): void {
     locale: SETTINGS_NS,
   }, TaffyModeRow))
 }
+
 

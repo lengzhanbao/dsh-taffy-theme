@@ -62,16 +62,17 @@ describe('decorative CSS contracts', () => {
     expect(mount).toContain('scenePoses')
   })
 
-  it('specializes chrome icons with distinct Q-version overlays', () => {
+  it('keeps Q-version overlays on the composer, never on sidebar controls', () => {
+    // The composer keeps its Q faces: they are an ::after with
+    // pointer-events:none and do not move the button or its hit area.
     expect(components).toContain('--taffy-q-send')
-    expect(components).toContain('--taffy-q-settings')
-    expect(components).toContain('--taffy-q-brand')
-    expect(components).not.toContain('--taffy-q-brand-right')
     expect(components).toContain("button[aria-label='发送消息']")
-    expect(components).toContain("button[aria-haspopup='dialog']")
-    expect(components).toContain("button[class*='brand']")
-    expect(components).toMatch(/收起侧边栏'[\s\S]{0,500}linear-gradient\(145deg/)
     expect(motion).toContain('taffy-send-glow')
+    // The sidebar's Q-icon replacement was deleted along with the rest of the
+    // native-control restyling (2026-10-19). These must not come back.
+    expect(components).not.toContain('--taffy-q-settings')
+    expect(components).not.toContain('--taffy-q-new')
+    expect(components).not.toContain('--taffy-q-brand')
   })
 
   it('hides top sidebar frame corners so they do not stack on the brand Q', () => {
@@ -136,7 +137,9 @@ describe('decorative CSS contracts', () => {
     expect(components).toContain('background-size: 118% 118%')
     expect(components).toContain('background-size: 122% 122%')
     expect(components).toContain('width: 42px')
-    expect(components).toContain('width: 36px')
+    // Native sidebar buttons must keep their own sizing; the rail override that
+    // forced 36px is gone. See tests/native-controls-untouched.test.ts.
+    expect(components).not.toMatch(/rail'\][^{}]*button[^{}]*\{[^}]*width:\s*36px/)
     expect(components).not.toContain('background-size: 76%')
     expect(components).not.toContain('background-size: contain')
     expect(components).toContain("[class*='brand']")

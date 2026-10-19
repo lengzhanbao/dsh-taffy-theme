@@ -26,70 +26,32 @@ describe('Taffy headshot icons', () => {
     expect(bundledQ).not.toContain('data:image/')
   })
 
-  it('keeps new-session at 36px, whale-style collapse at 40px, DS brand at 56px, and fills Q faces at 118–122%', () => {
-    expect(components).toContain("button[aria-label='发送消息']")
-    expect(components).toContain("button[aria-label='收起侧边栏']")
-    expect(components).toContain("content: 'taffy-harness'")
-    expect(components).toContain("button[class*='brand']::after")
-    expect(components).not.toContain('padding-right: 66px')
-    expect(components).not.toMatch(/收起侧边栏'\]::after[\s\S]{0,400}--taffy-q-brand-right/)
-    expect(components).toMatch(/收起侧边栏'\]::after[\s\S]{0,400}content:\s*none/)
-    expect(components).toMatch(/收起侧边栏'[\s\S]{0,500}border:\s*1px solid color-mix\(in srgb, var\(--ds-taffy-gold\)/)
-    expect(components).toContain('width: 36px')
-    expect(components).toContain('min-width: 36px')
-    expect(components).toContain('width: 40px')
-    expect(components).toContain('width: 42px')
-    expect(components).toContain('width: 56px')
-    expect(components).toContain('background-size: 118% 118%')
-    expect(components).toContain('background-size: 122% 122%')
-    expect(components).toContain('background-size: 100% 100%')
+
+  it('fills the composer Q faces at 118–122% and keeps them decorative', () => {
+    for (const label of ['发送消息', '停止生成', '命令']) {
+      expect(components).toMatch(
+        new RegExp(`\\[data-composer-card\\] button\\[aria-label='${label}'\\]::after[\\s\\S]{0,220}background-size:\\s*122% 122%`),
+      )
+    }
+    expect(components).toContain('--taffy-q-send')
+    // The overlay must never intercept a click meant for the button.
+    expect(components).toMatch(/:after[\s\S]{0,200}pointer-events:\s*none/)
+  })
+
+  it('no longer sizes or replaces the native sidebar controls', () => {
+    // Everything below belonged to the pre-2026-10-19 "ornate" treatment. It was
+    // deleted rather than overridden, so these guards assert absence.
+    expect(components).not.toContain("content: 'taffy-harness'")
+    expect(components).not.toMatch(/width:\s*36px/)
+    expect(components).not.toMatch(/width:\s*56px/)
+    expect(components).not.toMatch(/min-height:\s*64px/)
+    expect(components).not.toContain('padding: 11px 16px 17px')
+    expect(components).not.toMatch(/data-taffy-sidebar-ornate[^{}]*button/)
+    // The composer keeps its round Q buttons; the sidebar does not.
     expect(components).toMatch(/\[data-composer-card\] button\[aria-label='发送消息'\][\s\S]{0,900}border-radius:\s*50%/)
-    expect(components).toMatch(/\[data-composer-card\] button\[aria-label='发送消息'\]::after[\s\S]{0,220}background-size:\s*122% 122%/)
-    expect(components).toMatch(/\[data-composer-card\] button\[aria-label='停止生成'\]::after[\s\S]{0,220}background-size:\s*122% 122%/)
-    expect(components).toMatch(/\[data-composer-card\] button\[aria-label='命令'\]::after[\s\S]{0,220}background-size:\s*122% 122%/)
-    expect(components).not.toContain('width: 52px')
+    expect(components).not.toMatch(/\[data-slot='sidebar\.settings'\][^{}]*\{[^}]*border-radius:\s*50%/)
   })
 
-  it('uses a full-width plate for wide settings with visible label', () => {
-    expect(components).toContain(":not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog']")
-    expect(components).toContain(":not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::before")
-    const plate = components.match(
-      /:not\(\[data-taffy-sidebar-size='rail'\]\) \[data-slot='sidebar.settings'\] button\[aria-haspopup='dialog'\],[\s\S]*?\n\}/,
-    )
-    expect(plate?.[0]).toContain('width: 100%')
-    expect(plate?.[0]).toContain('font-size: 14px')
-    expect(plate?.[0]).toContain('background: var(--taffy-plate-art)')
-    expect(plate?.[0]).toContain('border-radius: 14px')
-    expect(plate?.[0]).not.toContain('border-image-source')
-    expect(plate?.[0]).not.toMatch(/font-size:\s*0/)
-    expect(plate?.[0]).not.toContain('color: transparent')
-    expect(plate?.[0]).not.toMatch(/border-radius:\s*50%/)
-    const rail = components.match(
-      /\[data-taffy-sidebar-size='rail'\] \[data-slot='sidebar.settings'\] button\[aria-haspopup='dialog'\] \{[\s\S]*?\n\}/,
-    )
-    expect(rail?.[0]).toContain('border-radius: 50%')
-    expect(rail?.[0]).toContain('font-size: 0')
-    expect(rail?.[0]).toContain('overflow: visible')
-  })
-
-  it('does not round labeled new-session or settings rows', () => {
-    expect(components).toContain(":not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand'])")
-    const labeled = components.match(
-      /:not\(\[data-taffy-sidebar-size='rail'\]\) \[data-slot='sidebar.settings'\] button\[aria-haspopup='dialog'\],[\s\S]*?\n\}/,
-    )
-    expect(labeled?.[0]).toContain('min-height: 64px')
-    expect(labeled?.[0]).toContain('padding: 11px 16px 17px')
-    expect(labeled?.[0]).not.toMatch(/border-radius:\s*50%/)
-    expect(components).not.toMatch(/button\[class\*='brand'\] \{[\s\S]{0,200}border-radius:\s*50%/)
-  })
-
-  it('hides native SVG only after the headshot is ready', () => {
-    expect(components).toContain('[data-taffy-q-ready]')
-    expect(components).not.toMatch(/^body svg/m)
-    expect(components).not.toContain('clip-path')
-    expect(components).toContain("[data-slot='sidebar.settings'] button[aria-haspopup='dialog'] svg")
-    expect(components).not.toContain("[data-slot='sidebar.settings'] button[aria-haspopup='dialog'] > svg")
-  })
 
   it('replaces the hero fish with a round avatar and pink-gold headline', () => {
     const badges = readFileSync(join(root, 'src/theme/taffy-badges.css'), 'utf8')

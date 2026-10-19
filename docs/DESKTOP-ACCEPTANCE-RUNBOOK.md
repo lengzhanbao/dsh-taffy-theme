@@ -22,10 +22,10 @@
 
 | 项 | 值 |
 | --- | --- |
-| tarball | `dsh-external-dsh-taffy-theme-0.1.9.tgz` |
+| tarball | `dsh-external-dsh-taffy-theme-0.2.0.tgz` |
 | bytes | 2090022 |
 | SHA-256 | `21BA17DCDFC9EB588EB66274224D31628818E2FDA25E1FE9E676009D2E58746C` |
-| version | `0.1.9` |
+| version | `0.2.0` |
 | commit | `0d6fe0335f70526826f34e25cda71a7e7b2a52c1` |
 | branch | `compat/dsh-0.2.x` |
 | 门禁 | `npm run ci` → exit 0（peers / preset / assets / static / typecheck / 119 tests / pack 56 项） |
@@ -132,7 +132,7 @@ Test-Path 'C:\DSH-Test\profiles\desktop'
 
 ```powershell
 & 'E:\Deepseek harness\resources\runtime\cli\bin\dsh.cmd' `
-    plugin --profile desktop add 'E:\Deepseek harness\dsh-taffy-theme\dsh-external-dsh-taffy-theme-0.1.9.tgz'
+    plugin --profile desktop add 'E:\Deepseek harness\dsh-taffy-theme\dsh-external-dsh-taffy-theme-0.2.0.tgz'
 
 Select-String -Path 'C:\DSH-Test\profiles\desktop\package.json' -Pattern 'taffy'   # 确认写入
 
@@ -189,7 +189,7 @@ Get-Content 'E:\DeepSeekHarness\dsh-runtimes\dsh-primary-runtime\runtime.json' |
 cd 'E:\Deepseek harness\dsh-taffy-theme'
 npm run build:ci
 npm pack
-# 产出：dsh-external-dsh-taffy-theme-0.1.9.tgz
+# 产出：dsh-external-dsh-taffy-theme-0.2.0.tgz
 ```
 
 ---
@@ -221,10 +221,10 @@ Copy-Item "$p\pnpm-lock.yaml" $bak -ErrorAction SilentlyContinue
 # 安装（用桌面自带 CLI）
 $env:DSH_HOME = 'E:\DeepSeekHarness'
 & 'E:\Deepseek harness\resources\runtime\cli\bin\dsh.cmd' `
-    plugin --profile desktop add 'E:\Deepseek harness\dsh-taffy-theme\dsh-external-dsh-taffy-theme-0.1.9.tgz'
+    plugin --profile desktop add 'E:\Deepseek harness\dsh-taffy-theme\dsh-external-dsh-taffy-theme-0.2.0.tgz'
 ```
 
-期望：退出码 0，输出里有 `@dsh-external/dsh-taffy-theme 0.1.9`。
+期望：退出码 0，输出里有 `@dsh-external/dsh-taffy-theme 0.2.0`。
 
 如果它提示 `Open DeepSeek Harness Desktop once to initialize its profile, then fully quit it`
 —— 说明进程没退干净，回第 2 步。
@@ -373,13 +373,13 @@ Get-Content 'E:\Deepseek harness\dsh-taffy-theme\.cache\desktop-accept-report.js
 ### 同版本号重装不会替换文件（实测）
 
 
-pm pack 之后版本号仍是 `0.1.9`，此时直接 `plugin add` 会**复用先前的解析结果**，
+pm pack 之后版本号没变（例如仍是旧号），此时直接 `plugin add` 会**复用先前的解析结果**，
 `node_modules` 里还是旧构建 —— 页面看起来「改了没效果」。
 
 ```powershell
 $cli = 'E:\Deepseek harness\resources\runtime\cli\bin\dsh.cmd'
 & $cli plugin --profile desktop remove @dsh-external/dsh-taffy-theme
-& $cli plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.1.9.tgz
+& $cli plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.2.0.tgz
 ```
 
 核对是否真的换掉了：
@@ -389,3 +389,4 @@ $p = 'E:\DeepSeekHarness\profiles\desktop\node_modules\@dsh-external\dsh-taffy-t
 (Get-Item $p).Length, (Get-Item 'E:\Deepseek harness\dsh-taffy-theme\lib\client.js').Length
 # 两个数字必须一致
 ```
+
