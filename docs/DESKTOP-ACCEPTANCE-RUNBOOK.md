@@ -13,6 +13,52 @@
 
 ---
 
+## 交付物指纹（本轮）
+
+| 项 | 值 |
+| --- | --- |
+| tarball | `dsh-external-dsh-taffy-theme-0.1.9.tgz` |
+| bytes | 2090022 |
+| SHA-256 | `21BA17DCDFC9EB588EB66274224D31628818E2FDA25E1FE9E676009D2E58746C` |
+| version | `0.1.9` |
+| commit | `0d6fe0335f70526826f34e25cda71a7e7b2a52c1` |
+| branch | `compat/dsh-0.2.x` |
+| 门禁 | `npm run ci` → exit 0（peers / preset / assets / static / typecheck / 119 tests / pack 56 项） |
+
+重新打包后 SHA-256 会变，用 `Get-FileHash` 重新记录即可。
+
+---
+
+## 为什么这份验收必须由你执行（本机隔离能力实测）
+
+在把任务交给你之前，先穷举过本机能提供的隔离手段，结论是**一个都不成立**：
+
+| 隔离手段 | 本机状态 | 依据 |
+| --- | --- | --- |
+| Windows Sandbox | **不存在** | Windows 11 **家庭版**（Build 26200）；`C:\Windows\System32\WindowsSandbox.exe` = False。家庭版不提供该功能 |
+| Hyper-V / 虚拟机 | **不存在** | 无 `Get-VM` cmdlet；家庭版不含 Hyper-V |
+| 提权启用上述功能 | **不可用** | 本会话审批被禁用，无法触发 UAC |
+| 复用 `CodexSandboxOffline` / `CodexSandboxOnline` | **无凭据** | 两账户由 Codex 工具创建，`PasswordRequired: True`；不应猜测他人账户密码 |
+| 独立安装包重装 | **不存在** | Downloads / Desktop 无安装包，无法在全新环境里装入桌面版 |
+
+再加一条已经实测的硬约束：桌面版有单实例锁（`requestSingleInstanceLock` ×1，
+`--user-data-dir` 在 asar 中出现 **0 次**），同账户下启动第二个实例会立即退出
+（实测新进程 PID 47920 秒退，进程数前后都是 7）。
+
+因此本机能给出的**唯一**真实桌面证据来源，就是你正在使用的那个实例。
+按「不绕过单实例锁、不擅动用户运行环境」的约束，这一步只能由你决定是否执行、
+并在你控制的时机执行。本 runbook 为此准备了两件事：第 3 步的配置层备份，
+和第 8 步的一条命令回滚。
+
+### 为什么不能拿 `dsh web` 的结果顶替
+
+桌面版自带的运行时上确实可以跑 `dsh web`（`docs/DESKTOP-RUNTIME-EVIDENCE.md` 记录的
+安装门与素材路由 200 就是这么测出来的）。它能证明**宿主服务、装载门、路由注册**，
+但跑的不是 `dsh-app://app` 渲染进程，**不能**作为桌面渲染兼容的证据。
+要观测渲染进程，只有带 `--remote-debugging-port` 启动真实桌面实例这一条路。
+
+---
+
 ## 0. 前置确认
 
 ```powershell
