@@ -142,3 +142,108 @@ Compress-Archive -Path "E:\dsh-desktop-iso" -DestinationPath "$env:TEMP\dsh-desk
 - 分支 `compat/dsh-0.2.x`，19 个提交，**未推送、未发布**
 - `web` profile 已在隔离的 DSH `0.2.1-rc.2` 上完成安装 / 启动 / 浏览器验收 10/10 —— **但这不构成桌面兼容证据**
 - 桌面版：**仅完成静态审计**（见 `DESKTOP-AUDIT-2026-10-19.md`），**未安装、未运行、未验收**
+
+---
+
+## 7. 隔离证据的强化要求（本文件为唯一验收依据）
+
+> **重要**：文件数量与总字节数相同**不构成**内容未被修改的证据（同尺寸改写、等量增删、时间戳更新都会漏掉）。
+> 必须用 **SHA-256 清单**做对账。
+
+### 7.1 三个正式数据根的完整清单 + SHA-256
+
+对每个根分别生成清单（含相对路径、字节数、mtime、SHA-256），**在启动前和启动后各做一次**：
+
+```powershell
+$roots = @("E:\DeepSeekHarness", "$env:APPDATA\dsh-desktop", "$env:APPDATA\@deepseek-ai\dsh-desktop")
+$out = "$env:TEMP\taffy-manifest-before"      # 事后改成 -after
+New-Item -ItemType Directory -Force -Path $out | Out-Null
+foreach ($r in $roots) {
+  $tag = ($r -replace '[:\\@]','_')
+  Get-ChildItem $r -Recurse -File -Force -ErrorAction SilentlyContinue | ForEach-Object {
+    [pscustomobject]@{
+      path = $_.FullName.Substring($r.Length)
+      size = $_.Length
+      mtime = $_.LastWriteTimeUtc.ToString('o')
+      sha256 = (Get-FileHash $_.FullName -Algorithm SHA256 -ErrorAction SilentlyContinue).Hash
+    }
+  } | Export-Csv "$out\$tag.csv" -NoTypeInformation -Encoding UTF8
+}
+```
+
+### 7.2 新增 / 修改 / 删除的独立统计
+
+```powershell
+foreach ($tag in @('_E__DeepSeekHarness','_C__Users_SYH_AppData_Roaming_dsh-desktop','_C__Users_SYH_AppData_Roaming__deepseek-ai_dsh-desktop')) {
+  $a = Import-Csv "$env:TEMP\taffy-manifest-before\$tag.csv"
+  $b = Import-Csv "$env:TEMP\taffy-manifest-after\$tag.csv"
+  $ka = @{}; $a | ForEach-Object { $ka[$_.path] = $_.sha256 }
+  $kb = @{}; $b | ForEach-Object { $kb[$_.path] = $_.sha256 }
+  $added   = $kb.Keys | Where-Object { -not $ka.ContainsKey($_) }
+  $deleted = $ka.Keys | Where-Object { -not $kb.ContainsKey($_) }
+  $changed = $kb.Keys | Where-Object { $ka.ContainsKey($_) -and $ka[$_] -ne $kb[$_] }
+  "== $tag"
+  "   新增 {0} / 删除 {1} / 内容变更 {2}" -f @($added).Count, @($deleted).Count, @($changed).Count
+  @($added + $deleted + $changed) | Select-Object -First 20 | ForEach-Object { "     $_" }
+}
+```
+
+> `mtime` 变化但 `sha256` 相同 → 只读触碰，可接受但需记录；
+> `sha256` 变化 → **内容真的被改了**。
+
+### 7.3 Electron 身份核对（PID / 命令行 / 真实 userData / partition）
+
+启动隔离实例后、以及**任何操作之前**，核对它确实是隔离实例：
+
+```powershell
+Get-CimInstance Win32_Process -Filter "Name='DeepSeek Harness.exe'" |
+  Select-Object ProcessId, CommandLine | Format-List
+```
+
+必须满足：
+
+| 检查 | 期望 |
+| --- | --- |
+| `CommandLine` 含 `--user-data-dir=<隔离目录>` | ✅ 出现 |
+| `CommandLine` 中**不出现** `E:\DeepSeekHarness` 或正式 userData 路径 | ✅ |
+| 进程启动时间 | 晚于本次启动命令 |
+| 隔离 userData 目录内出现 `Local Storage` / `Network` / `Cache` | ✅ 证明它真的在用这个目录 |
+
+`partition` 无法从命令行看出。间接判定：启动后检查 **`%APPDATA%\@deepseek-ai\dsh-desktop` 的 SHA-256 是否零变更** —— 若有变更，说明存在未被 `--user-data-dir` 覆盖的第二个 profile 根。
+
+### 7.4 识别 `requestSingleInstanceLock()` 造成的启动转发
+
+症状（出现任一即视为**启动被转发**）：
+
+- 新进程**立刻退出**，而原实例仍在运行（PID 未变）
+- 隔离目录内**始终没有** `Local Storage` / `Network` / `Cache`
+- 原实例窗口被激活或前置
+- 原实例的 `CommandLine` 不含 `--user-data-dir`
+
+出现即**停止**：说明启动请求被转给了正在使用的正式实例。
+
+### 7.5 立即停止的条件（硬闸门）
+
+任一条成立 → **立即停止，不继续安装**，并保留全部清单与日志：
+
+1. 三个正式根中任一出现 **sha256 变更或新增/删除文件**；
+2. 新进程命令行**不含** `--user-data-dir`，或含正式路径；
+3. 隔离目录内**没有**生成 Chromium profile 子目录（说明没真正用隔离目录）；
+4. 检测到 §7.4 的启动转发症状；
+5. 启动前 `Get-Process -Name 'DeepSeek Harness'` **非空**（正式实例仍在运行）。
+
+### 7.6 替代方案（隔离无法证明时）
+
+按代价从低到高：
+
+1. **独立 Windows 本地账户**：为测试建一个临时账户，登录后运行桌面应用。该账户的 `%APPDATA%` / `%LOCALAPPDATA%` 天然与你的主账户分离，`DSH_HOME` 再指向测试目录即可 —— **隔离性最强、最容易证明**（正式账户的三个根根本不会被该进程访问）。
+2. **Windows 沙箱（Windows Sandbox）** 或容器：整个文件系统是一次性的，测试完直接丢弃。
+3. **虚拟机 / 另一台机器**：最彻底，代价最高。
+4. **仅隔离 `DSH_HOME`**：**不满足**本文件的准入标准，不建议采纳。
+
+### 7.7 与"不要用数量/字节数当证据"对应的验收表述
+
+最终报告里应写：
+
+- 三个根的 **sha256 清单差异**（新增/删除/变更各几项、具体路径）
+- 而不是"文件数和字节数没变"
