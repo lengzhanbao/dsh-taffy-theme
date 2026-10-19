@@ -971,28 +971,25 @@ body[data-dsh-taffy-theme][data-taffy-settings-open] [data-taffy-wallpaper='pape
   visibility: hidden;
 }
 
-/* ── 2b. Sidebar watermark layer ──────────────────────────────────────────
-   specs/03 B asked for a weak watermark behind the sidebar. The old attempt
-   could not work because no separate figure element existed; this is our own
-   layer, so the 9:16 art can simply sit at low opacity. */
-body[data-dsh-taffy-theme] [data-taffy-sidebar-watermark] {
-  position: fixed;
-  inset: 0 auto 0 0;
-  width: var(--taffy-sidebar-width, 280px);
-  z-index: 0;
-  pointer-events: none;
-  background-image: var(--taffy-sidebar-watermark-art, none);
-  background-repeat: no-repeat;
-  background-position: right top;
-  background-size: cover;
-  opacity: var(--taffy-watermark-opacity, 0.14);
-  transition: opacity 260ms ease;
-}
+/* ── 2b. 侧栏水印：画成侧栏自己的背景层 ───────────────────────────────────
+   早前把水印做成 stage 里的一个 div，但 stage 被 prepend 到 body 最前面且
+   z-index:0，#root 在它之后绘制，所以水印永远在侧栏底板下面；底板又不透明，
+   于是「选了也看不见」。
 
-/* A collapsed rail has no room for it, and the setting can switch it off. */
-body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-taffy-sidebar-watermark],
-body[data-dsh-taffy-theme][data-taffy-low-power] [data-taffy-sidebar-watermark] {
-  opacity: 0;
+   现在把素材挂到侧栏列的 background 上：底板颜色仍在，水印作为其上的第一层，
+   再叠一层底板色纱幕把强度压到约 12%，内容文字仍在其上。这样既可见，也永远
+   不会被裁到侧栏外面。 */
+body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']):not([data-taffy-low-power])
+  :is([data-pane='sidebar'], [class*='sidebarCol']) {
+  background-image:
+    linear-gradient(
+      var(--taffy-sidebar-watermark-veil, color-mix(in srgb, var(--ds-taffy-layer-1, var(--ds-taffy-cream)) 88%, transparent)),
+      var(--taffy-sidebar-watermark-veil, color-mix(in srgb, var(--ds-taffy-layer-1, var(--ds-taffy-cream)) 88%, transparent))
+    ),
+    var(--taffy-sidebar-watermark-art, none);
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, right top;
+  background-size: 100% 100%, cover;
 }
 
 /* specs/01 §四.2 — the two full-bleed overlays that also carry light across the

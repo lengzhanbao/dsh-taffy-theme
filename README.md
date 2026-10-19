@@ -9,7 +9,7 @@
 | | |
 | --- | --- |
 | Package | `@dsh-external/dsh-taffy-theme` |
-| Version | **`0.2.0`** |
+| Version | **`0.2.1`** |
 | 目标宿主 | **DSH Desktop 0.2.x**（`desktop` profile） |
 | Requires | `engines.dsh`：`>=0.2.1-rc.2 <0.3.0` |
 | 只改外观 | 不接管 DSH 原生按钮、事件与几何布局 |
@@ -21,13 +21,13 @@
 DSH Desktop 使用 `desktop` profile：
 
 ```bash
-dsh plugin --profile desktop add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.2.0/dsh-external-dsh-taffy-theme-0.2.0.tgz
+dsh plugin --profile desktop add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.2.1/dsh-external-dsh-taffy-theme-0.2.1.tgz
 ```
 
 或下载 Release 附件后本地安装：
 
 ```powershell
-dsh plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.2.0.tgz
+dsh plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.2.1.tgz
 ```
 
 装完 **完全退出并重开 DSH Desktop** —— 客户端 bundle 只在启动时加载，仅刷新窗口不够。
@@ -156,3 +156,4 @@ A Taffy character theme built for the official **DSH Desktop** 0.2.x: nine selec
 for your own messages and the composer, and three sidebar frame levels. It repaints the theme's own
 layers only — native DSH controls keep their geometry, icons and click behaviour. Install with the
 command above, then fully restart the app; see [docs/install.en.md](docs/install.en.md).
+

@@ -241,11 +241,11 @@ export function syncStageArt(root: HTMLElement = document.body, settings?: Taffy
     if (functional instanceof HTMLImageElement && functionalUrl) applyImageSrc(functional, functionalUrl)
 
     const watermarkUrl = resolveSidebarWatermarkUrl(settings)
-    const watermark = root.querySelector('[data-taffy-sidebar-watermark]')
-    if (watermark instanceof HTMLElement) {
-      if (watermarkUrl) watermark.style.setProperty('--taffy-sidebar-watermark-art', `url("${watermarkUrl}")`)
-      else watermark.style.removeProperty('--taffy-sidebar-watermark-art')
-    }
+    // Publish on body, not on a layer inside the stage: that stage is prepended
+    // to document.body with z-index 0, so anything in it paints behind #root and
+    // therefore behind the sidebar's own (now 94% opaque) fill.
+    if (watermarkUrl) root.style.setProperty('--taffy-sidebar-watermark-art', `url("${watermarkUrl}")`)
+    else root.style.removeProperty('--taffy-sidebar-watermark-art')
   } else {
     const wallpaperUrl = resolveWallpaperUrl(night)
     const wallpaper = root.querySelector('[data-taffy-wallpaper]')
@@ -290,14 +290,7 @@ export function createCharacterStage(settings: TaffySettings): HTMLElement | nul
   }
 
   const watermarkUrl = resolveSidebarWatermarkUrl(settings)
-  if (watermarkUrl) {
-    const watermark = document.createElement('div')
-    watermark.dataset.skinOwner = SKIN_OWNER
-    watermark.dataset.taffySidebarWatermark = 'watermark'
-    watermark.setAttribute('aria-hidden', 'true')
-    watermark.style.setProperty('--taffy-sidebar-watermark-art', `url("${watermarkUrl}")`)
-    stage.append(watermark)
-  }
+  if (watermarkUrl) document.body.style.setProperty('--taffy-sidebar-watermark-art', `url("${watermarkUrl}")`)
 
   const veil = document.createElement('div')
   veil.dataset.skinOwner = SKIN_OWNER
@@ -444,6 +437,8 @@ function applyChatLookVars(body: HTMLElement, settings: TaffySettings): void {
   body.style.setProperty('--taffy-composer-radius', `${settings.composerRadius}px`)
 }
 
+const WATERMARK_VAR = '--taffy-sidebar-watermark-art'
+
 const CHAT_LOOK_VARS = [
   '--taffy-bubble-opacity',
   '--taffy-bubble-radius',
@@ -456,6 +451,7 @@ export const TAFFY_INLINE_STYLE_KEYS = [
   ...Q_VARS,
   ...OPACITY_VARS,
   ...CHAT_LOOK_VARS,
+  WATERMARK_VAR,
   '--taffy-conversation-left',
   '--taffy-conversation-top',
   '--taffy-conversation-width',
