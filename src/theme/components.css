@@ -1256,6 +1256,9 @@ body[data-dsh-taffy-theme] {
   --taffy-wallpaper-focus-opacity: 0.42;
   /* specs/01 §四.3 — gold stays a highlight, not a wash */
   --taffy-gold-ink-strength: 0.72;
+  /* specs/03 B — the sidebar watermark sits at 8-16% per the spec; the supplied
+     9:16 art is already low-contrast, so the low end is enough. */
+  --taffy-watermark-opacity: 0.14;
 }
 
 /* ── 1. Particles: fewer, fainter ─────────────────────────────────────────
@@ -1290,9 +1293,52 @@ body[data-dsh-taffy-theme] [data-taffy-wallpaper] {
   transition: opacity 260ms ease, filter 260ms ease;
 }
 
-body[data-dsh-taffy-theme][data-taffy-settings-open] [data-taffy-wallpaper] {
+body[data-dsh-taffy-theme][data-taffy-settings-open] [data-taffy-wallpaper='paper'] {
   opacity: var(--taffy-wallpaper-focus-opacity, 0.42);
   filter: saturate(0.72) brightness(1.03) blur(1px);
+}
+
+/* The functional backdrop is drawn for this job — figure right, reading area
+   empty — so it does not need attenuating; it simply replaces the hero art.
+   Both slots are in the DOM and the attribute decides, which keeps the switch
+   free of any reactive wiring. */
+body[data-dsh-taffy-theme] [data-taffy-wallpaper='functional'] {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 300ms ease;
+}
+
+body[data-dsh-taffy-theme][data-taffy-settings-open] [data-taffy-wallpaper='functional'] {
+  opacity: 1;
+  visibility: visible;
+}
+
+body[data-dsh-taffy-theme][data-taffy-settings-open] [data-taffy-wallpaper='paper'] {
+  visibility: hidden;
+}
+
+/* ── 2b. Sidebar watermark layer ──────────────────────────────────────────
+   specs/03 B asked for a weak watermark behind the sidebar. The old attempt
+   could not work because no separate figure element existed; this is our own
+   layer, so the 9:16 art can simply sit at low opacity. */
+body[data-dsh-taffy-theme] [data-taffy-sidebar-watermark] {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--taffy-sidebar-width, 280px);
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--taffy-sidebar-watermark-art, none);
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: cover;
+  opacity: var(--taffy-watermark-opacity, 0.14);
+  transition: opacity 260ms ease;
+}
+
+/* A collapsed rail has no room for it, and the setting can switch it off. */
+body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-taffy-sidebar-watermark],
+body[data-dsh-taffy-theme][data-taffy-low-power] [data-taffy-sidebar-watermark] {
+  opacity: 0;
 }
 
 /* specs/01 §四.2 — the two full-bleed overlays that also carry light across the

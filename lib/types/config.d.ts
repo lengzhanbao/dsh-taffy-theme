@@ -49,6 +49,10 @@ export declare const TaffySettingsSchema: z<Schemastery.ObjectS<{
     showLeftCharacter: z<boolean, boolean>;
     showRightCharacter: z<boolean, boolean>;
     showMascot: z<boolean, boolean>;
+    backgroundHero: z<string, string>;
+    backgroundFunctional: z<string, string>;
+    sidebarWatermark: z<string, string>;
+    chibiMascot: z<string, string>;
     colors: z<Schemastery.ObjectS<{
         preset: z<"taffy-candy" | "taffy-night" | "taffy-mint" | "custom", "taffy-candy" | "taffy-night" | "taffy-mint" | "custom">;
         primary: z<string, string>;
@@ -96,6 +100,10 @@ export declare const TaffySettingsSchema: z<Schemastery.ObjectS<{
     showLeftCharacter: z<boolean, boolean>;
     showRightCharacter: z<boolean, boolean>;
     showMascot: z<boolean, boolean>;
+    backgroundHero: z<string, string>;
+    backgroundFunctional: z<string, string>;
+    sidebarWatermark: z<string, string>;
+    chibiMascot: z<string, string>;
     colors: z<Schemastery.ObjectS<{
         preset: z<"taffy-candy" | "taffy-night" | "taffy-mint" | "custom", "taffy-candy" | "taffy-night" | "taffy-mint" | "custom">;
         primary: z<string, string>;
@@ -171,6 +179,13 @@ export interface TaffySettings {
     showLeftCharacter: boolean;
     showRightCharacter: boolean;
     showMascot: boolean;
+    /** `default` means the art that belongs to the active mode; otherwise an id from BUNDLED_BACKGROUNDS. */
+    backgroundHero: string;
+    backgroundFunctional: string;
+    /** `default` = shipped watermark, `none` = no watermark layer. */
+    sidebarWatermark: string;
+    /** `default` = the classic mascot, otherwise an id from BUNDLED_CHIBI. */
+    chibiMascot: string;
     colors: TaffyColorConfig;
 }
 export declare function parseTaffySettings(value: unknown): TaffySettings;

@@ -1,14 +1,18 @@
 import {
   BUNDLED_AVATAR,
   BUNDLED_AVATAR_NIGHT,
+  BUNDLED_BACKGROUNDS,
+  BUNDLED_CHIBI,
   BUNDLED_LEFT_DARK,
   BUNDLED_LEFT_LIGHT,
   BUNDLED_PORTRAIT,
   BUNDLED_RIGHT_DARK,
   BUNDLED_RIGHT_LIGHT,
+  BUNDLED_SIDEBAR_WATERMARKS,
   BUNDLED_WALLPAPER_DARK,
   BUNDLED_WALLPAPER_LIGHT,
 } from '../client/bundled-assets'
+import type { BackgroundId, ChibiId, SidebarWatermarkId } from '../client/bundled-assets'
 import {
   BUNDLED_Q_BRAND,
   BUNDLED_Q_BRAND_RIGHT,
@@ -58,6 +62,69 @@ export function resolveWallpaperUrl(night: boolean): string {
   return candidate && isAllowedImageProtocol(candidate) ? candidate : ''
 }
 
+const BACKGROUND_IDS = Object.keys(BUNDLED_BACKGROUNDS)
+const SIDEBAR_IDS = Object.keys(BUNDLED_SIDEBAR_WATERMARKS)
+const CHIBI_IDS = Object.keys(BUNDLED_CHIBI)
+
+/**
+ * Defaults follow the "balanced" combination in the redesign bundle
+ * (`code_guides/05`, `specs/08`): a complete main visual for the hero, the
+ * readable studio for functional surfaces, the quieter sidebar portrait, and
+ * the friendlier chibi.
+ */
+export const DEFAULT_HERO_BACKGROUND: BackgroundId = 'atelier'
+export const DEFAULT_FUNCTIONAL_BACKGROUND: BackgroundId = 'studio'
+export const DEFAULT_SIDEBAR_WATERMARK: SidebarWatermarkId = 'celestial-sidebar'
+export const DEFAULT_CHIBI: ChibiId = 'cat-hug'
+
+/**
+ * Backdrop for the current scene.
+ *
+ * The supplied art is Astral Night material — five night interiors — so it is
+ * the dark-mode backdrop; Pearl Bloom (light) keeps the wallpaper drawn for it.
+ * An explicit id overrides that in either mode, because choosing a picture is a
+ * direct instruction while choosing `default` is not.
+ */
+export function resolveSceneBackground(
+  settings: TaffySettings,
+  scene: { night: boolean; functional: boolean },
+): string {
+  const chosen = scene.functional ? settings.backgroundFunctional : settings.backgroundHero
+  if (chosen !== 'default' && BACKGROUND_IDS.includes(chosen)) {
+    return pickImage(BUNDLED_BACKGROUNDS[chosen as BackgroundId], '')
+  }
+  if (scene.night) {
+    const fallback = scene.functional ? DEFAULT_FUNCTIONAL_BACKGROUND : DEFAULT_HERO_BACKGROUND
+    return pickImage(BUNDLED_BACKGROUNDS[fallback], '')
+  }
+  return resolveWallpaperUrl(false)
+}
+
+/**
+ * The sidebar watermark. This is a layer the client owns — unlike the earlier
+ * plan of attenuating a half-body figure, which only ever existed inside the
+ * wallpaper bitmap and could not be addressed separately.
+ * See docs/ASTRAL-ATELIER.md §1.
+ */
+export function resolveSidebarWatermarkUrl(settings: TaffySettings): string {
+  if (settings.sidebarWatermark === 'none') return ''
+  const chosen = settings.sidebarWatermark
+  if (chosen !== 'default' && SIDEBAR_IDS.includes(chosen)) {
+    return pickImage(BUNDLED_SIDEBAR_WATERMARKS[chosen as SidebarWatermarkId], '')
+  }
+  return pickImage(BUNDLED_SIDEBAR_WATERMARKS[DEFAULT_SIDEBAR_WATERMARK], '')
+}
+
+/** The bottom-of-sidebar mascot. `classic` restores the round avatar. */
+export function resolveChibiUrl(settings: TaffySettings): string {
+  const chosen = settings.chibiMascot
+  if (chosen === 'classic') return resolveAvatarUrl(settings)
+  if (chosen !== 'default' && CHIBI_IDS.includes(chosen)) {
+    return pickImage(BUNDLED_CHIBI[chosen as ChibiId], '')
+  }
+  return pickImage(BUNDLED_CHIBI[DEFAULT_CHIBI], '')
+}
+
 export function resolvePortraitFallback(): string {
   return pickImage(BUNDLED_PORTRAIT, BUNDLED_AVATAR)
 }
@@ -94,3 +161,4 @@ export function resolveQChromeUrls(settings: TaffySettings): {
     command: pickImage(BUNDLED_Q_COMMAND, portrait),
   }
 }
+

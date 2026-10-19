@@ -23,6 +23,14 @@ const motion = z.union([
   z.const('standard'),
 ]).default('standard')
 
+/**
+ * Art selection is a plain string rather than a union of consts so a future
+ * asset id does not need a schema migration; `resolveSceneBackground` validates
+ * against the shipped id list and falls back to the mode default. Storing an
+ * id that no longer exists degrades to the default instead of breaking.
+ */
+const artChoice = z.string().default('default')
+
 export const TaffyColorConfigSchema = z.object({
   preset: colorPreset,
   primary: z.string(),
@@ -58,6 +66,10 @@ export const TaffySettingsSchema = z.object({
   showLeftCharacter: z.boolean().default(true),
   showRightCharacter: z.boolean().default(true),
   showMascot: z.boolean().default(true),
+  backgroundHero: artChoice,
+  backgroundFunctional: artChoice,
+  sidebarWatermark: artChoice,
+  chibiMascot: artChoice,
   colors: TaffyColorConfigSchema,
 })
 
@@ -110,6 +122,13 @@ export interface TaffySettings {
   showLeftCharacter: boolean
   showRightCharacter: boolean
   showMascot: boolean
+  /** `default` means the art that belongs to the active mode; otherwise an id from BUNDLED_BACKGROUNDS. */
+  backgroundHero: string
+  backgroundFunctional: string
+  /** `default` = shipped watermark, `none` = no watermark layer. */
+  sidebarWatermark: string
+  /** `default` = the classic mascot, otherwise an id from BUNDLED_CHIBI. */
+  chibiMascot: string
   colors: TaffyColorConfig
 }
 
@@ -139,6 +158,10 @@ export function parseTaffySettings(value: unknown): TaffySettings {
     showLeftCharacter: resolved.showLeftCharacter,
     showRightCharacter: resolved.showRightCharacter,
     showMascot: resolved.showMascot,
+    backgroundHero: resolved.backgroundHero,
+    backgroundFunctional: resolved.backgroundFunctional,
+    sidebarWatermark: resolved.sidebarWatermark,
+    chibiMascot: resolved.chibiMascot,
     colors: {
       preset: resolved.colors.preset,
       primary: resolved.colors.primary,

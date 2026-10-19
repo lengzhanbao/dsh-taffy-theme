@@ -2,9 +2,12 @@ import type { TaffyAgentState, TaffySettings } from '../state/types'
 import {
   isNightScene,
   resolveAvatarUrl,
+  resolveChibiUrl,
   resolveFigureUrls,
   resolvePortraitFallback,
   resolveQChromeUrls,
+  resolveSceneBackground,
+  resolveSidebarWatermarkUrl,
   resolveWallpaperUrl,
 } from '../assets/resolve'
 import { BUNDLED_HERO_AVATAR, BUNDLED_PORTRAIT } from './bundled-assets'
@@ -215,9 +218,30 @@ export function applyRootAttributes(body: HTMLElement, settings: TaffySettings, 
 
 export function syncStageArt(root: HTMLElement = document.body, settings?: TaffySettings): void {
   const night = isNightScene(root)
-  const wallpaper = root.querySelector('[data-taffy-wallpaper]')
-  const wallpaperUrl = resolveWallpaperUrl(night)
-  if (wallpaper instanceof HTMLImageElement && wallpaperUrl) applyImageSrc(wallpaper, wallpaperUrl)
+
+  // Two wallpapers live in the DOM at once and CSS decides which is visible, so
+  // switching between the hero and functional backdrop needs no reactive
+  // subscription — it follows data-taffy-settings-open like every other
+  // attribute-driven part of this theme.
+  if (settings) {
+    const hero = root.querySelector('[data-taffy-wallpaper="paper"]')
+    const functional = root.querySelector('[data-taffy-wallpaper="functional"]')
+    const heroUrl = resolveSceneBackground(settings, { night, functional: false })
+    const functionalUrl = resolveSceneBackground(settings, { night, functional: true })
+    if (hero instanceof HTMLImageElement && heroUrl) applyImageSrc(hero, heroUrl)
+    if (functional instanceof HTMLImageElement && functionalUrl) applyImageSrc(functional, functionalUrl)
+
+    const watermarkUrl = resolveSidebarWatermarkUrl(settings)
+    const watermark = root.querySelector('[data-taffy-sidebar-watermark]')
+    if (watermark instanceof HTMLElement) {
+      if (watermarkUrl) watermark.style.setProperty('--taffy-sidebar-watermark-art', `url("${watermarkUrl}")`)
+      else watermark.style.removeProperty('--taffy-sidebar-watermark-art')
+    }
+  } else {
+    const wallpaperUrl = resolveWallpaperUrl(night)
+    const wallpaper = root.querySelector('[data-taffy-wallpaper]')
+    if (wallpaper instanceof HTMLImageElement && wallpaperUrl) applyImageSrc(wallpaper, wallpaperUrl)
+  }
 
   const figures = resolveFigureUrls(night)
   const poses = scenePoses(night)
@@ -232,7 +256,7 @@ export function syncStageArt(root: HTMLElement = document.body, settings?: Taffy
     right.dataset.taffyPose = poses.right
     applyImageSrc(right, figures.right)
   }
-  if (settings && mascot instanceof HTMLImageElement) applyImageSrc(mascot, resolveAvatarUrl(settings, undefined, night))
+  if (settings && mascot instanceof HTMLImageElement) applyImageSrc(mascot, resolveChibiUrl(settings))
 }
 
 export function createCharacterStage(settings: TaffySettings): HTMLElement | null {
@@ -240,16 +264,30 @@ export function createCharacterStage(settings: TaffySettings): HTMLElement | nul
 
   const night = isNightScene()
   const stage = tagChrome(document.createElement('div'), 'character-stage')
-  const wallpaperUrl = resolveWallpaperUrl(night)
-  if (wallpaperUrl) {
+
+  // Hero and functional backdrops both exist; CSS shows one at a time based on
+  // data-taffy-settings-open. A missing url simply leaves that layer empty.
+  for (const slot of ['paper', 'functional'] as const) {
+    const url = resolveSceneBackground(settings, { night, functional: slot === 'functional' })
+    if (!url) continue
     const wallpaper = document.createElement('img')
     wallpaper.dataset.skinOwner = SKIN_OWNER
-    wallpaper.dataset.taffyWallpaper = 'paper'
+    wallpaper.dataset.taffyWallpaper = slot
     wallpaper.alt = ''
     wallpaper.decoding = 'async'
     bindAssetFallback(wallpaper)
-    applyImageSrc(wallpaper, wallpaperUrl)
+    applyImageSrc(wallpaper, url)
     stage.append(wallpaper)
+  }
+
+  const watermarkUrl = resolveSidebarWatermarkUrl(settings)
+  if (watermarkUrl) {
+    const watermark = document.createElement('div')
+    watermark.dataset.skinOwner = SKIN_OWNER
+    watermark.dataset.taffySidebarWatermark = 'watermark'
+    watermark.setAttribute('aria-hidden', 'true')
+    watermark.style.setProperty('--taffy-sidebar-watermark-art', `url("${watermarkUrl}")`)
+    stage.append(watermark)
   }
 
   const veil = document.createElement('div')
@@ -339,7 +377,7 @@ export function decorateSidebar(settings: TaffySettings, sidebar: HTMLElement): 
   if (sidebar.querySelector("[data-taffy-mascot='sidebar']")) return []
   const inner = sidebar.querySelector(':scope > div')
   const host = inner instanceof HTMLElement ? inner : sidebar
-  const mascot = makeMascot(resolveAvatarUrl(settings, undefined, isNightScene()))
+  const mascot = makeMascot(resolveChibiUrl(settings))
   host.prepend(mascot)
   return [mascot]
 }

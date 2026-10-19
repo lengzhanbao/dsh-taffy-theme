@@ -11,8 +11,8 @@
 ## 0. 一句话结论
 
 规格的**工程部分**（配色、密度、底板、层级）已落地并有实测证据；
-规格的**P0 素材部分**（设置页背景重画、左栏水印重画）**无法用 CSS 实现**，
-必须重画位图 —— 原因见 §1，这是本轮最重要的发现。
+规格的**P0 素材部分**（设置页背景、左栏水印）在第一轮无法实现，
+后来由 `taffy_theme_full_bundle1807.zip` 补上了真图，**现已接入并实测**（见 §8）。
 
 ---
 
@@ -179,3 +179,78 @@ pnpm 复用了先前的解析结果，`node_modules` 里仍是旧构建
 或直接查新加的 token 是否在文件里。
 
 已同步写入 `docs/DESKTOP-ACCEPTANCE-RUNBOOK.md`。
+
+---
+
+## 8. 素材接入（第二轮：`taffy_theme_full_bundle1807.zip`）
+
+第二轮包补上了 §5 卡住的图：9 张 PNG，共 **17.6 MB**。
+
+### 8.1 转码
+
+原图直接进包会让插件从 2 MB 涨到 36 MB。用 Pillow 转 WebP（背景保原生 1672×941、
+侧栏保 941×1672、Q 版缩到 512²，因为实际显示 84px）：
+
+| 类别 | 文件 | 原始 | 转码后 |
+| --- | --- | --- | --- |
+| 背景 ×5 | `backgrounds/*.webp` | 1,810–2,438 KB | **87–209 KB** |
+| 侧栏 ×2 | `sidebar/*.webp` | 1,708–1,862 KB | **47–69 KB** |
+| Q 版 ×2 | `chibi/*.webp` | 1,784–1,849 KB | **74–78 KB** |
+| 合计 | 9 | 17.6 MB | **1.03 MB（6%）** |
+
+### 8.2 映射（按 bundle 的「平衡默认」组合）
+
+| 槽位 | 采用 | 规格包里的对应 |
+| --- | --- | --- |
+| 首页背景 | `atelier.webp` | `04_starry_atelier_dreams_at_midnight` |
+| 功能页背景 | `studio.webp` | `03_dreamy_starlit_creative_studio` |
+| 侧栏水印 | `celestial-sidebar.webp` | `02_dreamy_celestial_anime_sidebar` |
+| 底部 Q 版 | `cat-hug.webp` | `02_cheerful_starry_steampunk_idol_sticker` |
+
+id 一律等于文件名词干，避免「id 与文件名不同源」这类坑（本轮一开始就是
+`celestial` ↔ `celestial-sidebar.webp` 对不上，被单元测试抓出来后统一了）。
+
+### 8.3 与规格包建议的三处偏离（各有理由）
+
+| 规格包建议 | 实际做法 | 原因 |
+| --- | --- | --- |
+| `isHeroPage()` / `isFunctionalPage()` 自定义页面分类 | 用已实测存在的 `data-taffy-settings-open` 切换 | 宿主没有可靠的页面类型判据；新造分类器等于猜 |
+| 给 `.taffy-sidebar::before` 加背景 | 自建 `[data-taffy-sidebar-watermark]` 层 | 侧栏元素由宿主渲染，不能给它加伪元素 |
+| 新增 `panelOpacity` / `blurStrength` / `useAnimatedGlow` | 复用已有的 `panelOpacity`、`--taffy-acrylic-blur`、`data-dsh-taffy-motion` | 这些字段早已存在，重复添加会造成两套真相 |
+
+### 8.4 实现方式
+
+- **两张壁纸同时存在于 DOM**（`[data-taffy-wallpaper='paper']` 与 `= 'functional'`），
+  由 CSS 按 `data-taffy-settings-open` 切换。这样切换不依赖任何响应式订阅。
+- **水印是自建层**，`opacity: 0.14`、宽 `--taffy-sidebar-width`、
+  `background-position: right top`；收起成 rail 或低功耗模式下自动隐藏。
+- **Q 版**走 `resolveChibiUrl`，设 `chibiMascot: 'classic'` 可退回原来的圆形头像。
+- 新增设置项四个：`backgroundHero` / `backgroundFunctional` / `sidebarWatermark` / `chibiMascot`，
+  未识别 id 降级为默认值而不是报错。
+
+### 8.5 实测（深色启动的隔离实例）
+
+```
+dark=true  preset=taffy-candy  --ds-taffy-cream=#160f1e
+  壁纸 paper       atelier.webp             vis=visible  natural=1672
+  壁纸 functional  studio.webp              vis=hidden   natural=1672
+  水印     celestial-sidebar.webp  opacity=0.14  宽=280px
+  Q版      cat-hug.webp  84x84
+
+[设置页态]
+  paper       atelier.webp    vis=hidden   op=0.42
+  functional  studio.webp     vis=visible  op=1
+```
+
+### 8.6 一个被实测抓到的接线 bug
+
+首版接入后，首页背景总被还原成 `wallpaper-dark.webp`。原因是 `backdrop.ts` 的
+MutationObserver 调用的是**不带 settings** 的 `syncStageArt(body)`，走进旧的单壁纸分支，
+把已解析好的 hero 槽位覆盖掉。修法是把 settings getter 透传进去。
+这类问题只有真的看渲染结果才会发现 —— 静态检查、单测、类型检查当时全绿。
+
+### 8.7 仍未验证
+
+- **真实设置页**（隔离实例未登录，进不去；设置项 UI 只用合成 DOM 验过规则绑定）
+- **Electron 渲染进程内**
+- 素材切换后的持久化（存储层有单测，但没有真实重启验证）

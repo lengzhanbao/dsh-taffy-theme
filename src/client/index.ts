@@ -129,7 +129,7 @@ function applyTheme(ctx: ClientContext): void {
     if (stage) body.prepend(stage)
     for (const trim of createTrims()) body.append(trim)
 
-    disposeBackdrop = startBackdropSync(body)
+    disposeBackdrop = startBackdropSync(body, () => settings)
     disposeProjectedState = startProjectedState(body)
     disposeSidebarMetrics = startSidebarMetrics(document)
     disposeConversationMetrics = startConversationMetrics(document, body)

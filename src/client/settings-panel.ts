@@ -47,6 +47,61 @@ function Cube({
   }, selected ? CloverIcon() : null, label)
 }
 
+function Choice({
+  label,
+  value,
+  options,
+  onSelect,
+}: {
+  label: string
+  value: string
+  options: { value: string; label: string }[]
+  onSelect: (next: string) => void
+}) {
+  return createElement('div', { className: 'dsh-taffy-slider-row' },
+    createElement('div', { className: 'dsh-taffy-slider-head' },
+      createElement('span', null, label),
+    ),
+    createElement('div', { className: 'dsh-taffy-general-cubes' },
+      ...options.map((option) => createElement(Cube, {
+        key: option.value,
+        selected: value === option.value,
+        label: option.label,
+        onClick: () => onSelect(option.value),
+      })),
+    ),
+  )
+}
+
+/**
+ * Labels are Chinese here and the ids are the stable ones written into
+ * settings, so a label can be reworded without migrating stored preferences.
+ * `default` follows the mode; the shipped art is Astral Night material, so the
+ * light scheme keeps the wallpaper drawn for Pearl Bloom.
+ */
+const BACKGROUND_OPTIONS = [
+  { value: 'default', label: '跟随主题' },
+  { value: 'observatory', label: '观星台' },
+  { value: 'balcony', label: '星空露台' },
+  { value: 'studio', label: '星夜创作室' },
+  { value: 'atelier', label: '午夜工房' },
+  { value: 'piano', label: '星夜钢琴室' },
+]
+
+const SIDEBAR_OPTIONS = [
+  { value: 'default', label: '跟随主题' },
+  { value: 'celestial-sidebar', label: '星空侧栏' },
+  { value: 'celestial-plum', label: '梅色梦境' },
+  { value: 'none', label: '不显示' },
+]
+
+const CHIBI_OPTIONS = [
+  { value: 'default', label: '跟随主题' },
+  { value: 'cat-hug', label: '抱猫猫' },
+  { value: 'open-arms', label: '张开手' },
+  { value: 'classic', label: '经典头像' },
+]
+
 function Slider({
   label,
   value,
@@ -170,6 +225,34 @@ function TaffyModeRow() {
       value: settings.characterOpacity,
       onChange: (characterOpacity) => commit({ characterOpacity }),
     }),
+    createElement('div', { className: 'dsh-taffy-general-title' }, '背景与素材'),
+    createElement(Choice, {
+      label: '首页背景',
+      value: settings.backgroundHero,
+      options: BACKGROUND_OPTIONS,
+      onSelect: (backgroundHero) => commit({ backgroundHero }),
+    }),
+    createElement(Choice, {
+      label: '功能页背景',
+      value: settings.backgroundFunctional,
+      options: BACKGROUND_OPTIONS,
+      onSelect: (backgroundFunctional) => commit({ backgroundFunctional }),
+    }),
+    createElement(Choice, {
+      label: '侧栏水印',
+      value: settings.sidebarWatermark,
+      options: SIDEBAR_OPTIONS,
+      onSelect: (sidebarWatermark) => commit({ sidebarWatermark }),
+    }),
+    createElement(Choice, {
+      label: '底部 Q 版',
+      value: settings.chibiMascot,
+      options: CHIBI_OPTIONS,
+      onSelect: (chibiMascot) => commit({ chibiMascot }),
+    }),
+    createElement('div', { className: 'dsh-taffy-general-note' },
+      '新素材是星夜配色，选「跟随主题」时在深色外观下生效；浅色花房仍用原来的壁纸。侧栏水印与 Q 版两种外观都生效。',
+    ),
     createElement('div', { className: 'dsh-taffy-general-title' }, '个性化'),
     createElement(TextField, {
       label: '标题文案',
@@ -207,3 +290,4 @@ export function registerSettingsPanel(ctx: ClientContext): void {
     locale: SETTINGS_NS,
   }, TaffyModeRow))
 }
+
