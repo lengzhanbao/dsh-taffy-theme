@@ -24,6 +24,8 @@ import { fileURLToPath } from 'node:url'
 import { DEFAULT_SCHEMA, Type, load } from 'js-yaml'
 import { entryListProblem } from '@deepseek-ai/dsh-agent-preset-registry'
 
+const pkg = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'package.json'), 'utf8'))
+
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const PRESET_DIR = join(ROOT, 'presets/taffy')
 const PRESET_ID = 'taffy'
@@ -53,6 +55,7 @@ console.log('preset 门控：官方 PresetDefinition 校验\n')
 
 const meta = load(readFileSync(join(PRESET_DIR, 'preset.yml'), 'utf8')) ?? {}
 const rows = load(readFileSync(join(PRESET_DIR, 'agent.cordis.yml'), 'utf8'), { schema: PRESET_SCHEMA })
+const patchPath = join(ROOT, 'presets/taffy.patch.yml')
 
 check('preset.yml 可解析', typeof meta === 'object' && meta !== null)
 check('preset.yml 有 name', typeof meta.name === 'string' && meta.name.length > 0, meta.name)
@@ -80,6 +83,35 @@ if (isArray) {
   check('可组装为 PresetDefinition', typeof definition.id === 'string' && Array.isArray(definition.plugins))
   console.log(`\n  PresetDefinition: id=${definition.id} name=${definition.name} plugins=${definition.plugins.length}`)
 }
+
+// The shipped 0.2.x declaration must stay consistent with the source rows:
+// presets/taffy.patch.yml is the artefact DSH actually loads.
+const patch = load(readFileSync(patchPath, 'utf8'), { schema: PRESET_SCHEMA })
+const patchRow = Array.isArray(patch) ? patch[0]?.insert?.[0] : undefined
+check('taffy.patch.yml 是顶层 patch 列表', Array.isArray(patch), typeof patch)
+check('第 1 项是 - insert 列表', Array.isArray(patch?.[0]?.insert), typeof patch?.[0]?.insert)
+check(
+  'preset 行声明 @deepseek-ai/dsh-agent-preset',
+  patchRow?.name === '@deepseek-ai/dsh-agent-preset',
+  patchRow?.name,
+)
+check('preset id 为 taffy', patchRow?.config?.id === 'taffy', String(patchRow?.config?.id))
+
+const patchPlugins = patchRow?.config?.plugins
+const patchProblem = Array.isArray(patchPlugins) ? entryListProblem(patchPlugins) : 'plugins 不是数组'
+check('patch 的 plugins 通过官方 entryListProblem', patchProblem === undefined, patchProblem)
+check(
+  'patch 的 plugins 与 agent.cordis.yml 逐行一致',
+  JSON.stringify(patchPlugins) === JSON.stringify(rows),
+  `${Array.isArray(patchPlugins) ? patchPlugins.length : '?'} vs ${Array.isArray(rows) ? rows.length : '?'} 行`,
+)
+
+const declaredPatches = [].concat(pkg.dsh?.bundle?.patch ?? [])
+check(
+  'package.json 的 dsh.bundle.patch 收录 presets/taffy.patch.yml',
+  declaredPatches.includes('./presets/taffy.patch.yml'),
+  declaredPatches.join(', '),
+)
 
 console.log(`\n${checks} 项检查，${failures} 项失败`)
 if (failures > 0) process.exit(1)

@@ -23,16 +23,21 @@ import semver from 'semver'
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'))
 
-/** Host versions whose behaviour this repository was actually verified against. */
-const SUPPORTED_HOSTS = ['0.1.6-alpha.1', '0.2.1-rc.2']
+/**
+ * Host versions whose behaviour this repository was actually verified against.
+ *
+ * Desktop-only since the scope change: the standalone Web profile and DSH 0.1.x
+ * are no longer product targets, so the OR'd dual-line ranges were collapsed to
+ * this single line rather than left broad enough to look compatible.
+ */
+const SUPPORTED_HOSTS = ['0.2.1-rc.2']
 
-/** Packages that exist on only one host line, with the line they belong to. */
-const ONLY_ON = {
-  // Renamed to the singular `dsh-agent-preset` in 0.2.x; the plural stops at 0.1.5-rc.3.
-  '@deepseek-ai/dsh-agent-presets': ['0.1.6-alpha.1'],
-  // Re-introduced under the 0.2.x line; absent from the 0.1.6-alpha.1 runtime.
-  '@deepseek-ai/dsh-client-ui-slots': ['0.2.1-rc.2'],
-}
+/**
+ * Packages that exist on only one host line, with the line they belong to.
+ * Empty now: the former `dsh-agent-presets` (plural, 0.1.x-only) entry is gone
+ * because that peer was replaced by `dsh-agent-preset` on the single line.
+ */
+const ONLY_ON = {}
 
 /** Upper bound every DSH package range must keep. */
 const OUT_OF_RANGE = '0.3.0'
