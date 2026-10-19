@@ -67,17 +67,20 @@ function Choice({
   options: { value: string; label: string }[]
   onSelect: (next: string) => void
 }) {
-  return createElement('div', { className: 'dsh-taffy-slider-row' },
+  // Compact segmented buttons: the generic Cube is intentionally large and
+  // caused the third item to wrap into a full-width card in DSH Desktop.
+  return createElement('div', { className: 'dsh-taffy-slider-row dsh-taffy-choice-row' },
     createElement('div', { className: 'dsh-taffy-slider-head' },
       createElement('span', null, label),
     ),
-    createElement('div', { className: 'dsh-taffy-general-cubes' },
-      ...options.map((option) => createElement(Cube, {
+    createElement('div', { className: 'dsh-taffy-choice-group', role: 'group', 'aria-label': label },
+      ...options.map((option) => createElement('button', {
         key: option.value,
-        selected: value === option.value,
-        label: option.label,
+        type: 'button',
+        className: `dsh-taffy-choice${value === option.value ? ' is-selected' : ''}`,
+        'aria-pressed': value === option.value,
         onClick: () => onSelect(option.value),
-      })),
+      }, option.label)),
     ),
   )
 }

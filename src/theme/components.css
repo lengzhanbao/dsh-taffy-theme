@@ -749,9 +749,9 @@ body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-
 body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Stop generating'] > svg,
 body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='命令'] > svg,
 body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Commands'] > svg,
-body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'] svg,
-body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']) > svg,
-body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) > svg {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'] svg,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']) > svg,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) > svg {
   opacity: 0;
 }
 
@@ -761,9 +761,9 @@ body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-
 body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Stop generating']::after,
 body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='命令']::after,
 body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Commands']::after,
-body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::after,
-body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand'])::after,
-body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand'])::after {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::after,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand'])::after,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand'])::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -1566,5 +1566,128 @@ body[data-dsh-taffy-theme]:not([data-taffy-sidebar-ornate]) :is(
 
 :is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-swatch:focus-visible {
   outline: 2px solid var(--taffy-pink-ink, var(--ds-taffy-pink));
+  outline-offset: 2px;
+}
+
+/* ── Desktop sidebar interaction safety (2026-10-19) ──────────────────
+   Decorative levels must not change the native DSH navigation geometry.
+   The old 'full' mode replaces the brand button with a 56px pseudo avatar and
+   a pseudo text label. Together with the adjacent collapse button that causes
+   the header clipping visible in the user's 340px sidebar screenshot.
+   These final cascade rules restore the original brand content and keep full
+   ornaments on independent, pointer-events:none theme layers. */
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]
+  :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand'] {
+  font-size: inherit;
+  line-height: normal;
+  min-height: 0;
+  gap: 0;
+  overflow: visible;
+  max-width: 100%;
+}
+
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]
+  :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand'] > * {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]
+  :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand']::before,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]
+  :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand']::after {
+  content: none;
+}
+
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready]
+  :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand'] :is(svg, img) {
+  position: static;
+  width: 20px;
+  height: 20px;
+  opacity: 1;
+  overflow: visible;
+}
+
+/* When the Q pack is ready, its old 56px brand avatar selector has an
+   additional attribute and needs an equally specific reset. */
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready]
+  :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand']::before {
+  content: none;
+}
+
+/* Full means richer independent ornaments, not a 64px replacement button.
+   Keep the real native icon and its hit target instead of inserting extra
+   pseudo-icons that can mask or displace the clickable control. */
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]:not([data-taffy-sidebar-size='rail'])
+  :is([data-pane='sidebar'], [class*='sidebarCol']) :is(button[aria-label='新建会话'], button[aria-label='New session']):not([class*='brand']),
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]:not([data-taffy-sidebar-size='rail'])
+  [data-slot='sidebar.settings'] button[aria-haspopup='dialog'] {
+  min-height: 42px;
+  padding: 7px 12px;
+}
+
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]
+  :is([data-pane='sidebar'], [class*='sidebarCol']) :is(button[aria-label='新建会话'], button[aria-label='New session']):not([class*='brand'])::before,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]
+  :is([data-pane='sidebar'], [class*='sidebarCol']) :is(button[aria-label='新建会话'], button[aria-label='New session']):not([class*='brand'])::after,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]
+  [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::before,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]
+  [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::after {
+  content: none;
+}
+
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready]
+  :is([data-pane='sidebar'], [class*='sidebarCol']) :is(button[aria-label='新建会话'], button[aria-label='New session']):not([class*='brand']) > svg,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready]
+  [data-slot='sidebar.settings'] button[aria-haspopup='dialog'] svg {
+  position: static;
+  width: 18px;
+  height: 18px;
+  opacity: 1;
+  overflow: visible;
+}
+
+/* The new 3-state sidebar-decoration choice uses a compact segmented layout,
+   not the older 82px-tall generic setting Cube. */
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-choice-group {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  width: min(100%, 480px);
+}
+
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-choice {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 10px;
+  background: transparent;
+  border: 1px solid var(--dsw-alias-border-l2, rgba(160, 130, 155, .4));
+  border-radius: 10px;
+  color: var(--dsw-alias-label-primary, inherit);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-choice:hover:not(.is-selected) {
+  background: var(--dsw-alias-interactive-bg-hover, rgba(242, 155, 194, .12));
+}
+
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-choice.is-selected {
+  border-color: var(--taffy-pink-ink, #e4a0c4);
+  background: color-mix(in srgb, var(--ds-taffy-pink, #f29bc2) 14%, transparent);
+  box-shadow: inset 0 0 0 1px var(--taffy-pink-ink, #e4a0c4);
+  font-weight: 600;
+}
+
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-choice:focus-visible {
+  outline: 2px solid var(--taffy-pink-ink, #e4a0c4);
   outline-offset: 2px;
 }
