@@ -264,13 +264,43 @@ Start-Process 'E:\Deepseek harness\DeepSeek Harness.exe' `
 
 | 项 | 为什么没验 | 怎么才能验 |
 | --- | --- | --- |
-| Taffy 的 client bundle 在 `dsh-app://app` 渲染进程内执行 | §4，单实例锁 | 独立 Windows 账户 / 虚拟机里起桌面版 |
-| `settings.general.item` 槽位在桌面上真的渲染出条目 | 同上 | 同上 |
-| 明暗切换、设置持久化、壁纸与立绘、右栏/工具卡/composer、窗口缩放 | 同上 | 同上 |
-| 启用/禁用/卸载/重装、重启后残留 DOM 与监听器 | 同上 | 同上 |
-| 桌面版 CSP 是否对 `dsh-app://app` 下的内联样式或 blob 有额外限制 | 未实测渲染进程 | 同上 |
+| Taffy 的 client bundle 在 `dsh-app://app` 渲染进程内执行 | §4，单实例锁 | `docs/DESKTOP-ACCEPTANCE-RUNBOOK.md` 步骤 4–5 |
+| `settings.general.item` 槽位在桌面上真的渲染出条目 | 同上 | runbook 第 6 步第 6 项 + 探针的 `settings general rows` |
+| 明暗切换、设置持久化、壁纸与立绘、右栏/工具卡/composer、窗口缩放 | 同上 | 探针 `light` / `dark` 两次快照 + runbook 第 6 步人工清单 |
+| 启用/禁用/卸载/重装、重启后残留 DOM 与监听器 | 同上 | runbook 第 7 步 + 探针 `residual` 快照 |
+| 桌面版 CSP 是否对 `dsh-app://app` 下的内联样式或 blob 有额外限制 | 未实测渲染进程 | 同上；一旦挂载成功即反证无阻断 |
 
 上述任何一项在实测前，都**不得**对外声明「已验证兼容 DSH Desktop」。
+
+### 5.1 探针本身已自测
+
+交给执行者的探针 `scripts/desktop-accept.mjs` 不是没跑过的代码。它已在
+**真实 0.2.1-rc.2 隔离实例 + 真实 Chromium（Edge 155 headless，CDP）** 上跑通一次，
+8/8 全绿、`exit 0`：
+
+```
+✓ body 带 taffy 标记        ✓ 样式节点已注入（109802 B）
+✓ 装饰节点已挂载            ✓ 立绘已挂载
+✓ 状态机在跑                ✓ 素材无加载错误
+✓ 立绘已解码                ✓ 主题 token 生效
+  skin-owned / chrome   15 / 6      characters / mascots  2 / 1
+  --ds-taffy-cream      #211b32     localStorage  dsh-taffy-theme:v1
+  image left   977x1019   /plugins/@dsh-external/dsh-taffy-theme/assets/taffy/left-dark.webp?v=…
+  image right  968x960    …/right-dark.webp?v=…
+  image sidebar 1021x966  …/avatar-night.webp?v=…
+```
+
+三点值得单独记下：
+
+1. **图片 URL 与解码尺寸同时拿到** —— 说明素材不仅路由返回 200，而且被浏览器**成功解码**，
+   不是坏文件、不是占位符。
+2. **`localStorage` 里出现 `dsh-taffy-theme:v1`** —— 设置持久化的存储键确认。
+3. 该实例是深色态，取到的是 `left-dark` / `right-dark` / `avatar-night`，
+   说明按明暗选素材的分支也在工作。
+
+探针目标前缀由 `DSH_DESKTOP_TARGET_PREFIX` 控制，**默认 `dsh-app://app`**；
+自测时才临时指向 `http://127.0.0.1`。验收时不要改这个变量，否则可能量到错误页面。
+
 
 ---
 

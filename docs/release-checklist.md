@@ -122,5 +122,12 @@ Windows account (single-instance lock; `--user-data-dir` does not override it â€
 the new process exits immediately), so that check needs a separate Windows
 account or a VM. Until it is done, do not claim "verified on DSH Desktop".
 
+To finish it, follow `docs/DESKTOP-ACCEPTANCE-RUNBOOK.md`: quit the app, install
+into the `desktop` profile, relaunch with `--remote-debugging-port=9333`, then run
+`node scripts/desktop-accept.mjs light|dark|residual`. That probe reads the live
+renderer over the DevTools protocol and writes
+`.cache/desktop-accept-report.json`; it was self-tested green on a real
+0.2.1-rc.2 instance before being handed over.
+
 See `docs/DESKTOP-RUNTIME-EVIDENCE.md` for the full evidence chain and
 `docs/DESKTOP-AUDIT-2026-10-19.md` for the first-stage read-only audit.
