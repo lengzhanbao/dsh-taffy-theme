@@ -85,30 +85,69 @@ docs/                   审计与证据文档，含 DESKTOP-*.md
 
 ## 4. 已知可优化点（有证据）
 
-### 4.1 `data-pane` 是死锚点，却用了 224 次 ★最大一条
+### 4.1 三个宿主不存在的属性：是冗余项，不是坏样式 ★先看这条更正
 
 用真实的 0.2.1-rc.2 客户端 bundle（20 个文件、合计 2.0 MB）逐个属性核对，
-**`data-pane` 出现 0 次** —— 宿主根本不设置它。而本仓库里：
+下面三个属性在宿主里**出现 0 次**，也就是宿主根本不设置它们：
 
-| 文件 | 次数 |
-| --- | --- |
-| `src/client/theme-css.ts` | 111 |
-| `src/theme/components.css` | 92 |
-| `src/theme/motion.css` | 12 |
-| `src/theme/tokens.css` | 6 |
-| `src/client/chrome-selectors.ts` | 1 |
-| `src/client/conversation-metrics.ts` | 1 |
+| 属性 | 本仓库引用 | 实测 |
+| --- | --- | --- |
+| `data-pane` | 224 | **0** |
+| `data-input-mirror` | 3 | **0** |
+| `data-dsh-floating-panel-open` | 7 | **0** |
 
-也就是说 `[data-pane='sidebar']`、`[data-pane='conversation']` 这类选择器**一条都不生效**，
-对应的样式是死代码。`chrome-selectors.ts` 已经改用经验证的锚点，**但 CSS 没有同步**。
-这是最值得先做的一件事：要么换成活锚点，要么删掉。
+**但结论不是「这些规则全都不生效」。** 逐个看语境后发现：
 
-### 4.2 另外两个死锚点
+| 语境 | 数量 | 后果 |
+| --- | --- | --- |
+| 写在 `:is(...)` / `:where(...)` 里，同组还有活项（如 `[class*='sidebarCol']`） | **216** | 规则**照常生效**，只是多了一个永不适配的项 |
+| 写在逗号分隔的选择器列表里，同列表还有活项 | 其余 | 同上 |
+| 裸用、没有任何活替代 | **1** | 真的匹配不到，见下 |
 
-| 属性 | 本仓库使用次数 | 实测出现次数 | 建议替代 |
-| --- | --- | --- | --- |
-| `data-input-mirror` | 3 | **0** | `data-composer-card`（live，1） |
-| `data-dsh-floating-panel-open` | 7 | **0** | `data-sidebar-right-open`（live，5）或 `data-dockkit-float`（live，7） |
+典型写法：
+
+```css
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) { … }
+/*                                    ↑ 死的            ↑ 活的，规则靠它生效 */
+```
+
+`:is()` 的匹配是「任一成立即可」，所以死项**不会让规则失效**。
+这类东西的价值在**可读性与可维护性**（读代码的人会被误导、改动时容易踩空），
+**不是**在修坏掉的样式。
+
+#### 唯一一处真的落空
+
+`src/client/conversation-metrics.ts:122`：
+
+```ts
+const preferred = asElement(doc.querySelector("[data-pane='conversation']"))
+if (preferred && visibleWidth(preferred) > 0) return preferred
+// 回退：在 CONVERSATION_SELECTOR 候选里取最宽的那个
+```
+
+这个 `querySelector` **永远返回 null**，于是每次都走回退分支。
+**没有功能 bug**（回退逻辑是完整的、按宽度选最合适的面板），
+但这是一次白做的查询，而且读代码的人会以为首选路径在工作。
+
+#### 补充：`data-dsh-floating-panel-open` 其实不是死的
+
+它由**本插件自己**设置（`src/client/projected-state.ts` 里的 `body.toggleAttribute(...)`）。
+所以功能上是活的。真正的问题是**命名**：它借用了宿主的 `data-dsh-` 前缀，
+而它并不是宿主提供的属性，容易和上面两个混淆。
+
+> **更正说明**：本文件早期版本写过「224 处规则一条都不生效，是死代码」。
+> 那是把「死项」当成了「死规则」，结论错误。上面的数字与分类是重新逐个核对语境后得出的。
+
+### 4.2 建议的清理方式
+
+因为不是坏样式，**不要**为了它做大规模重写。低成本做法：
+
+1. 从 `:is()` 列表里删掉 `[data-pane='…']` 项 —— 纯删除，不改语义、不改特异性
+   （`:is()` 取参数里最高特异性，而属性选择器与 `[class*=…]` 同为 (0,1,0)，删掉不影响层叠）。
+2. 修掉 §4.1 那处落空的查询（要么删掉首选分支，要么换成活锚点）。
+3. 把 `data-dsh-floating-panel-open` 改名为 `data-taffy-floating-panel-open`，与我们自己的命名空间一致。
+
+这三步都是纯机械改动，适合单独一个 commit，不要和视觉改动混在一起。
 
 ### 4.3 宿主有 `data-plugin-css`，而我手工注入样式 ★值得调查
 
@@ -174,5 +213,9 @@ docs/                   审计与证据文档，含 DESKTOP-*.md
 
 ## 6. 一句话给评审者
 
-**代码是能跑的，工程门禁是齐的；最值得动手的是 §4.1 那 224 处死选择器，
-以及 §4.3 那个可能是官方正道的 `data-plugin-css`。**
+**代码是能跑的，工程门禁是齐的。**
+最值得花时间的是 **§4.3**：宿主里有 43 次 `data-plugin-css`，而本仓库从未使用 ——
+如果那确实是官方的插件样式机制，现在这套「自己注入 110 KB `<style>`」的做法就该换掉。
+
+§4.1 那批宿主不存在的属性是**冗余项而非坏样式**（含一处更正说明），
+机械清理即可，不要为它做大规模重写。
