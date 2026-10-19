@@ -2,8 +2,6 @@ import type { TaffyAgentState } from '../state/types'
 import { mapDomSignals } from '../state/adapter'
 import {
   ACTIVE_SELECTOR,
-  CHAT_FLOW_SELECTOR,
-  CONVERSATION_PHASE_SELECTOR,
   STREAMING_SELECTOR,
   TOOL_RUNNING_SELECTOR,
 } from './chrome-selectors'
@@ -18,30 +16,32 @@ const AGENT_THROTTLE_MS = 120
 export function createStateObserver(options: StateViewOptions): () => void {
   const body = document.body
   let lastEmitAt = 0
+  let trailing: ReturnType<typeof setTimeout> | undefined
 
   const readSignals = (): void => {
     const now = Date.now()
-    if (now - lastEmitAt < AGENT_THROTTLE_MS) return
+    const elapsed = now - lastEmitAt
+    if (elapsed < AGENT_THROTTLE_MS) {
+      // Trailing edge. Returning outright (the old behaviour) dropped the last
+      // mutation of a burst, so `data-taffy-state` could latch on a stale value
+      // until some later DOM change happened to arrive.
+      if (trailing === undefined) {
+        trailing = setTimeout(() => {
+          trailing = undefined
+          readSignals()
+        }, AGENT_THROTTLE_MS - elapsed)
+      }
+      return
+    }
+
     const activeConversation = body.querySelector(ACTIVE_SELECTOR) !== null
-    const chatFlow = body.querySelector(CHAT_FLOW_SELECTOR)
-    // `data-phase` also exists on the composer with an unrelated domain, so the
-    // conversation phase is resolved upwards from the chat flow.
-    const conversationPhase =
-      chatFlow?.closest(CONVERSATION_PHASE_SELECTOR)?.getAttribute('data-phase') ?? null
     const streaming = body.querySelector(STREAMING_SELECTOR) !== null
     // Only live tool execution counts; a transcript full of finished tool cards
     // must not report `tool-calling`.
     const toolRunning = body.querySelector(TOOL_RUNNING_SELECTOR) !== null
     lastEmitAt = now
 
-    mapDomSignals({
-      activeConversation,
-      composerPhase: conversationPhase,
-      streaming,
-      hasToolCall: toolRunning,
-      error: false,
-      success: false,
-    }, options.onState)
+    mapDomSignals({ activeConversation, streaming, toolRunning }, options.onState)
   }
 
   readSignals()
@@ -57,6 +57,8 @@ export function createStateObserver(options: StateViewOptions): () => void {
   })
 
   return () => {
+    if (trailing !== undefined) clearTimeout(trailing)
+    trailing = undefined
     scheduler.cancel()
     observer.disconnect()
   }

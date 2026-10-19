@@ -48,26 +48,9 @@ body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Stop generati
   }
 }
 
-@keyframes taffy-breathe {
-  0%, 100% { filter: drop-shadow(0 0 0 transparent); }
-  50% { filter: drop-shadow(0 0 8px color-mix(in srgb, var(--ds-taffy-pink) 45%, transparent)); }
-}
-
 @keyframes taffy-veil-breathe {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.86; }
-}
-
-@keyframes taffy-status-flash {
-  0% { filter: drop-shadow(0 0 0 transparent); }
-  40% { filter: drop-shadow(0 0 8px color-mix(in srgb, var(--ds-taffy-gold) 70%, transparent)); }
-  100% { filter: drop-shadow(0 0 0 transparent); }
-}
-
-@keyframes taffy-error-pulse {
-  0% { filter: drop-shadow(0 0 0 transparent); }
-  40% { filter: drop-shadow(0 0 8px color-mix(in srgb, var(--ds-taffy-ribbon) 60%, transparent)); }
-  100% { filter: drop-shadow(0 0 0 transparent); }
 }
 
 body[data-dsh-taffy-theme][data-taffy-state='idle'] [data-taffy-veil='curtain'] {
@@ -100,18 +83,6 @@ body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Send message'
 body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='发送消息']:active:not(:disabled),
 body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Send message']:active:not(:disabled) {
   transform: scale(1.02);
-}
-
-body[data-dsh-taffy-theme][data-taffy-state='thinking'] [data-skin-chrome='atelier-frame'] {
-  animation: taffy-breathe 1.8s ease-in-out infinite;
-}
-
-body[data-dsh-taffy-theme][data-taffy-state='success'] [data-skin-chrome='atelier-frame'] {
-  animation: taffy-status-flash 700ms ease-out 1;
-}
-
-body[data-dsh-taffy-theme][data-taffy-state='error'] [data-skin-chrome='atelier-frame'] {
-  animation: taffy-error-pulse 700ms ease-out 1;
 }
 
 body[data-dsh-taffy-theme] [data-slot='sidebar.settings'] button[aria-haspopup='dialog']:hover::before,

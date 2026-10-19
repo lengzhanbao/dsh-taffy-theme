@@ -1,109 +1,53 @@
 import type { TaffyAgentState } from './types'
 
-const SUCCESS_HOLD_MS = 1200
-const ERROR_HOLD_MS = 1600
+/**
+ * Only three states have a signal the client can actually observe:
+ *
+ * - `idle`         — no active conversation, or nothing running inside it
+ * - `streaming`    — `[data-streaming="true"]` (ui-chat)
+ * - `tool-calling` — a tool card in `running`/`preparing` (ui-tool)
+ *
+ * `thinking`, `success` and `error` stay in {@link TaffyAgentState} as reserved
+ * vocabulary but are deliberately **not** produced, because the host exposes no
+ * signal for them:
+ *
+ * - the conversation root's `data-phase` domain is only `hero | active |
+ *   settling`, and the composer's `data-phase` domain is `plain | adjudicating |
+ *   claimed | submitting` — neither has a "thinking" value;
+ * - a finished tool card keeps `data-error` set for the rest of the session, so
+ *   deriving `error` from it would latch the theme into an error look;
+ * - nothing reports a discrete tool *success* to the client.
+ *
+ * Showing nothing for those three is more honest than animating a state nobody
+ * can observe.
+ */
 
 let lastState: TaffyAgentState = 'idle'
 let lastChangeAt = 0
-let successTimer: ReturnType<typeof setTimeout> | undefined
-let errorTimer: ReturnType<typeof setTimeout> | undefined
+
+/** Minimum gap between state changes, so rapid mutations do not flicker. */
+const CHANGE_DEBOUNCE_MS = 80
 
 export function resetStateAdapter(): void {
   lastState = 'idle'
   lastChangeAt = 0
-  if (successTimer) clearTimeout(successTimer)
-  if (errorTimer) clearTimeout(errorTimer)
-  successTimer = undefined
-  errorTimer = undefined
-}
-
-function scheduleFlash(next: 'success' | 'error', holdMs: number, onState: (s: TaffyAgentState) => void): void {
-  const timerRef = next === 'success' ? 'successTimer' : 'errorTimer'
-  const existing = next === 'success' ? successTimer : errorTimer
-  if (existing) clearTimeout(existing)
-  onState(next)
-  const timer = setTimeout(() => onState('idle'), holdMs)
-  if (timerRef === 'successTimer') successTimer = timer
-  else errorTimer = timer
-}
-
-export function mapRuntimeState(input: unknown): TaffyAgentState {
-  if (typeof input === 'string') {
-    switch (input) {
-      case 'idle':
-      case 'thinking':
-      case 'tool-calling':
-      case 'streaming':
-      case 'success':
-      case 'error':
-        return input
-      case 'running':
-      case 'generating':
-        return 'streaming'
-      case 'tool':
-      case 'tool_call':
-      case 'tool-call':
-        return 'tool-calling'
-      case 'reasoning':
-        return 'thinking'
-      default:
-        return 'idle'
-    }
-  }
-  if (input && typeof input === 'object') {
-    const record = input as Record<string, unknown>
-    if (typeof record.state === 'string') return mapRuntimeState(record.state)
-    if (typeof record.phase === 'string') return mapRuntimeState(record.phase)
-    if (record.streaming === true) return 'streaming'
-    if (record.thinking === true) return 'thinking'
-    if (record.toolCalling === true) return 'tool-calling'
-    if (record.success === true) return 'success'
-    if (record.error === true) return 'error'
-  }
-  return 'idle'
 }
 
 export function mapDomSignals(signals: {
   activeConversation?: boolean
-  composerPhase?: string | null
   streaming?: boolean
-  hasToolCall?: boolean
-  error?: boolean
-  success?: boolean
+  toolRunning?: boolean
 }, onState: (s: TaffyAgentState) => void): TaffyAgentState {
-  if (signals.success) {
-    scheduleFlash('success', SUCCESS_HOLD_MS, onState)
-    lastState = 'success'
-    return lastState
-  }
-  if (signals.error) {
-    scheduleFlash('error', ERROR_HOLD_MS, onState)
-    lastState = 'error'
-    return lastState
-  }
-
   let next: TaffyAgentState = 'idle'
-  if (!signals.activeConversation) {
-    next = 'idle'
-  } else if (signals.streaming) {
-    next = 'streaming'
-  } else if (signals.hasToolCall) {
-    next = 'tool-calling'
-  } else if (signals.composerPhase === 'thinking' || signals.composerPhase === 'reasoning') {
-    next = 'thinking'
-  } else {
-    next = 'idle'
-  }
+  if (!signals.activeConversation) next = 'idle'
+  else if (signals.streaming) next = 'streaming'
+  else if (signals.toolRunning) next = 'tool-calling'
 
   const now = Date.now()
-  if (next !== lastState && now - lastChangeAt > 80) {
+  if (next !== lastState && now - lastChangeAt > CHANGE_DEBOUNCE_MS) {
     lastState = next
     lastChangeAt = now
     onState(next)
   }
   return lastState
-}
-
-export function debounceState(state: TaffyAgentState): TaffyAgentState {
-  return state
 }

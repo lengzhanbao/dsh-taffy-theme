@@ -98,7 +98,7 @@ describe('host DOM contract', () => {
       mapDomSignals({
         activeConversation: true,
         streaming: false,
-        hasToolCall: document.querySelector(TOOL_RUNNING_SELECTOR) !== null,
+        toolRunning: document.querySelector(TOOL_RUNNING_SELECTOR) !== null,
         error: false,
         success: false,
       }, onState)
@@ -120,7 +120,7 @@ describe('host DOM contract', () => {
       mapDomSignals({
         activeConversation: true,
         streaming: false,
-        hasToolCall: document.querySelector(TOOL_RUNNING_SELECTOR) !== null,
+        toolRunning: document.querySelector(TOOL_RUNNING_SELECTOR) !== null,
         error: false,
         success: false,
       }, onState)
@@ -132,7 +132,7 @@ describe('host DOM contract', () => {
       mapDomSignals({
         activeConversation: true,
         streaming: true,
-        hasToolCall: true,
+        toolRunning: true,
         error: false,
         success: false,
       }, onState)

@@ -1052,6 +1052,26 @@ body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) but
   outline-offset: 2px;
 }
 
+/* The single consumer of the agent-state variables (see src/state/adapter.ts).
+   Without this the whole `data-taffy-state` pipeline wrote variables that
+   nothing read. `idle` is intentionally indistinguishable from the base look;
+   only live work tints the composer frame. */
+body[data-dsh-taffy-theme] [data-composer-card] {
+  border-color: color-mix(
+    in srgb,
+    var(--taffy-accent, var(--ds-taffy-pink)) 42%,
+    var(--taffy-acrylic-border, rgba(73, 59, 80, 0.14))
+  );
+  transition: border-color 240ms ease, box-shadow 240ms ease;
+}
+
+body[data-dsh-taffy-theme][data-taffy-state='streaming'] [data-composer-card],
+body[data-dsh-taffy-theme][data-taffy-state='tool-calling'] [data-composer-card] {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--taffy-accent) 36%, transparent),
+    0 0 18px var(--taffy-glow);
+}
+
 /* Dark chrome: keep labeled rows on the sidebar fill, no extra glow plate. */
 body[data-dsh-taffy-theme][data-ds-dark-theme] [data-slot='sidebar.settings'] > :is(button, [role='button']),
 body[data-dsh-taffy-theme][data-ds-dark-theme] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'],

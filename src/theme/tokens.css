@@ -28,12 +28,12 @@ body[data-dsh-taffy-theme] {
   --taffy-q-stop: none;
   --taffy-veil-strength: 0.12;
 
+  /* Semantic accents for the three observable states (see src/state/adapter.ts).
+     A `thinking`/`success`/`error` accent is intentionally absent until a host
+     signal exists for those states — an alias nothing reads is just a claim. */
   --ds-agent-idle: var(--ds-taffy-pink);
-  --ds-agent-thinking: var(--ds-taffy-lavender);
   --ds-agent-tool: var(--ds-taffy-lens);
   --ds-agent-streaming: var(--ds-taffy-pink-soft);
-  --ds-agent-success: var(--ds-taffy-gold);
-  --ds-agent-error: var(--ds-taffy-ribbon);
 
   --taffy-sidebar-width: 280px;
   --taffy-accent: var(--ds-taffy-pink);
@@ -284,10 +284,9 @@ body[data-dsh-taffy-theme][data-taffy-state='idle'] {
   --taffy-accent: var(--ds-agent-idle);
 }
 
-body[data-dsh-taffy-theme][data-taffy-state='thinking'] {
-  --taffy-accent: var(--ds-agent-thinking);
-  --taffy-glow: rgba(185, 167, 232, 0.3);
-}
+/* State variables for the three states the client can actually observe — see
+   src/state/adapter.ts. `thinking`, `success` and `error` are reserved in the
+   type but have no host signal, so they deliberately get no block here. */
 
 body[data-dsh-taffy-theme][data-taffy-state='tool-calling'] {
   --taffy-accent: var(--ds-agent-tool);
@@ -297,15 +296,6 @@ body[data-dsh-taffy-theme][data-taffy-state='tool-calling'] {
 body[data-dsh-taffy-theme][data-taffy-state='streaming'] {
   --taffy-accent: var(--ds-agent-streaming);
   --taffy-glow: rgba(242, 155, 194, 0.3);
-}
-
-body[data-dsh-taffy-theme][data-taffy-state='success'] {
-  --taffy-accent: var(--ds-agent-success);
-}
-
-body[data-dsh-taffy-theme][data-taffy-state='error'] {
-  --taffy-accent: var(--ds-agent-error);
-  --taffy-glow: rgba(196, 60, 60, 0.3);
 }
 
 body[data-dsh-taffy-theme][data-taffy-veil='thin'] {

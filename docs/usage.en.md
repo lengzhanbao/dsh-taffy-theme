@@ -24,7 +24,7 @@ There is **no separate day/night toggle** in this theme. It follows DSH globally
 | Stage wallpaper | Sunlit conservatory | Neon concert stage |
 | Side portraits | Casual poses | Stage / formal outfits |
 | Panels & veil | Warm translucent mix | Deep purple mix, soft pink-gold glow on buttons |
-| Agent state colors | Pink / lavender / lens tokens | Same palette, dark phase |
+| Agent state hint | Only 3 observable states: idle / streaming / tool-calling. The composer frame tints with them | Same palette, dark phase |
 
 ---
 
