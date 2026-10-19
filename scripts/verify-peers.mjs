@@ -105,6 +105,30 @@ for (const [name, range] of Object.entries(peers)) {
   check(`${name} 未放宽到无约束范围`, !widened, range)
 }
 
+// DSH's own rule, read from dsh-app-boot/lib/index.js:279-299: an own
+// `engines.dsh` range decides ALONE and peerDependencies are then ignored
+// entirely; otherwise every `@deepseek-ai/dsh` or `@deepseek-ai/dsh-*` peer must
+// match. It calls satisfies with `includePrerelease: true`, which is *looser*
+// than npm's rule used above — both consumers are checked because they differ.
+//
+// This matters in practice: without `engines.dsh`, DSH 0.2.x falls back to the
+// peers and refuses to install, which is exactly what happened when this plugin
+// was first installed into a real 0.2.1-rc.2 profile.
+const enginesDsh = pkg.engines?.dsh
+if (typeof enginesDsh === 'string') {
+  for (const host of SUPPORTED_HOSTS) {
+    check(
+      `engines.dsh 接受 ${host}`,
+      semver.satisfies(host, enginesDsh, { includePrerelease: true }),
+      enginesDsh,
+    )
+  }
+  check('engines.dsh 不越界 (0.3.0)', !semver.satisfies('0.3.0', enginesDsh, { includePrerelease: true }), enginesDsh)
+  console.log('  （已声明 engines.dsh：DSH 用它单独判定，忽略 peerDependencies）')
+} else {
+  console.log('  ⚠ 未声明 engines.dsh —— DSH 0.2.x 会回退到 peerDependencies 判定')
+}
+
 console.log(`\n${failures === 0 ? '全部通过' : `${failures} 项失败`}`)
 
 // Optional: when a DSH host tree is present, report what it actually provides.

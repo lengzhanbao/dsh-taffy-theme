@@ -243,6 +243,68 @@ for (const [name, value] of Object.entries(snapshot.active.tokens)) {
 
 ---
 
+## 3.7 【实机验收】DSH 0.2.1-rc.2 隔离环境实测 —— `engines.dsh` 是安装开关
+
+本轮在本机搭了一个**完全隔离**的 DSH `0.2.1-rc.2` 环境（`DSH_HOME` 重定向到临时目录，未触碰用户 profile），把本分支打包后真实安装并启动。结果：
+
+### 第一次安装：被 DSH 主动拒绝
+
+```
+dsh: installation rejected: Plugin @dsh-external/dsh-taffy-theme@0.1.9 is incompatible
+with dsh 0.2.1-rc.2: requirements {"@deepseek-ai/dsh-agent-presets":">=0.1.6-alpha.1 <0.2.0"}.
+```
+
+**DSH 0.2.x 有强制兼容门禁，没声明 `engines.dsh` 时会回退到 peerDependencies 判定并拒绝安装。** 被拒的正是我按"只支持 0.1.x"如实保留的那个 preset peer —— 也就是说「诚实地把范围收窄」在这种情况下等价于「装不上」。
+
+### 判定规则的源码（`dsh-app-boot/lib/index.js:279-299`）
+
+```js
+function unmetRequirements(fields, runtimeVersion) {
+  const engines = fields.engines ?? {}
+  if (Object.hasOwn(engines, 'dsh')) {                    // ← 单独决定
+    return satisfies(runtimeVersion, engines.dsh) ? {} : { 'engines.dsh': engines.dsh }
+  }
+  if (!Object.hasOwn(fields, 'peerDependencies')) return {}
+  for (const [name, range] of Object.entries(fields.peerDependencies)) {
+    if (name !== '@deepseek-ai/dsh' && !name.startsWith('@deepseek-ai/dsh-')) continue
+    if (!satisfies(runtimeVersion, range)) unmet[name] = range
+  }
+  return unmet
+}
+function satisfies(runtimeVersion, range) {
+  return range.trim() !== '' && semver.satisfies(runtimeVersion, range, { includePrerelease: true })
+}
+```
+
+三条要点：
+1. **`engines.dsh` 存在时单独决定，`peerDependencies` 被完全忽略**；
+2. 回退判定**只看 `@deepseek-ai/dsh` 与 `@deepseek-ai/dsh-*`** —— `@deepseek-ai/cordis` 不参与；
+3. 用 `includePrerelease: true`，比 npm 的规则**更宽**。`verify:peers` 因此两套规则都查。
+
+### 加上 `engines.dsh` 之后：安装并成功加载
+
+```jsonc
+"engines": { "dsh": ">=0.1.6-alpha.1 <0.2.0 || >=0.2.1-rc.2 <0.3.0" }
+```
+
+| 验收项 | 结果 |
+| --- | --- |
+| `dsh plugin --profile web add <tgz>` | ✅ exit 0，不再拒绝 |
+| profile `dsh.profile.bundles` 收录 | ✅ |
+| `--dump-config` 组合树含 `dsh-taffy-theme` 行 | ✅ |
+| **启动 `dsh web`** | ✅ `http://127.0.0.1:3080/?token=…`，**stderr 为空**，进程稳定 |
+| **host 资产路由** `/plugins/@dsh-external/dsh-taffy-theme/assets/taffy/avatar.webp` | ✅ **HTTP 200, `image/webp`, 123,606 bytes** |
+
+最后一条是关键证据：资产路由由 host 端 `apply()` 里的 `webServer.register` 注册，能返回真实图片就证明 **host 插件在 0.2.1-rc.2 上确实完成挂载并执行了 `apply`**。
+
+### 仍未验证的
+
+- **浏览器端**：首页 HTML 需要带 token 鉴权，本次抓取返回 401，未能确认 `tapIndex` 的 boot veil 注入；客户端插件的实际渲染、设置面板、主题切换都需要真实浏览器。
+- **preset 在 0.2.x 的注册**：内容已通过官方校验（§3.5），但「第三方插件能否向 roster 注册 preset」仍需实机确认。
+- 因此**仍不能宣称「兼容 0.2.x」**。可以说的是：**host 端在 0.2.1-rc.2 上可安装、可启动、可服务资产**。
+
+---
+
 ## 4. 复现命令
 
 ```powershell
