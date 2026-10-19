@@ -1107,13 +1107,13 @@ body[data-dsh-taffy-theme] :is([class*='sidebarCol'], [class*='centerCol'], [cla
 
 body[data-dsh-taffy-theme] :is([class*='sidebarCol'], [class*='centerCol']) :is(small, time, [class*='hint'], [class*='caption']) {
   color: var(--ds-taffy-text-muted, var(--taffy-muted));
-}/* ── 10. Sidebar decoration level ─────────────────────────────────────────
+}
+
+/* ── 10. Sidebar decoration level ─────────────────────────────────────────
    specs/02 §一 plus the review feedback: the sidebar is for navigation,
 which defaults to absent. */
-body[data-dsh-taffy-theme][data-taffy-sidebar-bare] [data-taffy-sidebar-watermark],
-body[data-dsh-taffy-theme][data-taffy-sidebar-bare] [data-skin-chrome='sidebar-trim']{
-  opacity: 0;
-}
+/* (removed) the old bare rule hid the sidebar watermark together with the
+   frame; decor level and watermark are independent settings now. */
 
 /* ── 11. 侧栏：去掉浮空金框，并把底板压实 ───────────────────────────────────
    实测（深色、简约档）：
@@ -1257,37 +1257,72 @@ body[data-dsh-taffy-theme] {
   outline-offset: 2px;
 }
 
-/* ── 13. 装饰等级只控制我们自己的层 ───────────────────────────────────────
-   上一轮我把带 [data-taffy-sidebar-ornate] 的规则整批删除，用来清掉「改造原生
-   按钮」的旧逻辑。但过滤条件只查字符串包含，把下面这三条 `:not(...)` 规则也一并
-   删了 —— 它们是**简约档**应生效的规则，不是要删的对象。现恢复。
+/* ── 13. 侧栏边框：三种真正不同的观感 ─────────────────────────────────────
+   上一版的错误是把「简约」定义成「两个布尔属性都不存在」，于是 :not([ornate])
+   同时命中「关闭」和「简约」，两档画出来一模一样。现在由单一三态属性驱动：
+     data-taffy-sidebar-decor = off | simple | full
 
-   从此三档的含义是干净的：
-     关闭  → [data-taffy-sidebar-bare]，整层装饰隐藏
-     简约  → 默认档；不画侧栏金框、不渲染角饰，底板压到实底
-     完整  → 画金框与角饰（全部落在我们自己的层上，pointer-events: none）
+   三条规则都只作用于我们自己创建的 [data-skin-chrome='sidebar-trim'] 层，
+   并且该层 overflow:hidden —— 机制上不可能把边框画到侧栏外面去。
 
-   任何一档都不再改动 DSH 原生按钮的尺寸、图标、点击区域或事件。 */
-body[data-dsh-taffy-theme]:not([data-taffy-sidebar-ornate]) [data-skin-chrome='sidebar-trim'] {
+   侧栏水印与边框等级**解耦**：关掉边框不再连带隐藏用户选的侧栏水印。 */
+
+body[data-dsh-taffy-theme] [data-skin-chrome='sidebar-trim'] {
+  overflow: hidden;
+  padding: 0;
+  background-repeat: no-repeat;
+}
+
+/* 角饰与缎带属于「悬空大花纹」，三档一律不画。 */
+body[data-dsh-taffy-theme] :is(
+  [data-taffy-sidebar-corner],
+  [data-taffy-sidebar-ornament]
+) {
+  display: none;
+}
+
+body[data-dsh-taffy-theme] {
+  --taffy-edge-pink: color-mix(in srgb, var(--ds-taffy-pink) 62%, transparent);
+  --taffy-edge-pink-soft: color-mix(in srgb, var(--ds-taffy-pink) 34%, transparent);
+  --taffy-edge-gold: color-mix(in srgb, var(--ds-taffy-gold) 58%, transparent);
+}
+
+/* 关闭：没有任何额外边框。 */
+body[data-dsh-taffy-theme][data-taffy-sidebar-decor='off'] [data-skin-chrome='sidebar-trim'] {
   background-image: none;
 }
 
-body[data-dsh-taffy-theme]:not([data-taffy-sidebar-ornate]) :is(
-  [data-pane='sidebar'],
-  [class*='sidebarCol']
-) {
+/* 简约 · 柔光：一条细微粉紫侧线 + 底部一段短光线。 */
+body[data-dsh-taffy-theme][data-taffy-sidebar-decor='simple'] [data-skin-chrome='sidebar-trim'] {
+  background-image:
+    linear-gradient(180deg, transparent 5%, var(--taffy-edge-pink) 20% 78%, transparent 95%)
+      left top / 1px 100% no-repeat,
+    linear-gradient(90deg, transparent 10%, var(--taffy-edge-pink-soft) 50%, transparent 90%)
+      left bottom / 62% 1px no-repeat;
+  opacity: 0.9;
+}
+
+/* 完整 · 细框：左右两条淡香槟金细线 + 上下短线，轻盈星金边。 */
+body[data-dsh-taffy-theme][data-taffy-sidebar-decor='full'] [data-skin-chrome='sidebar-trim'] {
+  background-image:
+    linear-gradient(180deg, transparent 7%, var(--taffy-edge-gold) 22% 78%, transparent 93%)
+      left top / 1px 100% no-repeat,
+    linear-gradient(180deg, transparent 7%, var(--taffy-edge-gold) 22% 78%, transparent 93%)
+      right top / 1px 100% no-repeat,
+    linear-gradient(90deg, transparent 6%, var(--taffy-edge-gold) 32% 68%, transparent 94%)
+      left top / 100% 1px no-repeat,
+    linear-gradient(90deg, transparent 6%, var(--taffy-edge-gold) 32% 68%, transparent 94%)
+      left bottom / 100% 1px no-repeat;
+  opacity: 1;
+}
+
+/* 侧栏底板：三档一致，保持实底以免壁纸人物透到列表上。 */
+body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) {
   background-color: color-mix(
     in srgb,
     var(--ds-taffy-layer-1, var(--ds-taffy-cream)) var(--taffy-sidebar-fill-strength, 94%),
     transparent
   );
-}
-
-body[data-dsh-taffy-theme]:not([data-taffy-sidebar-ornate]) :is(
-  [data-taffy-sidebar-corner],
-  [data-taffy-sidebar-ornament]
-) {
-  display: none;
 }
 
 

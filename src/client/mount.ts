@@ -214,8 +214,10 @@ export function applyRootAttributes(body: HTMLElement, settings: TaffySettings, 
   body.toggleAttribute('data-taffy-hide-mascot', !settings.showMascot)
   // Opt-in only: 'full' is the only level allowed to restyle DSH's own sidebar
   // controls (button size, icon replacement). 'off' hides our decoration layer.
-  body.toggleAttribute('data-taffy-sidebar-ornate', settings.sidebarDecoration === 'full')
-  body.toggleAttribute('data-taffy-sidebar-bare', settings.sidebarDecoration === 'off')
+  // A single tri-state attribute, not two booleans: with booleans "simple" was
+  // the absence of both, and every :not([...ornate]) rule matched it and "off"
+  // alike — which is exactly why the two levels looked identical.
+  body.setAttribute('data-taffy-sidebar-decor', settings.sidebarDecoration)
   body.toggleAttribute('data-taffy-low-power', shouldUseLowPower(settings))
   applyQChromeVars(body, settings)
 }

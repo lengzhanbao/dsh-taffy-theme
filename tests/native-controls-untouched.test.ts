@@ -81,12 +81,49 @@ describe('native sidebar controls stay untouched', () => {
     expect(offenders, `the ornate level must not target buttons:\n${offenders.join('\n')}`).toEqual([])
   })
 
-  it('keeps the three level rules on our own layers', () => {
+  it('drives the three levels from one tri-state attribute', () => {
     const css = readFileSync(join(root, 'src/theme/components.css'), 'utf8')
-    // simple/bare hide the trim frame and its ornament children…
-    expect(css).toContain(":not([data-taffy-sidebar-ornate]) [data-skin-chrome='sidebar-trim']")
-    expect(css).toContain('data-taffy-sidebar-corner')
-    // …and bare hides the whole layer.
-    expect(css).toContain('[data-taffy-sidebar-bare]')
+    for (const level of ['off', 'simple', 'full']) {
+      expect(css, level).toContain(
+        `[data-taffy-sidebar-decor='${level}'] [data-skin-chrome='sidebar-trim']`,
+      )
+    }
+    // The old two-boolean scheme is what made "off" and "simple" identical.
+    expect(css).not.toMatch(/sidebar-(ornate|bare)/)
+  })
+
+  it('gives the three levels visibly different rules', () => {
+    const css = readFileSync(join(root, 'src/theme/components.css'), 'utf8')
+    const bodyFor = (level: string): string => {
+      const at = css.indexOf(`[data-taffy-sidebar-decor='${level}'] [data-skin-chrome='sidebar-trim']`)
+      if (at === -1) return ''
+      const open = css.indexOf('{', at)
+      const close = css.indexOf('\n}', open)
+      return css.slice(open, close)
+    }
+    const off = bodyFor('off')
+    const simple = bodyFor('simple')
+    const full = bodyFor('full')
+    expect(off).toContain('background-image: none')
+    expect(simple).not.toBe(full)
+    expect(off).not.toBe(simple)
+    // "simple" is one hairline plus a short bottom glow; "full" frames all four
+    // edges. Count the gradient layers so they cannot silently converge again.
+    const layers = (body: string) => (body.match(/linear-gradient\(/g) ?? []).length
+    expect(layers(simple)).toBe(2)
+    expect(layers(full)).toBe(4)
+  })
+
+  it('cannot draw the frame outside the sidebar', () => {
+    const css = readFileSync(join(root, 'src/theme/components.css'), 'utf8')
+    // Somewhere the trim layer must clip, or a mis-measured sidebar width lets
+    // the frame paint outside the column.
+    expect(css).toMatch(/\[data-skin-chrome='sidebar-trim'\]\s*\{[^}]*overflow:\s*hidden/)
+  })
+
+  it('keeps the watermark independent of the frame level', () => {
+    const css = readFileSync(join(root, 'src/theme/components.css'), 'utf8')
+    // Turning the frame off must not take the user's chosen watermark with it.
+    expect(css).not.toMatch(/sidebar-decor='off'\][^{]*data-taffy-sidebar-watermark/)
   })
 })

@@ -158,8 +158,8 @@ const CHAT_LOOK_RESET = {
 
 const DECORATION_OPTIONS = [
   { value: 'off', label: '关闭' },
-  { value: 'simple', label: '简约' },
-  { value: 'full', label: '完整' },
+  { value: 'simple', label: '简约·柔光' },
+  { value: 'full', label: '完整·细框' },
 ]
 
 /**
@@ -475,5 +475,6 @@ export function registerSettingsPanel(ctx: ClientContext): void {
     locale: SETTINGS_NS,
   }, TaffyModeRow))
 }
+
 
 
