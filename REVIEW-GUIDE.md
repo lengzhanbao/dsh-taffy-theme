@@ -164,6 +164,9 @@ docs/                   审计与证据文档，含 DESKTOP-*.md
 - 没有 `node_modules`（`schemastery` 是唯一真实依赖，其余 12 个都是 peer）
 - 没有 `.git`
 - 没有 `*.tgz` 安装包
+- **没有 25 个 PNG 源图（16.1 MB）** —— 它们在 `assets/taffy/` 下，是作画源文件，
+  **不会被打进安装包**（`package.json` 的 `files` 只收 `*.webp`）。
+  真正上线的 `.webp` 素材都在，所以看视觉呈现不受影响。
 
 需要可安装产物就用 `npm pack`；需要在本机跑验收流程见 `docs/DESKTOP-ACCEPTANCE-RUNBOOK.md`。
 
