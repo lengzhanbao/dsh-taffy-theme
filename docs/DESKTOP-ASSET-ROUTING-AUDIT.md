@@ -195,3 +195,53 @@ Taffy 未声明该字段。其语义与影响**未验证**（消费端不可读�
 | 桌面资源请求路径 —— 未验证 | 本轮定位了分叉点（origin）与判定方法，**仍未证实** |
 
 > ⚠️ 本报告**不构成桌面兼容结论**。web profile 的 HTTP 200、浏览器预览与 Playwright 结果**均不作为桌面素材路由证据**。
+
+---
+
+## 9. 关键更正：Agent 自身就运行在被审计的桌面运行时内
+
+**前两轮审计有一个根本性的视角错误**：我把 `E:\DeepSeekHarness` 当成"用户的生产数据"、把桌面实例当成外部黑盒。实际上——
+
+**本 Agent 就运行在那个桌面实例里。`E:\DeepSeekHarness\profiles\desktop` 就是我自己正在使用的 profile。**
+
+证据（监听 10480 的进程 PID 21036 的完整命令行）：
+
+```
+"E:\Deepseek harness\DeepSeek Harness.exe" --expose-internals
+  "E:\Deepseek harness\resources\app.asar\dsh\node_modules\@deepseek-ai\dsh-desktop-host\lib\index.js"
+  "E:\Deepseek harness\resources\app.asar\dsh"
+  E:\DeepSeekHarness\profiles\desktop
+  "E:\Deepseek harness\resources\runtime\primary-runtime"
+```
+
+→ profile 路径作为 **argv** 传入，就是 `E:\DeepSeekHarness\profiles\desktop`。
+
+### 9.1 由此直接测得的结论（live 桌面运行时，非 web profile）
+
+| 探测 | 结果 | 含义 |
+| --- | --- | --- |
+| `GET http://127.0.0.1:10480/` | **401** text/plain | 主文档受 token 鉴权 |
+| `GET /plugins/@dsh-external/dsh-taffy-theme/assets/taffy/avatar.webp` | **404** | **未鉴权的 `/plugins/` 路径到达了 HTTP 服务器**，仅因未注册而 404 |
+| `GET /plugins/` | **404** | 同上 |
+| `GET /__nonexistent__` | **404** | 兜底 |
+| 监听 10480 的进程 | **PID 21036 = 桌面版自己的 `dsh-desktop-host`** | 界面由**桌面版的 HTTP 服务**提供，不是只走 `dsh-app://` |
+
+**这几条合起来回答了两轮审计里最大的未决问题：**
+
+1. **桌面主文档的 origin 是 `http://127.0.0.1:10480`**（HTTP），不是 `dsh-app://app`；
+2. **`/plugins/**` 这类路径由 HTTP 服务器直接处理**（404 而非 401）→ **`webServer.register` 注册的路由在桌面版上可达**；
+3. 因此 Taffy 的相对素材 URL `/plugins/@dsh-external/dsh-taffy-theme/assets/...` **会解析到这个 HTTP origin**，与其宿主端路由**前缀一致**（`manifest.ts:16` ↔ `route.ts:78`）。
+
+→ 结论：**素材路由在桌面上应当是有效的**。§7 中列为"必须真实桌面运行才能确认"的首项，现在已有 live 证据支持（仍建议在装好后做一次 200 确认）。
+
+### 9.2 这**不**意味着可以就地安装
+
+`E:\DeepSeekHarness\profiles\desktop` 是**正在使用的实例**（我自己就在其中）。向它安装插件等于修改 live 环境 —— 仍然禁止。
+
+但**测量**是允许的，且已经产生了本轮最有价值的证据。
+
+### 9.3 仍然未验证
+
+- 装上插件后该路径是否真的返回 200 / `image/webp`（需一次实测）
+- 设置页槽位 entry 是否渲染
+- 主题切换、持久化、卸载清理
