@@ -53,6 +53,7 @@ export declare const TaffySettingsSchema: z<Schemastery.ObjectS<{
     backgroundFunctional: z<string, string>;
     sidebarWatermark: z<string, string>;
     chibiMascot: z<string, string>;
+    sidebarDecoration: z<"off" | "simple" | "full", "off" | "simple" | "full">;
     colors: z<Schemastery.ObjectS<{
         preset: z<"taffy-candy" | "taffy-night" | "taffy-mint" | "custom", "taffy-candy" | "taffy-night" | "taffy-mint" | "custom">;
         primary: z<string, string>;
@@ -104,6 +105,7 @@ export declare const TaffySettingsSchema: z<Schemastery.ObjectS<{
     backgroundFunctional: z<string, string>;
     sidebarWatermark: z<string, string>;
     chibiMascot: z<string, string>;
+    sidebarDecoration: z<"off" | "simple" | "full", "off" | "simple" | "full">;
     colors: z<Schemastery.ObjectS<{
         preset: z<"taffy-candy" | "taffy-night" | "taffy-mint" | "custom", "taffy-candy" | "taffy-night" | "taffy-mint" | "custom">;
         primary: z<string, string>;
@@ -135,6 +137,7 @@ export declare const TaffySettingsSchema: z<Schemastery.ObjectS<{
 export type TaffyColorPreset = 'taffy-candy' | 'taffy-night' | 'taffy-mint' | 'custom';
 export type TaffyDynamicIntensity = 'low' | 'standard' | 'high';
 export type TaffyMotion = 'off' | 'standard';
+export type TaffySidebarDecoration = 'off' | 'simple' | 'full';
 /**
  * The runtime shape of the stored settings, declared explicitly.
  *
@@ -186,6 +189,13 @@ export interface TaffySettings {
     sidebarWatermark: string;
     /** `default` = the classic mascot, otherwise an id from BUNDLED_CHIBI. */
     chibiMascot: string;
+    /**
+     * `simple` keeps the ornaments but never touches native control geometry.
+     * `full` opts into the ornate restyle of the sidebar's own buttons (the
+     * 56px brand chip, the 40px rail toggle…). `off` drops the whole sidebar
+     * decoration layer.
+     */
+    sidebarDecoration: TaffySidebarDecoration;
     colors: TaffyColorConfig;
 }
 export declare function parseTaffySettings(value: unknown): TaffySettings;

@@ -212,6 +212,10 @@ export function applyRootAttributes(body: HTMLElement, settings: TaffySettings, 
     : BUNDLED_HERO_AVATAR
   body.style.setProperty('--taffy-hero-avatar', `url("${heroAvatar}")`)
   body.toggleAttribute('data-taffy-hide-mascot', !settings.showMascot)
+  // Opt-in only: 'full' is the only level allowed to restyle DSH's own sidebar
+  // controls (button size, icon replacement). 'off' hides our decoration layer.
+  body.toggleAttribute('data-taffy-sidebar-ornate', settings.sidebarDecoration === 'full')
+  body.toggleAttribute('data-taffy-sidebar-bare', settings.sidebarDecoration === 'off')
   body.toggleAttribute('data-taffy-low-power', shouldUseLowPower(settings))
   applyQChromeVars(body, settings)
 }

@@ -1,58 +1,55 @@
 import { describe, expect, it } from 'vitest'
 import { parseTaffySettings } from '../src/config.ts'
 import {
-  DEFAULT_CHIBI,
-  DEFAULT_FUNCTIONAL_BACKGROUND,
-  DEFAULT_HERO_BACKGROUND,
-  DEFAULT_SIDEBAR_WATERMARK,
   resolveChibiUrl,
   resolveSceneBackground,
   resolveSidebarWatermarkUrl,
 } from '../src/assets/resolve.ts'
 
 /**
- * The art resolvers decide which picture a surface gets. They are pure, so the
- * rules the redesign bundle asked for can be pinned here rather than inferred
- * from a screenshot.
+ * The art resolvers decide which picture a surface gets.
  *
- * Key rule: `default` follows the mode. The supplied art is Astral Night
- * material (five night interiors), so it is the dark-mode backdrop and Pearl
- * Bloom keeps the wallpaper drawn for it. An explicit id is an instruction and
- * therefore applies in either mode.
+ * The governing rule is that upgrading must not change what the user sees.
+ * `default` therefore means the classic wallpaper for the active mode, no
+ * watermark layer at all, and the round avatar that predates the art pack.
+ * Every supplied asset is an explicit choice. The classic pair also stays
+ * selectable on its own, so a light theme can deliberately use the dark stage
+ * and vice versa.
  */
 
 const settings = (patch: Record<string, string> = {}) => parseTaffySettings(patch)
 
 describe('scene background', () => {
-  it('uses the hero and functional defaults in dark mode', () => {
-    const hero = resolveSceneBackground(settings(), { night: true, functional: false })
-    const functional = resolveSceneBackground(settings(), { night: true, functional: true })
-    expect(hero).toContain(`backgrounds/${DEFAULT_HERO_BACKGROUND}.webp`)
-    expect(functional).toContain(`backgrounds/${DEFAULT_FUNCTIONAL_BACKGROUND}.webp`)
-    expect(hero).not.toBe(functional)
+  it('leaves an untouched install on the classic wallpaper', () => {
+    expect(resolveSceneBackground(settings(), { night: true, functional: false })).toContain('wallpaper-dark.webp')
+    expect(resolveSceneBackground(settings(), { night: false, functional: false })).toContain('wallpaper-light.webp')
+    expect(resolveSceneBackground(settings(), { night: true, functional: true })).toContain('wallpaper-dark.webp')
+    expect(resolveSceneBackground(settings(), { night: false, functional: true })).toContain('wallpaper-light.webp')
   })
 
-  it('keeps the Pearl Bloom wallpaper in light mode when nothing is chosen', () => {
-    expect(resolveSceneBackground(settings(), { night: false, functional: false }))
-      .toContain('wallpaper-light.webp')
-    expect(resolveSceneBackground(settings(), { night: false, functional: true }))
-      .toContain('wallpaper-light.webp')
+  it('offers both classic wallpapers as explicit choices', () => {
+    const picked = settings({ backgroundHero: 'classic-dark' })
+    expect(resolveSceneBackground(picked, { night: false, functional: false })).toContain('wallpaper-dark.webp')
+    const other = settings({ backgroundHero: 'classic-light' })
+    expect(resolveSceneBackground(other, { night: true, functional: false })).toContain('wallpaper-light.webp')
   })
 
-  it('honours an explicit choice in either mode', () => {
+  it('honours a supplied asset in either mode', () => {
     const chosen = settings({ backgroundHero: 'piano', backgroundFunctional: 'observatory' })
-    expect(resolveSceneBackground(chosen, { night: false, functional: false }))
-      .toContain('backgrounds/piano.webp')
-    expect(resolveSceneBackground(chosen, { night: true, functional: true }))
-      .toContain('backgrounds/observatory.webp')
+    expect(resolveSceneBackground(chosen, { night: false, functional: false })).toContain('backgrounds/piano.webp')
+    expect(resolveSceneBackground(chosen, { night: true, functional: true })).toContain('backgrounds/observatory.webp')
   })
 
-  it('falls back to the mode default for an id that no longer ships', () => {
+  it('keeps hero and functional independent', () => {
+    const mixed = settings({ backgroundHero: 'atelier', backgroundFunctional: 'studio' })
+    expect(resolveSceneBackground(mixed, { night: true, functional: false })).toContain('backgrounds/atelier.webp')
+    expect(resolveSceneBackground(mixed, { night: true, functional: true })).toContain('backgrounds/studio.webp')
+  })
+
+  it('falls back to the classic wallpaper for an unknown id', () => {
     const stale = settings({ backgroundHero: 'deleted-in-some-future-release' })
-    expect(resolveSceneBackground(stale, { night: true, functional: false }))
-      .toContain(`backgrounds/${DEFAULT_HERO_BACKGROUND}.webp`)
-    expect(resolveSceneBackground(stale, { night: false, functional: false }))
-      .toContain('wallpaper-light.webp')
+    expect(resolveSceneBackground(stale, { night: true, functional: false })).toContain('wallpaper-dark.webp')
+    expect(resolveSceneBackground(stale, { night: false, functional: false })).toContain('wallpaper-light.webp')
   })
 
   it('always returns a url the asset route can serve', () => {
@@ -67,35 +64,33 @@ describe('scene background', () => {
 })
 
 describe('sidebar watermark', () => {
-  it('defaults to the quieter celestial portrait', () => {
-    expect(resolveSidebarWatermarkUrl(settings())).toContain(`sidebar/${DEFAULT_SIDEBAR_WATERMARK}.webp`)
-  })
-
-  it('can be switched off entirely', () => {
+  it('ships no layer until one is chosen', () => {
+    expect(resolveSidebarWatermarkUrl(settings())).toBe('')
     expect(resolveSidebarWatermarkUrl(settings({ sidebarWatermark: 'none' }))).toBe('')
   })
 
-  it('honours the other supplied portrait', () => {
+  it('accepts either supplied portrait', () => {
+    expect(resolveSidebarWatermarkUrl(settings({ sidebarWatermark: 'celestial-sidebar' }))).toContain('sidebar/celestial-sidebar.webp')
     expect(resolveSidebarWatermarkUrl(settings({ sidebarWatermark: 'celestial-plum' }))).toContain('sidebar/celestial-plum.webp')
   })
 
-  it('degrades to the default for an unknown id', () => {
-    expect(resolveSidebarWatermarkUrl(settings({ sidebarWatermark: 'nope' })))
-      .toContain(`sidebar/${DEFAULT_SIDEBAR_WATERMARK}.webp`)
+  it('degrades to no layer for an unknown id', () => {
+    expect(resolveSidebarWatermarkUrl(settings({ sidebarWatermark: 'nope' }))).toBe('')
   })
 })
 
 describe('chibi mascot', () => {
-  it('defaults to the supplied sticker', () => {
-    expect(resolveChibiUrl(settings())).toContain(`chibi/${DEFAULT_CHIBI}.webp`)
-  })
-
-  it('can be reverted to the round avatar', () => {
+  it('keeps the pre-existing avatar by default', () => {
+    expect(resolveChibiUrl(settings())).toContain('avatar.webp')
     expect(resolveChibiUrl(settings({ chibiMascot: 'classic' }))).toContain('avatar.webp')
   })
 
-  it('honours the other supplied sticker', () => {
+  it('accepts either supplied sticker', () => {
+    expect(resolveChibiUrl(settings({ chibiMascot: 'cat-hug' }))).toContain('chibi/cat-hug.webp')
     expect(resolveChibiUrl(settings({ chibiMascot: 'open-arms' }))).toContain('chibi/open-arms.webp')
   })
-})
 
+  it('degrades to the avatar for an unknown id', () => {
+    expect(resolveChibiUrl(settings({ chibiMascot: 'nope' }))).toContain('avatar.webp')
+  })
+})

@@ -622,10 +622,10 @@ body[data-dsh-taffy-theme] .dsh-taffy-general-row,
 
 /* Circular chips: new-session stays 36px; brand (collapse) is larger. */
 
-body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] > :is(button, [role='button']),
-body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'],
-body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']),
-body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] > :is(button, [role='button']),
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'],
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']),
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) {
   position: relative;
   box-sizing: border-box;
   width: 36px;
@@ -640,10 +640,10 @@ body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] :is([data-pane='sideb
 }
 
 /* Whale-style gold-rim toggle — keep native SVG, no face crop */
-body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏'],
-body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar'],
-body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏'],
-body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar'] {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏'],
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar'],
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏'],
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar'] {
   position: relative;
   box-sizing: border-box;
   display: inline-flex;
@@ -672,10 +672,10 @@ body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) but
     filter 150ms ease;
 }
 
-body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏'] > svg,
-body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar'] > svg,
-body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏'] > svg,
-body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar'] > svg {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='打开侧边栏'] > svg,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Open sidebar'] > svg,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='收起侧边栏'] > svg,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate] :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='Collapse sidebar'] > svg {
   display: block;
   width: 54%;
   height: 54%;
@@ -731,8 +731,8 @@ body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Commands'] {
   overflow: visible;
 }
 
-body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] > :is(button, [role='button']),
-body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'] {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] > :is(button, [role='button']),
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-sidebar-size='rail'] [data-slot='sidebar.settings'] button[aria-haspopup='dialog'] {
   width: 42px;
   height: 42px;
   min-width: 42px;
@@ -807,10 +807,10 @@ body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :
 }
 
 
-body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] > :is(button, [role='button']),
-body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog'],
-body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']),
-body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] > :is(button, [role='button']),
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog'],
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']),
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) {
   position: relative;
   z-index: 1;
   box-sizing: border-box;
@@ -840,10 +840,10 @@ body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane=
 }
 
 /* Pink-gold plate rim — new session + settings (expanded) */
-body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] > :is(button, [role='button'])::after,
-body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::after,
-body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand'])::after,
-body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand'])::after {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] > :is(button, [role='button'])::after,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::after,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand'])::after,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand'])::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -900,10 +900,10 @@ body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']) :is([data-pane=
   filter: brightness(0.98);
 }
 
-body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] > :is(button, [role='button'])::before,
-body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::before,
-body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand'])::before,
-body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand'])::before {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] > :is(button, [role='button'])::before,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog']::before,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand'])::before,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand'])::before {
   content: '';
   position: relative;
   z-index: 1;
@@ -936,9 +936,9 @@ body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rai
   background-position: center 46%;
 }
 
-body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog'] svg,
-body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']) > svg,
-body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) > svg {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) [data-slot='sidebar.settings'] button[aria-haspopup='dialog'] svg,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='新建会话']:not([class*='brand']) > svg,
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready]:not([data-taffy-sidebar-size='rail']) :is([data-pane='sidebar'], [class*='sidebarCol']) button[aria-label='New session']:not([class*='brand']) > svg {
   position: absolute;
   width: 0;
   height: 0;
@@ -946,7 +946,7 @@ body[data-dsh-taffy-theme][data-taffy-q-ready]:not([data-taffy-sidebar-size='rai
   overflow: hidden;
 }
 
-body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand'] {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand'] {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -959,12 +959,12 @@ body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) but
   color: var(--ds-taffy-pink);
 }
 
-body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand'] > * {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand'] > * {
   font-size: 0;
   line-height: 0;
 }
 
-body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand'] :is(svg, img) {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand'] :is(svg, img) {
   position: absolute;
   width: 0;
   height: 0;
@@ -972,7 +972,7 @@ body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class
   overflow: hidden;
 }
 
-body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand']::before {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand']::before {
   content: '';
   flex: 0 0 56px;
   box-sizing: border-box;
@@ -991,7 +991,7 @@ body[data-dsh-taffy-theme][data-taffy-q-ready] :is([data-pane='sidebar'], [class
 }
 
 /* rail mode: shrink brand avatar to fit narrow sidebar */
-body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand']::before {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand']::before {
   width: 40px;
   height: 40px;
   min-width: 40px;
@@ -1000,7 +1000,7 @@ body[data-dsh-taffy-theme][data-taffy-q-ready][data-taffy-sidebar-size='rail'] :
   border-radius: 50%;
 }
 
-body[data-dsh-taffy-theme] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand']::after {
+body[data-dsh-taffy-theme][data-taffy-sidebar-ornate] :is([data-pane='sidebar'], [class*='sidebarCol']) button[class*='brand']::after {
   content: 'taffy-harness';
   flex: 0 0 auto;
   display: inline-flex;
@@ -1453,4 +1453,15 @@ body[data-dsh-taffy-theme] :is([class*='sidebarCol'], [class*='centerCol'], [cla
 
 body[data-dsh-taffy-theme] :is([class*='sidebarCol'], [class*='centerCol']) :is(small, time, [class*='hint'], [class*='caption']) {
   color: var(--ds-taffy-text-muted, var(--taffy-muted));
+}
+
+
+/* ── 10. Sidebar decoration level ─────────────────────────────────────────
+   specs/02 §一 plus the review feedback: the sidebar is for navigation, so the
+   decoration layer can be switched off completely. Native control geometry is
+   only ever touched at level 'full' — the ornate rules above are all gated on
+   [data-taffy-sidebar-ornate], which defaults to absent. */
+body[data-dsh-taffy-theme][data-taffy-sidebar-bare] [data-taffy-sidebar-watermark],
+body[data-dsh-taffy-theme][data-taffy-sidebar-bare] [data-skin-chrome='sidebar-trim'] {
+  opacity: 0;
 }

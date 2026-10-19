@@ -72,10 +72,12 @@ const CHIBI_IDS = Object.keys(BUNDLED_CHIBI)
  * readable studio for functional surfaces, the quieter sidebar portrait, and
  * the friendlier chibi.
  */
-export const DEFAULT_HERO_BACKGROUND: BackgroundId = 'atelier'
-export const DEFAULT_FUNCTIONAL_BACKGROUND: BackgroundId = 'studio'
-export const DEFAULT_SIDEBAR_WATERMARK: SidebarWatermarkId = 'celestial-sidebar'
-export const DEFAULT_CHIBI: ChibiId = 'cat-hug'
+/**
+ * There are deliberately no "new art" defaults. Upgrading must not change what
+ * the user already sees: `default` means the classic wallpaper for the active
+ * mode, no watermark layer, and the round avatar. Every supplied asset is an
+ * explicit choice from the settings panel.
+ */
 
 /**
  * Backdrop for the current scene.
@@ -90,14 +92,14 @@ export function resolveSceneBackground(
   scene: { night: boolean; functional: boolean },
 ): string {
   const chosen = scene.functional ? settings.backgroundFunctional : settings.backgroundHero
+  // The classic pair stays selectable forever; these two ids are how a light
+  // theme can opt into the dark wallpaper and vice versa.
+  if (chosen === 'classic-light') return resolveWallpaperUrl(false)
+  if (chosen === 'classic-dark') return resolveWallpaperUrl(true)
   if (chosen !== 'default' && BACKGROUND_IDS.includes(chosen)) {
     return pickImage(BUNDLED_BACKGROUNDS[chosen as BackgroundId], '')
   }
-  if (scene.night) {
-    const fallback = scene.functional ? DEFAULT_FUNCTIONAL_BACKGROUND : DEFAULT_HERO_BACKGROUND
-    return pickImage(BUNDLED_BACKGROUNDS[fallback], '')
-  }
-  return resolveWallpaperUrl(false)
+  return resolveWallpaperUrl(scene.night)
 }
 
 /**
@@ -107,22 +109,24 @@ export function resolveSceneBackground(
  * See docs/ASTRAL-ATELIER.md §1.
  */
 export function resolveSidebarWatermarkUrl(settings: TaffySettings): string {
-  if (settings.sidebarWatermark === 'none') return ''
+  // `default` is "no layer", which is what every existing install looks like
+  // today. The watermark is something people turn on, never something they have
+  // to turn off after an upgrade.
   const chosen = settings.sidebarWatermark
-  if (chosen !== 'default' && SIDEBAR_IDS.includes(chosen)) {
+  if (chosen === 'none' || chosen === 'default') return ''
+  if (SIDEBAR_IDS.includes(chosen)) {
     return pickImage(BUNDLED_SIDEBAR_WATERMARKS[chosen as SidebarWatermarkId], '')
   }
-  return pickImage(BUNDLED_SIDEBAR_WATERMARKS[DEFAULT_SIDEBAR_WATERMARK], '')
+  return ''
 }
 
 /** The bottom-of-sidebar mascot. `classic` restores the round avatar. */
 export function resolveChibiUrl(settings: TaffySettings): string {
   const chosen = settings.chibiMascot
-  if (chosen === 'classic') return resolveAvatarUrl(settings)
-  if (chosen !== 'default' && CHIBI_IDS.includes(chosen)) {
-    return pickImage(BUNDLED_CHIBI[chosen as ChibiId], '')
-  }
-  return pickImage(BUNDLED_CHIBI[DEFAULT_CHIBI], '')
+  if (CHIBI_IDS.includes(chosen)) return pickImage(BUNDLED_CHIBI[chosen as ChibiId], '')
+  // Anything unrecognised, including the default, keeps the avatar mascot that
+  // shipped before the art pack existed.
+  return resolveAvatarUrl(settings)
 }
 
 export function resolvePortraitFallback(): string {

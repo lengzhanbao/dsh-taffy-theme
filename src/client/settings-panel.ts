@@ -80,7 +80,9 @@ function Choice({
  * light scheme keeps the wallpaper drawn for Pearl Bloom.
  */
 const BACKGROUND_OPTIONS = [
-  { value: 'default', label: '跟随主题' },
+  { value: 'default', label: '跟随外观' },
+  { value: 'classic-light', label: '经典花房' },
+  { value: 'classic-dark', label: '经典舞台' },
   { value: 'observatory', label: '观星台' },
   { value: 'balcony', label: '星空露台' },
   { value: 'studio', label: '星夜创作室' },
@@ -89,17 +91,21 @@ const BACKGROUND_OPTIONS = [
 ]
 
 const SIDEBAR_OPTIONS = [
-  { value: 'default', label: '跟随主题' },
+  { value: 'default', label: '不显示' },
   { value: 'celestial-sidebar', label: '星空侧栏' },
   { value: 'celestial-plum', label: '梅色梦境' },
-  { value: 'none', label: '不显示' },
 ]
 
 const CHIBI_OPTIONS = [
-  { value: 'default', label: '跟随主题' },
+  { value: 'default', label: '经典头像' },
   { value: 'cat-hug', label: '抱猫猫' },
   { value: 'open-arms', label: '张开手' },
-  { value: 'classic', label: '经典头像' },
+]
+
+const DECORATION_OPTIONS = [
+  { value: 'off', label: '关闭' },
+  { value: 'simple', label: '简约' },
+  { value: 'full', label: '完整' },
 ]
 
 function Slider({
@@ -239,6 +245,12 @@ function TaffyModeRow() {
       onSelect: (backgroundFunctional) => commit({ backgroundFunctional }),
     }),
     createElement(Choice, {
+      label: '侧栏装饰',
+      value: settings.sidebarDecoration,
+      options: DECORATION_OPTIONS,
+      onSelect: (sidebarDecoration) => commit({ sidebarDecoration }),
+    }),
+    createElement(Choice, {
       label: '侧栏水印',
       value: settings.sidebarWatermark,
       options: SIDEBAR_OPTIONS,
@@ -251,7 +263,7 @@ function TaffyModeRow() {
       onSelect: (chibiMascot) => commit({ chibiMascot }),
     }),
     createElement('div', { className: 'dsh-taffy-general-note' },
-      '新素材是星夜配色，选「跟随主题」时在深色外观下生效；浅色花房仍用原来的壁纸。侧栏水印与 Q 版两种外观都生效。',
+      '「跟随外观」沿用你原来的壁纸；经典花房 / 经典舞台是升级前的两张图，随时可选。星夜素材只在深色外观下观感统一。装饰等级选「完整」才会改动侧栏按钮的尺寸与图标。',
     ),
     createElement('div', { className: 'dsh-taffy-general-title' }, '个性化'),
     createElement(TextField, {
