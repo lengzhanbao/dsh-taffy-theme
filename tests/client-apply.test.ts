@@ -22,10 +22,14 @@ const originalStorage = Object.getOwnPropertyDescriptor(window, 'localStorage')
 interface Harness {
   ctx: DeepseekContext
   dispose: () => void
+  /** Handlers registered for `theme/change`, when the service was present. */
+  themeHandlers: Array<() => void>
 }
 
-function createHarness(): Harness {
+function createHarness(options: { withTheme?: boolean } = {}): Harness {
+  const withTheme = options.withTheme !== false
   const disposers: Array<() => void> = []
+  const themeHandlers: Array<() => void> = []
   const ctx = {
     effect(fn: () => unknown) {
       const result = fn()
@@ -37,10 +41,18 @@ function createHarness(): Harness {
       inject: (_key: string, callback: () => unknown) => callback(),
       register: () => () => undefined,
     },
-    on: () => () => undefined,
+    // Mirrors Cordis: the callback runs only when the service is available.
+    inject(deps: string[], callback: (injected: unknown) => void) {
+      if (deps.includes('theme') && withTheme) callback(ctx)
+    },
+    on(event: string, handler: () => void) {
+      if (event === 'theme/change') themeHandlers.push(handler)
+      return () => undefined
+    },
   } as unknown as DeepseekContext
   return {
     ctx,
+    themeHandlers,
     dispose: () => { while (disposers.length > 0) disposers.pop()?.() },
   }
 }
@@ -165,8 +177,6 @@ describe('client apply failure isolation', () => {
   })
 
   it('5 + 8. a mid-init failure stays inert and leaves the native UI untouched', () => {
-    // Fail deep inside ensureChrome(), after the style node, the theme tokens
-    // and part of the chrome already exist.
     defineGlobal('ResizeObserver', class {
       constructor() {
         throw new Error('ResizeObserver unavailable in this environment')
@@ -188,5 +198,34 @@ describe('client apply failure isolation', () => {
     // The native UI still works and nothing reacts to events any more.
     window.dispatchEvent(new CustomEvent(SETTINGS_CHANGE_EVENT))
     expect(document.body.hasAttribute('data-dsh-taffy-theme')).toBe(false)
+  })
+
+  describe('official theme service', () => {
+    it('subscribes to theme/change when the host provides ctx.theme', () => {
+      const harness = createHarness({ withTheme: true })
+      apply(harness.ctx)
+      expect(harness.themeHandlers).toHaveLength(1)
+      harness.dispose()
+    })
+
+    it('activates normally when ctx.theme is absent (never blocks the boot)', () => {
+      const harness = createHarness({ withTheme: false })
+      expect(() => apply(harness.ctx)).not.toThrow()
+      // The theme itself still applies; only the official integration is skipped.
+      expect(styleNodeCount()).toBe(1)
+      expect(harness.themeHandlers).toHaveLength(0)
+      harness.dispose()
+      expect(styleNodeCount()).toBe(0)
+    })
+
+    it('re-syncs stage art on a colour-scheme change without throwing', () => {
+      const harness = createHarness({ withTheme: true })
+      apply(harness.ctx)
+      expect(document.body.hasAttribute('data-dsh-taffy-theme')).toBe(true)
+
+      for (const handler of harness.themeHandlers) expect(() => handler()).not.toThrow()
+
+      harness.dispose()
+    })
   })
 })

@@ -6,6 +6,8 @@ import type { Context as ClientContext } from '@deepseek-ai/cordis'
 // Type-only Context merges for ctx.locale / ctx.slots (client bundle purity).
 import type {} from '@deepseek-ai/dsh-client-locale/client'
 import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
+// Declares `ctx.theme` and the `theme/change` event on the Cordis Context.
+import type {} from '@deepseek-ai/dsh-client-ui-theme/client'
 import type { TaffyAgentState } from '../state/types'
 import { resetStateAdapter } from '../state/adapter'
 import { applyThemeTokens, restoreThemeTokens, resolveThemeTokens, snapshotThemeTokens } from '../theme/user-theme'
@@ -222,6 +224,23 @@ function applyTheme(ctx: ClientContext): void {
         syncTheme()
         ensureChrome()
         refreshHeroCopy?.()
+      })
+
+      // Official theme service: reuse the host's resolved colour scheme instead
+      // of inferring night mode from a DOM attribute.
+      //
+      // Deliberately wired through ctx.inject rather than the module-level
+      // `inject` array: a plugin entry that never reaches `active` (because it
+      // is still waiting on an absent service) counts as a failed activation
+      // and aborts the whole web boot. Injecting here keeps the integration
+      // opportunistic and can never block activation.
+      ctx.inject(['theme'], (themeCtx: ClientContext) => {
+        themeCtx.effect(
+          () => themeCtx.on('theme/change', () => {
+            if (body.hasAttribute('data-dsh-taffy-theme')) syncStageArt(body, settings)
+          }),
+          'dsh-taffy-theme: theme/change',
+        )
       })
     } catch (error) {
       // Undo whatever the partial init managed to create, then stay inert:

@@ -196,6 +196,40 @@ declare module '@deepseek-ai/cordis' {
 
 ---
 
+## 3.6 【阶段 D 实测补充】`overrideTokens` 会把配色从"列内"扩大到"全局"——不能照搬
+
+评审曾建议"接 `ctx.theme`，删掉自建 `--dsw-alias-*` 覆盖"。实测后这条**需要修正**：
+
+**证据**：`dsh-client-ui-layout@0.2.1-rc.2` 的 presenter 把主题 token **全局写在 `body` 上**：
+
+```js
+// ui-layout/lib/client.js:553-565
+if (scheme === "dark") body.setAttribute(DARK_ATTRIBUTE, ""); else body.removeAttribute(DARK_ATTRIBUTE);
+...
+for (const name of this.appliedTokens) body.style.removeProperty(name);
+for (const [name, value] of Object.entries(snapshot.active.tokens)) {
+  body.style.setProperty(name, value);
+  this.appliedTokens.push(name);
+}
+```
+
+而 Taffy 现在的 53 处 `--dsw-alias-*`（`tokens.css`）＋19 处（`components.css`）是写在
+`body[data-dsh-taffy-theme] :is([class*='sidebarCol'], [class*='centerCol'], …)` **作用域内**的，
+这是刻意的：列外（浮层、对话框、第三方插件面板）保持原生外观，与 README「亚克力 opt-in、不误伤第三方插件」一致。
+
+**结论**：把这一整套搬到 `overrideTokens` 会把这些颜色**全局化**，改变列外的渲染 —— 属于用户明确排除的"大规模视觉改版"，且与项目自身的不误伤纪律冲突。CSS 变量在列元素上声明会覆盖 body 的继承值，所以**列内渲染本来就不会变**；变的只有列外。
+
+**因此本轮只做了无争议的部分**：
+- `theme/change` 订阅（替代观察 `data-ds-dark-theme`）；理由是 presenter 正是**因为**这个事件才设置该属性，观察属性等于对同一个信号做二次间接推导；
+- 类型合并 `import type {} from '@deepseek-ai/dsh-client-ui-theme/client'`（获得 `ctx.theme` 与 `theme/change` 的类型）；
+- `backdrop.ts` 不再观察 `data-ds-dark-theme`，只保留本主题自己的两个属性。
+
+**`overrideTokens` / `register` 是否启用，需要一次明确的取舍**（建议单独一轮，配浅色/深色真实截图对比列外区域），因为它会改变对话框与第三方面板的观感。
+
+**另一个设计决定**：主题集成走 `ctx.inject(['theme'], …)` 而**不是**模块级 `inject` 数组。因为 DSH 的 boot 判定是"任一客户端条目未 `active` 即整体失败"，若把 `theme` 列为必需依赖而宿主未提供该服务，条目会停在 pending → **整个 Web UI 打不开**。用 `ctx.inject` 让集成保持"有机会就用"，永远不会阻塞激活。测试已覆盖"`ctx.theme` 缺席时主题仍正常启用"。
+
+---
+
 ## 4. 复现命令
 
 ```powershell
