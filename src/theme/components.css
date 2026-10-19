@@ -1506,3 +1506,65 @@ body[data-dsh-taffy-theme]:not([data-taffy-sidebar-ornate]) :is(
 ) {
   display: none;
 }
+
+/* ── 12. 设置页的缩略图选择器 ─────────────────────────────────────────────
+   「观星台」和「星夜钢琴室」光看字分不出来，所以素材选择改成看图选：
+   按钮里直接放素材缩略图，名字只留在 aria-label / title 里。
+   三种比例分别对应 16:9 背景、9:16 侧栏水印、1:1 Q 版，避免把竖图压扁。 */
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-swatch {
+  box-sizing: border-box;
+  padding: 0;
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--taffy-layer-1, rgba(127, 127, 127, 0.12));
+  border: 1px solid var(--ds-taffy-border-soft, rgba(73, 59, 80, 0.2));
+  border-radius: 10px;
+  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-swatch--wide { width: 96px; height: 54px; }
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-swatch--tall { width: 42px; height: 74px; }
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-swatch--square { width: 58px; height: 58px; }
+
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-swatch img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-swatch-empty {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent 0 5px,
+    color-mix(in srgb, var(--ds-taffy-border-soft, rgba(73, 59, 80, 0.2)) 70%, transparent) 5px 6px
+  );
+}
+
+/* 选中态必须看得见：--taffy-pink-ink 在浅色 ≥6.7:1、深色 9.1:1，满足 SC 1.4.11。 */
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-swatch.is-selected {
+  border-color: var(--taffy-pink-ink, var(--ds-taffy-pink));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--taffy-pink-ink, var(--ds-taffy-pink)) 45%, transparent);
+}
+
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-swatch:hover:not(.is-selected) {
+  border-color: var(--taffy-pink-ui, var(--ds-taffy-pink-ui));
+  transform: translateY(-1px);
+}
+
+:is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-swatch:focus-visible {
+  outline: 2px solid var(--taffy-pink-ink, var(--ds-taffy-pink));
+  outline-offset: 2px;
+}

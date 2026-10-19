@@ -6,6 +6,15 @@ import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
 import type { TaffySettings } from '../state/types'
 import { loadSettings, saveSettings } from './settings-store'
 import { DEFAULT_HERO_HEADLINE } from './hero-copy'
+import {
+  BUNDLED_AVATAR,
+  BUNDLED_BACKGROUNDS,
+  BUNDLED_CHIBI,
+  BUNDLED_SIDEBAR_WATERMARKS,
+  BUNDLED_WALLPAPER_DARK,
+  BUNDLED_WALLPAPER_LIGHT,
+} from './bundled-assets'
+import { isNightScene } from '../assets/resolve'
 
 const SETTINGS_NS = 'settings.taffyTheme'
 
@@ -74,32 +83,37 @@ function Choice({
 }
 
 /**
- * Labels are Chinese here and the ids are the stable ones written into
- * settings, so a label can be reworded without migrating stored preferences.
- * `default` follows the mode; the shipped art is Astral Night material, so the
- * light scheme keeps the wallpaper drawn for Pearl Bloom.
+ * The ids are the stable values written into settings, so a label can be
+ * reworded without migrating stored preferences.
+ *
+ * Every art option carries a thumbnail: "观星台" and "星夜钢琴室" are
+ * indistinguishable as words, which is exactly why the picker shows the picture.
+ * The label survives as aria-label and title only.
  */
-const BACKGROUND_OPTIONS = [
-  { value: 'default', label: '跟随外观' },
-  { value: 'classic-light', label: '经典花房' },
-  { value: 'classic-dark', label: '经典舞台' },
-  { value: 'observatory', label: '观星台' },
-  { value: 'balcony', label: '星空露台' },
-  { value: 'studio', label: '星夜创作室' },
-  { value: 'atelier', label: '午夜工房' },
-  { value: 'piano', label: '星夜钢琴室' },
+const backgroundOptions = () => {
+  const classic = isNightScene() ? BUNDLED_WALLPAPER_DARK : BUNDLED_WALLPAPER_LIGHT
+  return [
+    { value: 'default', label: '跟随外观（当前经典壁纸）', src: classic },
+    { value: 'classic-light', label: '经典花房', src: BUNDLED_WALLPAPER_LIGHT },
+    { value: 'classic-dark', label: '经典舞台', src: BUNDLED_WALLPAPER_DARK },
+    { value: 'observatory', label: '观星台', src: BUNDLED_BACKGROUNDS.observatory },
+    { value: 'balcony', label: '星空露台', src: BUNDLED_BACKGROUNDS.balcony },
+    { value: 'studio', label: '星夜创作室', src: BUNDLED_BACKGROUNDS.studio },
+    { value: 'atelier', label: '午夜工房', src: BUNDLED_BACKGROUNDS.atelier },
+    { value: 'piano', label: '星夜钢琴室', src: BUNDLED_BACKGROUNDS.piano },
+  ]
+}
+
+const sidebarOptions = () => [
+  { value: 'default', label: '不显示', src: '' },
+  { value: 'celestial-sidebar', label: '星空侧栏', src: BUNDLED_SIDEBAR_WATERMARKS['celestial-sidebar'] },
+  { value: 'celestial-plum', label: '梅色梦境', src: BUNDLED_SIDEBAR_WATERMARKS['celestial-plum'] },
 ]
 
-const SIDEBAR_OPTIONS = [
-  { value: 'default', label: '不显示' },
-  { value: 'celestial-sidebar', label: '星空侧栏' },
-  { value: 'celestial-plum', label: '梅色梦境' },
-]
-
-const CHIBI_OPTIONS = [
-  { value: 'default', label: '经典头像' },
-  { value: 'cat-hug', label: '抱猫猫' },
-  { value: 'open-arms', label: '张开手' },
+const chibiOptions = () => [
+  { value: 'default', label: '经典头像', src: BUNDLED_AVATAR },
+  { value: 'cat-hug', label: '抱猫猫', src: BUNDLED_CHIBI['cat-hug'] },
+  { value: 'open-arms', label: '张开手', src: BUNDLED_CHIBI['open-arms'] },
 ]
 
 const DECORATION_OPTIONS = [
@@ -107,6 +121,47 @@ const DECORATION_OPTIONS = [
   { value: 'simple', label: '简约' },
   { value: 'full', label: '完整' },
 ]
+
+/**
+ * Picture picker. Renders the actual asset so the choice is recognisable at a
+ * glance; the label is kept for screen readers and as a hover tooltip, never as
+ * the primary affordance. `variant` matches the asset's aspect ratio so a 9:16
+ * watermark is not squashed into a 16:9 box.
+ */
+function SwatchRow({
+  label,
+  value,
+  options,
+  variant = 'wide',
+  onSelect,
+}: {
+  label: string
+  value: string
+  options: { value: string; label: string; src: string }[]
+  variant?: 'wide' | 'tall' | 'square'
+  onSelect: (next: string) => void
+}) {
+  return createElement('div', { className: 'dsh-taffy-slider-row' },
+    createElement('div', { className: 'dsh-taffy-slider-head' },
+      createElement('span', null, label),
+    ),
+    createElement('div', { className: 'dsh-taffy-swatches' },
+      ...options.map((option) => createElement('button', {
+        key: option.value,
+        type: 'button',
+        className: `dsh-taffy-swatch dsh-taffy-swatch--${variant}${value === option.value ? ' is-selected' : ''}`,
+        'aria-pressed': value === option.value,
+        'aria-label': option.label,
+        title: option.label,
+        onClick: () => onSelect(option.value),
+      },
+        option.src
+          ? createElement('img', { src: option.src, alt: '', loading: 'lazy', decoding: 'async', draggable: false })
+          : createElement('span', { className: 'dsh-taffy-swatch-empty', 'aria-hidden': 'true' }),
+      )),
+    ),
+  )
+}
 
 function Slider({
   label,
@@ -232,16 +287,16 @@ function TaffyModeRow() {
       onChange: (characterOpacity) => commit({ characterOpacity }),
     }),
     createElement('div', { className: 'dsh-taffy-general-title' }, '背景与素材'),
-    createElement(Choice, {
+    createElement(SwatchRow, {
       label: '首页背景',
       value: settings.backgroundHero,
-      options: BACKGROUND_OPTIONS,
+      options: backgroundOptions(),
       onSelect: (backgroundHero) => commit({ backgroundHero }),
     }),
-    createElement(Choice, {
+    createElement(SwatchRow, {
       label: '功能页背景',
       value: settings.backgroundFunctional,
-      options: BACKGROUND_OPTIONS,
+      options: backgroundOptions(),
       onSelect: (backgroundFunctional) => commit({ backgroundFunctional }),
     }),
     createElement(Choice, {
@@ -250,16 +305,18 @@ function TaffyModeRow() {
       options: DECORATION_OPTIONS,
       onSelect: (sidebarDecoration) => commit({ sidebarDecoration }),
     }),
-    createElement(Choice, {
+    createElement(SwatchRow, {
       label: '侧栏水印',
       value: settings.sidebarWatermark,
-      options: SIDEBAR_OPTIONS,
+      options: sidebarOptions(),
+      variant: 'tall',
       onSelect: (sidebarWatermark) => commit({ sidebarWatermark }),
     }),
-    createElement(Choice, {
+    createElement(SwatchRow, {
       label: '底部 Q 版',
       value: settings.chibiMascot,
-      options: CHIBI_OPTIONS,
+      options: chibiOptions(),
+      variant: 'square',
       onSelect: (chibiMascot) => commit({ chibiMascot }),
     }),
     createElement('div', { className: 'dsh-taffy-general-note' },
