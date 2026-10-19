@@ -95,5 +95,32 @@ no effect.
 | DSH Desktop app | `desktop` | `E:\DeepSeekHarness` |
 | Browser DSH (`dsh web`) | `web` | `C:\Users\SYH\.dsh` |
 
-`web` is verified on DSH 0.2.1-rc.2; the `desktop` profile has not had a real
-install test yet. See `docs/DESKTOP-AUDIT-2026-10-19.md`.
+### What is verified for the desktop app
+
+The `desktop` profile is owned exclusively by the Electron app: `dsh --profile
+desktop` answers `profile "desktop" is managed exclusively by the Electron
+application`, and `dsh plugin --profile desktop add` asks you to open the app
+once and quit it first. So the desktop install path is the app's own plugin
+manager, not a bare CLI command.
+
+The **runtime** behind the app was verified separately — using the desktop's
+bundled CLI (`resources/runtime/cli/bin/dsh.cmd`, pnpm v11.28.5, matching
+`runtime.json`) against an isolated `DSH_HOME`:
+
+- `dsh plugin add <tarball>` → `exit 0` (the 0.2.x install gate accepts
+  `engines.dsh: ">=0.2.1-rc.2 <0.3.0"`);
+- `/plugins/@dsh-external/dsh-taffy-theme/assets/taffy/*.webp` → `200 image/webp`
+  with full byte counts; `manifest.json` → `200`; path traversal → `404`.
+
+The desktop shell forwards every non-static path (`/plugins/**` included) to its
+Host HTTP server with an injected auth cookie, and serves the same
+`dsh-web-frontend/dist` the browser build uses.
+
+**Still unverified:** the plugin's client bundle actually running inside the
+Electron renderer. A second Electron instance cannot be started under the same
+Windows account (single-instance lock; `--user-data-dir` does not override it —
+the new process exits immediately), so that check needs a separate Windows
+account or a VM. Until it is done, do not claim "verified on DSH Desktop".
+
+See `docs/DESKTOP-RUNTIME-EVIDENCE.md` for the full evidence chain and
+`docs/DESKTOP-AUDIT-2026-10-19.md` for the first-stage read-only audit.

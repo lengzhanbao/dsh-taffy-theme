@@ -114,24 +114,32 @@ attachments/  cache/  dsh-runtimes/  profiles/  sessions/  storages/
 | # | 问题 | 结论 | 证据等级 |
 | --- | --- | --- | --- |
 | 1 | 桌面安装包版本、内置 Host 与运行时依赖版本 | 见 §1.1。`0.2.1-rc.2` / win32-x64 / Node 24.21.0 | **配置实证** |
-| 2 | 桌面插件管理器的安装/启用/升级/卸载流程 | **未验证**（未在桌面目录下执行过任何 `dsh plugin` 命令） | 未验证 |
+| 2 | 桌面插件管理器的安装/启用/升级/卸载流程 | **安装已实证**：用桌面自带 CLI（`resources/runtime/cli/bin/dsh.cmd`，pnpm v11.28.5）在隔离 `DSH_HOME` 下 `plugin add` 返回 `exit 0`。**启用/禁用/卸载/重装仍未验证** | 实测（见 `DESKTOP-RUNTIME-EVIDENCE.md` §1） |
 | 3 | `dsh-app://app/` 入口如何与 Host 建立连接 | **未验证**。已确认 `app.asar` 含 `lib/main.js`(516 KB) + 5 个 preload（`preload-app` / `-mandatory` / `-platform-account` / `-update-dialog` / `-welcome`）与 `lib/welcome/`、`renderer/` 资源 | 部分实证 |
-| 4 | 外部插件的客户端 bundle 如何被桌面主文档加载 | **未验证**。桌面与 web 共用 `dsh-web-app`，推测沿用同一 client 装载路径，**但未实证** | 未验证 |
-| 5 | `webServer.tapIndex` / `register` / 客户端注入 / 素材路由在桌面版的调用路径 | **未验证**。桌面 bundle 与 web 相同（§2.1）是间接证据，不构成实证 | 未验证 |
-| 6 | `ctx.theme` 在桌面运行时是否存在 | **未验证**。`0.2.1-rc.2` 的 `dsh-client-ui-theme` 提供该服务（前几轮已在 npm 包上验证），但桌面运行时是否 compose 尚未确认 | 未验证 |
+| 4 | 外部插件的客户端 bundle 如何被桌面主文档加载 | **已由源码证实**：`protocol.handle("dsh-app")` 只白名单 `/`、`/index.html`、`/assets/*`、`/favicon.svg`、`/manifest.webmanifest`，其余一律 `forwardWebRequest` 给 Host，因此 `/plugins/**` 走转发 + 注入鉴权 cookie；且桌面前端取自 `@deepseek-ai/dsh-web-frontend/dist`，与 Web 版同一份构建产物。**渲染进程内实际执行仍未观测** | 源码实证（见 `DESKTOP-RUNTIME-EVIDENCE.md` §3） |
+| 5 | `webServer.tapIndex` / `register` / 客户端注入 / 素材路由在桌面版的调用路径 | **注册侧已实证**：隔离运行时上 `/plugins/<id>/assets/taffy/*.webp` → `200 image/webp`（字节数完整），`manifest.json` → `200`，路径穿越 → `404`。转发侧见第 4 项 | 实测（见 `DESKTOP-RUNTIME-EVIDENCE.md` §2） |
+| 6 | `ctx.theme` 在桌面运行时是否存在 | **未验证**。`0.2.1-rc.2` 的 `dsh-client-ui-theme` 提供该服务（前几轮已在 npm 包上验证），但桌面运行时是否 compose 尚未确认。Taffy 已按 `ctx.inject(['theme'], …)` 降级处理，缺该服务时退化为不订阅，不抛错 | 未验证 |
 | 7 | `dsh-agent-preset` 的 Preset 格式与加载方式 | **已在 0.2.1-rc.2 上实证**（前几轮）：格式为 `- insert: [{ id: preset-<id>, name: '@deepseek-ai/dsh-agent-preset', config: { id, order, plugins } }]`；Taffy 的 16 行组成通过官方 `entryListProblem`，且实测能组合进 0.2.1-rc.2 组合树（1233→1762 行）。**但未在 desktop profile 上试过** | 运行时实证（web-app profile） |
 
 ### 重点问题的直接回答
 
 > **当前 Taffy 的每个启动环节，在官方桌面版里究竟会不会执行？**
 
-**目前无法回答，且不应假装能回答。** 已知的是：
+**本阶段（只读）时无法回答。后续已补齐到「源码 + 运行时」两级，但渲染进程内的执行仍未观测。** 更新后的状态：
 
-- ✅ 桌面版是 `0.2.1-rc.2`，Taffy 声明的 `engines.dsh`（`>=0.2.1-rc.2 <0.3.0` 分支）**覆盖它** → 安装门禁不会拦；
-- ✅ 桌面 profile 与 web profile 使用**同一组 bundle**，因此 Taffy 依赖的宿主服务理论上同样存在；
-- ❌ 但 Taffy 从未被安装进 `desktop` profile，**其 `apply()`、`tapIndex` 注入、素材路由、客户端 loader 在桌面版是否执行，一次都没有观测过**。
+- ✅ 桌面版是 `0.2.1-rc.2`，Taffy 声明的 `engines.dsh`（`>=0.2.1-rc.2 <0.3.0`）**覆盖它** → 安装门禁不会拦；
+  并已用桌面自带运行时实测 `plugin add` 成功（`exit 0`）。
+- ✅ 桌面 profile 与 web profile 使用**同一组 bundle**，且桌面前端与 Web 版是**同一份**
+  `dsh-web-frontend/dist` 构建产物。
+- ✅ `webServer.register` 注册的素材路由在桌面运行时上实测 `200 image/webp`，字节完整，穿越被挡。
+- ✅ 桌面外壳对 `/plugins/**` 有专门的转发与缓存头处理（`PLUGIN_BUNDLE_PATH = /^\/plugins\//u`），
+  说明这条路径是被预期使用的。
+- ❌ 但 Taffy 仍未在 `desktop` profile / Electron 渲染进程里跑起来过：`apply()` 的实际执行、
+  `tapIndex` 注入后的页面外观、slot 条目渲染、明暗切换与持久化，**一次都没有在渲染进程内观测**。
+  原因见 `DESKTOP-RUNTIME-EVIDENCE.md` §4（同账户下第二个 Electron 实例被单实例锁拦下）。
 
-按任务要求，**不得用浏览器测试代替桌面验证** —— 因此上一轮在 `web` profile 上取得的浏览器 10/10 通过，**不能**作为桌面兼容证据。
+按任务要求，**不得用浏览器测试代替桌面验证** —— 上一轮在 `web` profile 上取得的浏览器 10/10 通过，
+**不能**作为桌面兼容证据；本文更新后的实测与源码结论，同样**不等于**渲染进程内验证通过。
 
 ---
 

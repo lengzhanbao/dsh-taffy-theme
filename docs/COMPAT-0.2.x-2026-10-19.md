@@ -14,6 +14,9 @@
 3. 计划里的 **`ctx.theme.overrideTokens` 写法经真机类型验证是成立的**（含"必须同时给 light/dark"这条）。
 4. **重要修正**：我上一份评审建议"删掉 `dsh-client-ui-slots`"——在 0.2.x 语境下这条要改。该包在 0.2.x **已恢复发布**。
 5. **Taffy 现有的一批死选择器在 0.1.6 和 0.2.1 上都是死的**。所以那部分不是"迁移成本"，是**既有 bug**；不修它，迁到 0.2.x 一样不工作。
+6. **桌面版**：安装门与素材路由已在桌面自带运行时上实测通过（§3.7.2），转发路径有源码实证；
+   但**渲染进程内的实际渲染尚未观测**，因此目前只能声明「桌面运行时装载层兼容」，
+   **不能**声明「已在 DSH Desktop 中完整验证」。
 
 ---
 
@@ -364,6 +367,34 @@ function satisfies(runtimeVersion, range) {
 3. 15 个装饰节点 + token 生效 + 状态机运行 → 客户端主题在 0.2.x 上功能完整。
 
 复现：`node browser-accept.mjs <url文件> <截图路径>`（脚本在临时目录，依赖 `playwright-core` + 本机 Edge；**未加入仓库**，避免为一次性验收给项目引入浏览器依赖）。
+
+---
+
+### 3.7.2 【桌面运行时实测】桌面版自带运行时上的安装与素材路由 —— 通过
+
+上面 §3.7 / §3.7.1 全部是在 npm 装出来的 Web profile 上做的。桌面版是另一套运行时，
+因此单独用**桌面安装包自带的 CLI**（`E:\Deepseek harness\resources\runtime\cli\bin\dsh.cmd`，
+pnpm v11.28.5，与 `runtime.json` 一致）在隔离 `DSH_HOME` 下复验：
+
+| 环节 | 结果 |
+| --- | --- |
+| `dsh plugin add <tgz>` | **`exit 0`**，装上 `@dsh-external/dsh-taffy-theme 0.1.9` |
+| `/plugins/<id>/assets/taffy/avatar.webp` | **`200 image/webp`** 123606 B |
+| `/plugins/<id>/assets/taffy/wallpaper-light.webp` | **`200 image/webp`** 165906 B |
+| `/plugins/<id>/assets/taffy/icons/face-happy.webp` | **`200 image/webp`** 58322 B |
+| `/plugins/<id>/assets/taffy/manifest.json` | **`200 application/json`** 1216 B |
+| `…/assets/taffy/../package.json`（穿越） | **`404`**，0 B |
+
+并且从 `app.asar` 里读出了桌面外壳的转发实现：`dsh-app://app/` 只把 `/`、`/index.html`、
+`/assets/*`、`/favicon.svg`、`/manifest.webmanifest` 当静态文件，**其余全部
+`forwardWebRequest` 转发给 Host HTTP 服务并注入鉴权 cookie**，`/plugins/**` 还在
+`PLUGIN_BUNDLE_PATH = /^\/plugins\//u` 下被专门设成 `cache-control: no-store`。
+桌面版前端取自 `@deepseek-ai/dsh-web-frontend/dist`，与 Web 版是同一份构建产物。
+
+**边界**：这证明的是「安装门 + 素材路由 + 转发路径」在桌面运行时上成立，
+**不等于**「已在 Electron 渲染进程内看到主题效果」。后者仍未观测 ——
+同账户下第二个 Electron 实例会被单实例锁拦下（`--user-data-dir` 不生效，实测新进程立即退出）。
+详见 `docs/DESKTOP-RUNTIME-EVIDENCE.md`。
 
 ---
 
