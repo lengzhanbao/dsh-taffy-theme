@@ -46,6 +46,44 @@ function collectJsFiles(dir, out = []) {
   return out
 }
 
+/** Every file actually present under the packed `package/`, POSIX-separated. */
+function collectPackedFiles(pkgRoot, base = pkgRoot, out = []) {
+  for (const entry of readdirSync(base)) {
+    const full = join(base, entry)
+    if (statSync(full).isDirectory()) collectPackedFiles(pkgRoot, full, out)
+    else out.push(full.slice(pkgRoot.length + 1).replace(/\\/g, '/'))
+  }
+  return out
+}
+
+/** Minimal glob → RegExp covering the forms npm's `files` field actually uses. */
+function globToRegExp(pattern) {
+  let out = '^'
+  for (let i = 0; i < pattern.length; i += 1) {
+    const ch = pattern[i]
+    if (ch === '*') {
+      if (pattern[i + 1] === '*') {
+        if (pattern[i + 2] === '/') {
+          out += '(?:.*/)?'
+          i += 2
+        } else {
+          out += '.*'
+          i += 1
+        }
+      } else {
+        out += '[^/]*'
+      }
+    } else if (ch === '?') {
+      out += '[^/]'
+    } else if ('\\^$+.()|{}[]'.includes(ch)) {
+      out += `\\${ch}`
+    } else {
+      out += ch
+    }
+  }
+  return new RegExp(`${out}$`)
+}
+
 /**
  * Scan every shipped .js for relative imports and confirm each target resolves
  * to a file inside the packed tarball. Catches files/ omissions like the
@@ -118,6 +156,43 @@ try {
   const pkgJson = JSON.parse(readFileSync(join(pkgRoot, 'package.json'), 'utf8'))
   check('package.json 声明 schemastery 依赖', Boolean(pkgJson.dependencies?.schemastery))
   check('package.files 含 lib/assets/route.js', (pkgJson.files ?? []).includes('lib/assets/route.js'))
+
+  // Expand the `files` allowlist against what npm actually packed. The fixed
+  // REQUIRED list above cannot cover glob entries — lib/types/**/*.d.ts and the
+  // two asset globs were unchecked, which is the same class of gap that shipped
+  // a broken v0.1.3 tarball.
+  const packedFiles = collectPackedFiles(pkgRoot)
+  const packedSet = new Set(packedFiles)
+  for (const entry of pkgJson.files ?? []) {
+    if (/[*?]/.test(entry)) {
+      const matched = packedFiles.filter((file) => globToRegExp(entry).test(file))
+      check(
+        `package.files 展开 ${entry}`,
+        matched.length > 0,
+        matched.length === 0 ? '展开为 0 个文件' : `${matched.length} 个文件`,
+      )
+    } else {
+      const asFile = packedSet.has(entry)
+      const asDir = packedFiles.some((file) => file.startsWith(`${entry}/`))
+      check(`package.files 条目在包内 ${entry}`, asFile || asDir, asFile ? 'file' : asDir ? 'dir' : '缺失')
+    }
+  }
+
+  // Every `exports` target must survive packing, including its `types` path.
+  const exportTargets = []
+  const walkExports = (value) => {
+    if (typeof value === 'string') {
+      if (value.startsWith('./')) exportTargets.push(value.slice(2))
+      return
+    }
+    if (value && typeof value === 'object') {
+      for (const nested of Object.values(value)) walkExports(nested)
+    }
+  }
+  walkExports(pkgJson.exports ?? {})
+  for (const target of exportTargets) {
+    check(`exports 目标在包内 ${target}`, packedSet.has(target))
+  }
 
   const hostIndex = readFileSync(join(pkgRoot, 'lib/index.js'), 'utf8')
   const routeSrc = readFileSync(join(pkgRoot, 'lib/assets/route.js'), 'utf8')
