@@ -183,7 +183,20 @@ declare module '@deepseek-ai/cordis' {
 
 **Taffy 现状**：`presets/taffy/preset.yml`（name/description/order）+ `presets/taffy/agent.cordis.yml`（460 行 entry list），由 `scripts/sync-persona.mjs` 安装到 `$DSH_HOME/.agent-presets/taffy` —— 这是 **0.1.x 的文件系统约定**。
 
-**好消息**：`agent.cordis.yml` 的**行列表本身仍然可用**（`PresetDefinition.plugins` 就是 entry list，且该包提供 `entryListProblem()` 校验），`preset.yml` 的四个字段也一一对应。所以内容是复用的，**变的是打包与注册方式**。
+**好消息（已用官方校验器实测，不再只是"应该可以"）**：新增 `scripts/verify-preset.mjs`，用 0.2.x **自带的** `entryListProblem()`（来自 `dsh-agent-preset-registry@0.2.1-rc.2` 的主入口导出）校验 Taffy 的 `agent.cordis.yml`：
+
+```
+✓ agent.cordis.yml 解析为 entry list（数组） — 16 行
+✓ 官方 entryListProblem 通过
+✓ 每行都有 name — 16/16
+✓ 可组装为 PresetDefinition   (id=taffy name=Taffy 塔菲 plugins=16)
+```
+
+并确认该校验器**不是空转**：非数组 → `the composition must be a top-level list of plugin rows`；行缺 `name` → `row 1 names no plugin`；畸形行 → `row 1 is not a plugin row`。
+
+**结论**：preset 的**内容**是前向兼容的（0.2.x 官方校验器认可），**变的只是打包与注册方式**。`verify:preset` 已接入 `npm run ci`。
+
+**实现细节（踩过的坑）**：Cordis 给 YAML 加了 `!!js` 标签（如 `disabled: !!js process.platform === 'win32'`），普通 `js-yaml` 会直接抛错；必须注册该标签，并构造成 loader 期望的形状 —— `@deepseek-ai/cordis-plugin-loader` 把 JsExpr 定义为 `{ __jsExpr: string }`（`utils.d.ts:8`）。另外 `js-yaml` 要钉 `^4.3.2`：5.x 已重写 API，没有 `DEFAULT_SCHEMA`/`Type`。
 
 **因此本轮没有把 peer 改成单数包**：改名而不迁移注册方式，只会得到一个"声称支持、实际加载不了"的 preset —— 正是要避免的失败模式。当前 `@deepseek-ai/dsh-agent-presets` 被标为 **optional peer 且限定在 0.1.x 线**，如实反映"随包发布的 preset 目前只适用于 0.1.x 约定"。
 
