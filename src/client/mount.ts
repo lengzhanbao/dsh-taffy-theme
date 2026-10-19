@@ -408,11 +408,49 @@ function applyOpacityVars(body: HTMLElement, settings: TaffySettings): void {
   body.style.setProperty('--taffy-veil-opacity', String(settings.veilOpacity / 100))
   body.style.setProperty('--taffy-character-opacity', String(settings.characterOpacity / 100))
   body.style.setProperty('--taffy-acrylic-percent', String(settings.acrylicPercent))
+  applyChatLookVars(body, settings)
 }
+
+/**
+ * Chat look: the user's own message bubble and the composer.
+ *
+ * Everything here is expressed as either a body attribute (so CSS can pick a
+ * preset) or a custom property. No rule touches an element's own `opacity`,
+ * because that would fade the text and buttons too — the bubble's translucency
+ * is carried by its background colour token instead.
+ *
+ * The anchors are the host's own stable attributes, not hashed class names:
+ *   [data-chat-flow-kind='user']        — the user message flow item
+ *   --dsw-specific-bubble               — that bubble's background
+ *   --dsw-radius-xl                     — that bubble's corner radius
+ *   --dsh-chat-content-width            — drives its max-width formula
+ *   --dsw-alias-button-elevated-fill    — the sidebar "new session" button fill
+ */
+function applyChatLookVars(body: HTMLElement, settings: TaffySettings): void {
+  body.setAttribute('data-taffy-bubble', settings.userBubbleStyle)
+  body.setAttribute('data-taffy-bubble-border', settings.userBubbleBorder)
+  body.setAttribute('data-taffy-composer', settings.composerStyle)
+  body.setAttribute('data-taffy-composer-decor', settings.composerDecoration)
+
+  body.style.setProperty('--taffy-bubble-opacity', String(settings.userBubbleOpacity / 100))
+  body.style.setProperty('--taffy-bubble-radius', `${settings.userBubbleRadius}px`)
+  body.style.setProperty('--taffy-bubble-max-width', String(settings.userBubbleMaxWidth))
+  body.style.setProperty('--taffy-composer-opacity', String(settings.composerOpacity / 100))
+  body.style.setProperty('--taffy-composer-radius', `${settings.composerRadius}px`)
+}
+
+const CHAT_LOOK_VARS = [
+  '--taffy-bubble-opacity',
+  '--taffy-bubble-radius',
+  '--taffy-bubble-max-width',
+  '--taffy-composer-opacity',
+  '--taffy-composer-radius',
+] as const
 
 export const TAFFY_INLINE_STYLE_KEYS = [
   ...Q_VARS,
   ...OPACITY_VARS,
+  ...CHAT_LOOK_VARS,
   '--taffy-conversation-left',
   '--taffy-conversation-top',
   '--taffy-conversation-width',

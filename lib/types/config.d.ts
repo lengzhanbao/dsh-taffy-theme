@@ -54,6 +54,15 @@ export declare const TaffySettingsSchema: z<Schemastery.ObjectS<{
     sidebarWatermark: z<string, string>;
     chibiMascot: z<string, string>;
     sidebarDecoration: z<"off" | "simple" | "full", "off" | "simple" | "full">;
+    userBubbleStyle: z<string, string>;
+    userBubbleOpacity: z<number, number>;
+    userBubbleRadius: z<number, number>;
+    userBubbleMaxWidth: z<number, number>;
+    userBubbleBorder: z<string, string>;
+    composerStyle: z<string, string>;
+    composerDecoration: z<string, string>;
+    composerOpacity: z<number, number>;
+    composerRadius: z<number, number>;
     colors: z<Schemastery.ObjectS<{
         preset: z<"taffy-candy" | "taffy-night" | "taffy-mint" | "custom", "taffy-candy" | "taffy-night" | "taffy-mint" | "custom">;
         primary: z<string, string>;
@@ -106,6 +115,15 @@ export declare const TaffySettingsSchema: z<Schemastery.ObjectS<{
     sidebarWatermark: z<string, string>;
     chibiMascot: z<string, string>;
     sidebarDecoration: z<"off" | "simple" | "full", "off" | "simple" | "full">;
+    userBubbleStyle: z<string, string>;
+    userBubbleOpacity: z<number, number>;
+    userBubbleRadius: z<number, number>;
+    userBubbleMaxWidth: z<number, number>;
+    userBubbleBorder: z<string, string>;
+    composerStyle: z<string, string>;
+    composerDecoration: z<string, string>;
+    composerOpacity: z<number, number>;
+    composerRadius: z<number, number>;
     colors: z<Schemastery.ObjectS<{
         preset: z<"taffy-candy" | "taffy-night" | "taffy-mint" | "custom", "taffy-candy" | "taffy-night" | "taffy-mint" | "custom">;
         primary: z<string, string>;
@@ -138,6 +156,10 @@ export type TaffyColorPreset = 'taffy-candy' | 'taffy-night' | 'taffy-mint' | 'c
 export type TaffyDynamicIntensity = 'low' | 'standard' | 'high';
 export type TaffyMotion = 'off' | 'standard';
 export type TaffySidebarDecoration = 'off' | 'simple' | 'full';
+export type TaffyBubbleStyle = 'native' | 'glass' | 'ornate';
+export type TaffyBubbleBorder = 'off' | 'subtle' | 'accent';
+export type TaffyComposerStyle = 'native' | 'glass' | 'ornate';
+export type TaffyComposerDecoration = 'off' | 'low' | 'full';
 /**
  * The runtime shape of the stored settings, declared explicitly.
  *
@@ -196,8 +218,37 @@ export interface TaffySettings {
      * decoration layer.
      */
     sidebarDecoration: TaffySidebarDecoration;
+    /** native | glass | ornate — how the user's own messages are drawn. */
+    userBubbleStyle: TaffyBubbleStyle;
+    /** Background opacity percent; applied through the bubble colour token, never element opacity. */
+    userBubbleOpacity: number;
+    userBubbleRadius: number;
+    userBubbleMaxWidth: number;
+    /** off | subtle | accent */
+    userBubbleBorder: TaffyBubbleBorder;
+    /** native | glass | ornate */
+    composerStyle: TaffyComposerStyle;
+    /** off | low | full — how much filigree the composer draws. */
+    composerDecoration: TaffyComposerDecoration;
+    composerOpacity: number;
+    composerRadius: number;
     colors: TaffyColorConfig;
 }
+/**
+ * A stored config that predates the chat-look settings is an *existing* install:
+ * it must come out of the upgrade looking exactly as it did. A config that
+ * already carries these keys (or an empty config, i.e. a fresh install) gets the
+ * intended new defaults.
+ *
+ * Numbers and enums are not part of this decision — only the string-style fields,
+ * which are the ones that would visibly repaint the chat.
+ */
+export declare function chatLookDefaults(source: Record<string, unknown>): {
+    userBubbleStyle: TaffyBubbleStyle;
+    userBubbleBorder: TaffyBubbleBorder;
+    composerStyle: TaffyComposerStyle;
+    composerDecoration: TaffyComposerDecoration;
+};
 export declare function parseTaffySettings(value: unknown): TaffySettings;
 export declare const DEFAULT_SETTINGS: TaffySettings;
 /** @deprecated Use parseTaffySettings — kept for older imports/tests. */

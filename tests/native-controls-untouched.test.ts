@@ -21,9 +21,13 @@ const NATIVE_SIDEBAR = /(?:sidebarCol|data-pane='sidebar'|\[data-slot='sidebar\.
 const IS_BUTTON = /button|\[role='button'\]/
 
 /**
- * Properties that change layout, hit area, icon rendering or paint on a native
- * control. `color`, `animation` and `transition` are allowed: tinting text and
- * disabling motion do not move a control or intercept a click.
+ * What a theme rule must not do to a native control: move it, resize it, hide
+ * its icon, steal its clicks or replace what it paints.
+ *
+ * Paint is explicitly allowed since the chat-look round: the grey "new session"
+ * button is repainted with theme colours on purpose. So `color`, `background`
+ * and `border-color` may be set — but not `background-image`, which is how an
+ * icon would be smuggled back in, and not any geometry, radius or pseudo content.
  */
 const FORBIDDEN = [
   "width", "height", "min-width", "min-height", "max-width", "max-height",
@@ -31,8 +35,8 @@ const FORBIDDEN = [
   "margin", "margin-top", "margin-right", "margin-bottom", "margin-left",
   "display", "position", "inset", "top", "right", "bottom", "left",
   "font-size", "line-height", "overflow", "aspect-ratio", "border-radius",
-  "opacity", "content", "background", "background-image", "background-color",
-  "border", "border-color", "border-width", "box-shadow", "filter", "transform",
+  "opacity", "content", "background-image",
+  "border", "border-width", "box-shadow", "filter", "transform",
   "flex", "flex-basis", "z-index",
 ]
 
@@ -61,7 +65,7 @@ const onNativeSidebarButtons = all.filter(
 )
 
 describe('native sidebar controls stay untouched', () => {
-  it('no rule restyles a native sidebar button beyond text colour or motion', () => {
+  it('no rule restyles a native sidebar button beyond paint', () => {
     const offenders: string[] = []
     for (const rule of onNativeSidebarButtons) {
       const bad = rule.props.filter((p) => FORBIDDEN.includes(p))

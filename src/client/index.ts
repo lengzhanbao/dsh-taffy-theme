@@ -196,6 +196,12 @@ function applyTheme(ctx: ClientContext): void {
     body.removeAttribute('data-taffy-hide-mascot')
     body.removeAttribute('data-taffy-right-crowded')
     body.removeAttribute('data-taffy-q-ready')
+    body.removeAttribute('data-taffy-sidebar-ornate')
+    body.removeAttribute('data-taffy-sidebar-bare')
+    body.removeAttribute('data-taffy-bubble')
+    body.removeAttribute('data-taffy-bubble-border')
+    body.removeAttribute('data-taffy-composer')
+    body.removeAttribute('data-taffy-composer-decor')
     delete body.dataset.taffySidebarSize
     // The pre-paint boot script marks <html> as well; clear both so any
     // "is the theme on?" probe reports the truth after teardown.

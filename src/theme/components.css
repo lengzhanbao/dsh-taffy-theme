@@ -395,7 +395,7 @@ body[data-dsh-taffy-theme][data-taffy-low-power] [data-composer-card] {
 }
 
 /* Pink-gold filigree — modest inset; stays under controls */
-body[data-dsh-taffy-theme] [data-composer-card]::before {
+body[data-dsh-taffy-theme][data-taffy-composer-decor='full'] [data-composer-card]::before {
   content: '';
   position: absolute;
   inset: -6px -5px -5px;
@@ -417,7 +417,7 @@ body[data-dsh-taffy-theme] [data-composer-card]::before {
   opacity: 1;
 }
 
-body[data-dsh-taffy-theme] [data-composer-card]::after {
+body[data-dsh-taffy-theme][data-taffy-composer-decor='full'] [data-composer-card]::after {
   content: '';
   position: absolute;
   inset: -1px;
@@ -1027,11 +1027,11 @@ body[data-dsh-taffy-theme] [data-skin-chrome='sidebar-trim'] {
 /* ── 4. Composer filigree: quieter ────────────────────────────────────────
    specs/01 §四.3 "降低金色描边亮度" — the corner/bow/jewel art is the loudest
    gold in the UI because it sits inside the control the user types into. */
-body[data-dsh-taffy-theme] [data-composer-card]::before {
+body[data-dsh-taffy-theme][data-taffy-composer-decor='full'] [data-composer-card]::before {
   opacity: 0.58;
 }
 
-body[data-dsh-taffy-theme] [data-composer-card]::after {
+body[data-dsh-taffy-theme][data-taffy-composer-decor='full'] [data-composer-card]::after {
   opacity: 0.66;
 }
 
@@ -1313,3 +1313,116 @@ body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-
 body[data-dsh-taffy-theme][data-taffy-q-ready] [data-composer-card] button[aria-label='Commands']::after{  background-image: var(--taffy-q-command);
   background-position: center;
   background-size: 122% 122%;}
+
+
+/* ── 15. Chat look ─────────────────────────────────────────────────────────
+   Anchors are the host's own stable attributes and tokens, verified in the
+   shipped 0.2.1-rc.2 bundles rather than guessed:
+
+     [data-chat-flow-kind='user']   the user message flow item (host writes it)
+     --dsw-specific-bubble          that bubble's background
+     --dsw-radius-xl                that bubble's radius (host default 20px)
+     --dsh-chat-content-width       feeds its max-width: min(W * .702, 82%)
+
+   The bubble element itself carries a CSS-module class (Sixlwa_bubble) whose
+   hash changes every build, so nothing here selects on it — except the optional
+   border, which uses the stable local suffix `_bubble` scoped under the user
+   anchor. If that suffix ever changes the border simply stops rendering; the
+   background, radius and width keep working because they ride on tokens.
+
+   `native` emits no rules at all, which is what an existing install keeps.
+   No element opacity is ever set: translucency lives in the background colour,
+   so text and action buttons stay fully opaque.
+   ───────────────────────────────────────────────────────────────────────── */
+
+body[data-taffy-bubble='glass'] [data-chat-flow-kind='user'],
+body[data-taffy-bubble='ornate'] [data-chat-flow-kind='user'] {
+  --dsw-radius-xl: var(--taffy-bubble-radius, 18px);
+  --dsh-chat-content-width: calc(748px * (var(--taffy-bubble-max-width, 78) / 70.2));
+}
+
+body[data-taffy-bubble='glass'] [data-chat-flow-kind='user'] {
+  --dsw-specific-bubble: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--ds-taffy-pink) 16%, var(--ds-taffy-cream-deep))
+      calc(var(--taffy-bubble-opacity, 0.72) * 100%),
+    transparent
+  );
+  --taffy-bubble-edge: color-mix(in srgb, var(--ds-taffy-pink) 42%, transparent);
+}
+
+body[data-taffy-bubble='ornate'] [data-chat-flow-kind='user'] {
+  --dsw-specific-bubble: linear-gradient(
+    160deg,
+    color-mix(
+      in srgb,
+      var(--ds-taffy-pink) calc(var(--taffy-bubble-opacity, 0.72) * 34%),
+      transparent
+    ),
+    color-mix(
+      in srgb,
+      var(--ds-taffy-gold) calc(var(--taffy-bubble-opacity, 0.72) * 20%),
+      transparent
+    )
+  );
+  --taffy-bubble-edge: color-mix(in srgb, var(--ds-taffy-gold) 58%, transparent);
+}
+
+/* A ring drawn with an inset shadow rather than a border: a border would change
+   the bubble's box and shift the text by 1px. */
+body[data-taffy-bubble-border='subtle'] [data-chat-flow-kind='user'] [class*='_bubble'],
+body[data-taffy-bubble-border='accent'] [data-chat-flow-kind='user'] [class*='_bubble'] {
+  box-shadow: inset 0 0 0 1px var(--taffy-bubble-edge, color-mix(in srgb, var(--ds-taffy-pink) 42%, transparent));
+}
+
+body[data-taffy-bubble-border='accent'] [data-chat-flow-kind='user'] [class*='_bubble'] {
+  box-shadow:
+    inset 0 0 0 1px var(--taffy-bubble-edge, color-mix(in srgb, var(--ds-taffy-gold) 58%, transparent)),
+    0 2px 12px color-mix(in srgb, var(--ds-taffy-pink) 22%, transparent);
+}
+
+/* ── Composer ─────────────────────────────────────────────────────────── */
+body[data-taffy-composer='glass'] [data-composer-card],
+body[data-taffy-composer='ornate'] [data-composer-card] {
+  border-radius: var(--taffy-composer-radius, 16px);
+  background: color-mix(
+    in srgb,
+    var(--taffy-acrylic-light) calc(var(--taffy-composer-opacity, 0.82) * 100%),
+    transparent
+  );
+}
+
+body[data-taffy-composer-decor='low'] [data-composer-card] {
+  border-color: color-mix(in srgb, var(--ds-taffy-pink) 38%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ds-taffy-pink) 18%, transparent);
+}
+
+body[data-taffy-composer-decor='off'] [data-composer-card] {
+  border-color: var(--taffy-acrylic-border, rgba(73, 59, 80, 0.14));
+  box-shadow: none;
+}
+
+/* ── Sidebar "new session" button ──────────────────────────────────────────
+   The host paints it with --dsw-alias-button-elevated-fill, which is a cool
+   grey in dark mode and reads as unrelated to the theme. Only paint and border
+   colour are touched here: no size, padding, display, font-size or pseudo
+   content, so the native layout and hit area are untouched. */
+body[data-dsh-taffy-theme] :is([class*='sidebarCol'])
+  :is(button[aria-label='新建会话'], button[aria-label='New session']):not([class*='brand']) {
+  background: color-mix(in srgb, var(--ds-taffy-pink) 14%, var(--ds-taffy-glass));
+  border-color: color-mix(in srgb, var(--ds-taffy-pink) 34%, transparent);
+  color: var(--ds-taffy-text);
+}
+
+body[data-dsh-taffy-theme] :is([class*='sidebarCol'])
+  :is(button[aria-label='新建会话'], button[aria-label='New session']):not([class*='brand']):hover {
+  background: color-mix(in srgb, var(--ds-taffy-pink) 22%, var(--ds-taffy-glass));
+  border-color: color-mix(in srgb, var(--ds-taffy-pink) 52%, transparent);
+}
+
+/* ── Reading: keep the last message clear of the composer ─────────────────
+   scroll-padding only affects scroll-into-view maths; the measured composer
+   height is reused instead of adding padding to the host's scroll container. */
+body[data-dsh-taffy-theme] [data-conversation-scroll] {
+  scroll-padding-bottom: calc(var(--taffy-composer-height, 0px) + 12px);
+}

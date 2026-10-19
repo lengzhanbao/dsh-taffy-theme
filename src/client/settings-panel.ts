@@ -119,6 +119,43 @@ const chibiOptions = () => [
   { value: 'open-arms', label: '张开手', src: BUNDLED_CHIBI['open-arms'] },
 ]
 
+const BUBBLE_STYLE_OPTIONS = [
+  { value: 'native', label: '原生' },
+  { value: 'glass', label: '玻璃' },
+  { value: 'ornate', label: '华丽' },
+]
+
+const BUBBLE_BORDER_OPTIONS = [
+  { value: 'off', label: '无边框' },
+  { value: 'subtle', label: '细边' },
+  { value: 'accent', label: '强调' },
+]
+
+const COMPOSER_STYLE_OPTIONS = [
+  { value: 'native', label: '原生' },
+  { value: 'glass', label: '玻璃' },
+  { value: 'ornate', label: '华丽' },
+]
+
+const COMPOSER_DECOR_OPTIONS = [
+  { value: 'off', label: '无装饰' },
+  { value: 'low', label: '简约' },
+  { value: 'full', label: '完整' },
+]
+
+/** "恢复默认" returns the fresh-install look, not the migrating one. */
+const CHAT_LOOK_RESET = {
+  userBubbleStyle: 'glass',
+  userBubbleOpacity: 72,
+  userBubbleRadius: 18,
+  userBubbleMaxWidth: 78,
+  userBubbleBorder: 'subtle',
+  composerStyle: 'glass',
+  composerDecoration: 'low',
+  composerOpacity: 82,
+  composerRadius: 16,
+} as const
+
 const DECORATION_OPTIONS = [
   { value: 'off', label: '关闭' },
   { value: 'simple', label: '简约' },
@@ -170,21 +207,29 @@ function Slider({
   label,
   value,
   onChange,
+  min = 0,
+  max = 100,
+  step = 1,
+  unit = '%',
 }: {
   label: string
   value: number
   onChange: (value: number) => void
+  min?: number
+  max?: number
+  step?: number
+  unit?: string
 }) {
   return createElement('label', { className: 'dsh-taffy-slider-row' },
     createElement('span', { className: 'dsh-taffy-slider-head' },
       createElement('span', null, label),
-      createElement('output', null, `${value}%`),
+      createElement('output', null, `${value}${unit}`),
     ),
     createElement('input', {
       type: 'range',
-      min: 0,
-      max: 100,
-      step: 1,
+      min,
+      max,
+      step,
       value,
       onInput: (event) => onChange(Number(event.currentTarget.value)),
       onChange: (event) => onChange(Number(event.currentTarget.value)),
@@ -322,6 +367,74 @@ function TaffyModeRow() {
       variant: 'square',
       onSelect: (chibiMascot) => commit({ chibiMascot }),
     }),
+    createElement('div', { className: 'dsh-taffy-general-title' }, '聊天外观'),
+    createElement(Choice, {
+      label: '我的消息气泡',
+      value: settings.userBubbleStyle,
+      options: BUBBLE_STYLE_OPTIONS,
+      onSelect: (userBubbleStyle) => commit({ userBubbleStyle }),
+    }),
+    createElement(Choice, {
+      label: '气泡边框',
+      value: settings.userBubbleBorder,
+      options: BUBBLE_BORDER_OPTIONS,
+      onSelect: (userBubbleBorder) => commit({ userBubbleBorder }),
+    }),
+    createElement(Slider, {
+      label: '气泡背景不透明度',
+      value: settings.userBubbleOpacity,
+      min: 55,
+      onChange: (userBubbleOpacity) => commit({ userBubbleOpacity }),
+    }),
+    createElement(Slider, {
+      label: '气泡圆角',
+      value: settings.userBubbleRadius,
+      min: 6,
+      max: 28,
+      unit: 'px',
+      onChange: (userBubbleRadius) => commit({ userBubbleRadius }),
+    }),
+    createElement(Slider, {
+      label: '气泡最大宽度',
+      value: settings.userBubbleMaxWidth,
+      min: 60,
+      max: 90,
+      onChange: (userBubbleMaxWidth) => commit({ userBubbleMaxWidth }),
+    }),
+    createElement('div', { className: 'dsh-taffy-general-title' }, '输入框'),
+    createElement(Choice, {
+      label: '输入框样式',
+      value: settings.composerStyle,
+      options: COMPOSER_STYLE_OPTIONS,
+      onSelect: (composerStyle) => commit({ composerStyle }),
+    }),
+    createElement(Choice, {
+      label: '输入框装饰强度',
+      value: settings.composerDecoration,
+      options: COMPOSER_DECOR_OPTIONS,
+      onSelect: (composerDecoration) => commit({ composerDecoration }),
+    }),
+    createElement(Slider, {
+      label: '输入框背景不透明度',
+      value: settings.composerOpacity,
+      min: 65,
+      onChange: (composerOpacity) => commit({ composerOpacity }),
+    }),
+    createElement(Slider, {
+      label: '输入框圆角',
+      value: settings.composerRadius,
+      min: 8,
+      max: 24,
+      unit: 'px',
+      onChange: (composerRadius) => commit({ composerRadius }),
+    }),
+    createElement('div', { className: 'dsh-taffy-choice-group' },
+      createElement('button', {
+        type: 'button',
+        className: 'dsh-taffy-choice',
+        onClick: () => commit({ ...CHAT_LOOK_RESET }),
+      }, '恢复聊天外观默认'),
+    ),
     createElement('div', { className: 'dsh-taffy-general-note' },
       '「跟随外观」沿用你原来的壁纸；经典花房 / 经典舞台是升级前的两张图，随时可选。星夜素材只在深色外观下观感统一。装饰等级选「完整」才会改动侧栏按钮的尺寸与图标。',
     ),

@@ -75,6 +75,17 @@ export const TaffySettingsSchema = z.object({
     z.const('simple'),
     z.const('full'),
   ]).default('simple'),
+  // Chat look. Defaults are resolved in parseTaffySettings so an existing
+  // install keeps the look it already has (see CHAT_LOOK_DEFAULTS below).
+  userBubbleStyle: artChoice,
+  userBubbleOpacity: z.number().min(55).max(100).default(72),
+  userBubbleRadius: z.number().min(6).max(28).default(18),
+  userBubbleMaxWidth: z.number().min(60).max(90).default(78),
+  userBubbleBorder: artChoice,
+  composerStyle: artChoice,
+  composerDecoration: artChoice,
+  composerOpacity: z.number().min(65).max(100).default(82),
+  composerRadius: z.number().min(8).max(24).default(16),
   colors: TaffyColorConfigSchema,
 })
 
@@ -82,6 +93,10 @@ export type TaffyColorPreset = 'taffy-candy' | 'taffy-night' | 'taffy-mint' | 'c
 export type TaffyDynamicIntensity = 'low' | 'standard' | 'high'
 export type TaffyMotion = 'off' | 'standard'
 export type TaffySidebarDecoration = 'off' | 'simple' | 'full'
+export type TaffyBubbleStyle = 'native' | 'glass' | 'ornate'
+export type TaffyBubbleBorder = 'off' | 'subtle' | 'accent'
+export type TaffyComposerStyle = 'native' | 'glass' | 'ornate'
+export type TaffyComposerDecoration = 'off' | 'low' | 'full'
 
 /**
  * The runtime shape of the stored settings, declared explicitly.
@@ -142,15 +157,114 @@ export interface TaffySettings {
    * decoration layer.
    */
   sidebarDecoration: TaffySidebarDecoration
+  /** native | glass | ornate — how the user's own messages are drawn. */
+  userBubbleStyle: TaffyBubbleStyle
+  /** Background opacity percent; applied through the bubble colour token, never element opacity. */
+  userBubbleOpacity: number
+  userBubbleRadius: number
+  userBubbleMaxWidth: number
+  /** off | subtle | accent */
+  userBubbleBorder: TaffyBubbleBorder
+  /** native | glass | ornate */
+  composerStyle: TaffyComposerStyle
+  /** off | low | full — how much filigree the composer draws. */
+  composerDecoration: TaffyComposerDecoration
+  composerOpacity: number
+  composerRadius: number
   colors: TaffyColorConfig
+}
+
+const NEW_CHAT_KEYS = [
+  'userBubbleStyle', 'userBubbleOpacity', 'userBubbleRadius', 'userBubbleMaxWidth',
+  'userBubbleBorder', 'composerStyle', 'composerDecoration', 'composerOpacity', 'composerRadius',
+] as const
+
+/**
+ * A stored config that predates the chat-look settings is an *existing* install:
+ * it must come out of the upgrade looking exactly as it did. A config that
+ * already carries these keys (or an empty config, i.e. a fresh install) gets the
+ * intended new defaults.
+ *
+ * Numbers and enums are not part of this decision — only the string-style fields,
+ * which are the ones that would visibly repaint the chat.
+ */
+export function chatLookDefaults(
+  source: Record<string, unknown>,
+): {
+  userBubbleStyle: TaffyBubbleStyle
+  userBubbleBorder: TaffyBubbleBorder
+  composerStyle: TaffyComposerStyle
+  composerDecoration: TaffyComposerDecoration
+} {
+  const hasAny = NEW_CHAT_KEYS.some((key) => key in source)
+  const hasStored = Object.keys(source).length > 0
+  if (hasStored && !hasAny) {
+    // Existing install: today's look is the native bubble and the full filigree.
+    return {
+      userBubbleStyle: pick(source.userBubbleStyle, BUBBLE_STYLES, 'native'),
+      userBubbleBorder: pick(source.userBubbleBorder, BUBBLE_BORDERS, 'off'),
+      composerStyle: pick(source.composerStyle, COMPOSER_STYLES, 'native'),
+      composerDecoration: pick(source.composerDecoration, COMPOSER_DECORATIONS, 'full'),
+    }
+  }
+  return {
+    userBubbleStyle: pick(source.userBubbleStyle, BUBBLE_STYLES, 'glass'),
+    userBubbleBorder: pick(source.userBubbleBorder, BUBBLE_BORDERS, 'subtle'),
+    composerStyle: pick(source.composerStyle, COMPOSER_STYLES, 'glass'),
+    composerDecoration: pick(source.composerDecoration, COMPOSER_DECORATIONS, 'low'),
+  }
+}
+
+const BUBBLE_STYLES = ['native', 'glass', 'ornate'] as const
+const BUBBLE_BORDERS = ['off', 'subtle', 'accent'] as const
+const COMPOSER_STYLES = ['native', 'glass', 'ornate'] as const
+const COMPOSER_DECORATIONS = ['off', 'low', 'full'] as const
+
+function pick<T extends string>(raw: unknown, allowed: readonly T[], fallback: T): T {
+  return typeof raw === 'string' && (allowed as readonly string[]).includes(raw) ? (raw as T) : fallback
+}
+
+/**
+ * schemastery throws on an out-of-range number instead of clamping, so one bad
+ * persisted value (a future version, a hand edit, a partial write) would take
+ * the whole settings load down with it. Clamp first: the range is the contract,
+ * and a value outside it is a value we can faithfully repair rather than reject.
+ */
+const NUMERIC_RANGES: Record<string, [number, number]> = {
+  veilOpacity: [0, 100],
+  acrylicPercent: [0, 100],
+  frameOpacity: [0, 100],
+  panelOpacity: [0, 100],
+  characterOpacity: [0, 100],
+  userBubbleOpacity: [55, 100],
+  userBubbleRadius: [6, 28],
+  userBubbleMaxWidth: [60, 90],
+  composerOpacity: [65, 100],
+  composerRadius: [8, 24],
+}
+
+function clampRanges(source: Record<string, unknown>): Record<string, unknown> {
+  let out: Record<string, unknown> | undefined
+  for (const [key, [min, max]] of Object.entries(NUMERIC_RANGES)) {
+    const raw = source[key]
+    if (typeof raw !== 'number' || !Number.isFinite(raw)) continue
+    const clamped = Math.min(max, Math.max(min, raw))
+    if (clamped === raw) continue
+    out = out ?? { ...source }
+    out[key] = clamped
+  }
+  return out ?? source
 }
 
 export function parseTaffySettings(value: unknown): TaffySettings {
   // The schema resolves defaults and `!!js` expressions; the manual rebuild
   // below produces the plain runtime shape, hence the double assertion.
-  const resolved = TaffySettingsSchema(
-    value && typeof value === 'object' ? value : {},
-  ) as unknown as TaffySettings
+  const source = clampRanges(value && typeof value === 'object' ? (value as Record<string, unknown>) : {})
+  const resolved = TaffySettingsSchema(source) as unknown as TaffySettings
+  // Migration: an install that already has stored settings must keep the look it
+  // has today. chatLookDefaults() therefore answers "native / full" for an
+  // existing config and "glass / low" for a fresh one.
+  const chat = chatLookDefaults(source)
   return {
     schemaVersion: 1,
     enabled: resolved.enabled,
@@ -176,6 +290,15 @@ export function parseTaffySettings(value: unknown): TaffySettings {
     sidebarWatermark: resolved.sidebarWatermark,
     chibiMascot: resolved.chibiMascot,
     sidebarDecoration: resolved.sidebarDecoration,
+    userBubbleStyle: chat.userBubbleStyle,
+    userBubbleOpacity: resolved.userBubbleOpacity,
+    userBubbleRadius: resolved.userBubbleRadius,
+    userBubbleMaxWidth: resolved.userBubbleMaxWidth,
+    userBubbleBorder: chat.userBubbleBorder,
+    composerStyle: chat.composerStyle,
+    composerDecoration: chat.composerDecoration,
+    composerOpacity: resolved.composerOpacity,
+    composerRadius: resolved.composerRadius,
     colors: {
       preset: resolved.colors.preset,
       primary: resolved.colors.primary,
@@ -197,3 +320,4 @@ export const DEFAULT_SETTINGS: TaffySettings = parseTaffySettings({})
 
 /** @deprecated Use parseTaffySettings — kept for older imports/tests. */
 export const TaffySettingsSchemaParser = { parse: parseTaffySettings }
+
