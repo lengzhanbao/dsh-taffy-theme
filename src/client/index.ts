@@ -247,7 +247,9 @@ function applyTheme(ctx: ClientContext): void {
       // never rethrow, or DSH marks this plugin entry as failed to activate.
       console.error('[dsh-taffy-theme] client init failed; using the native UI', error)
       disposeAll()
-      return undefined
+      // A no-op disposer rather than `undefined`: Cordis effect callbacks must
+      // return a valid effect result.
+      return () => undefined
     }
 
     return disposeAll

@@ -124,8 +124,55 @@ export declare const TaffySettingsSchema: z<Schemastery.ObjectS<{
         dynamicIntensity: z<"low" | "standard" | "high", "low" | "standard" | "high">;
     }>>;
 }>>;
-export type TaffyColorConfig = ReturnType<typeof TaffyColorConfigSchema>;
-export type TaffySettings = ReturnType<typeof TaffySettingsSchema>;
+export type TaffyColorPreset = 'taffy-candy' | 'taffy-night' | 'taffy-mint' | 'custom';
+export type TaffyDynamicIntensity = 'low' | 'standard' | 'high';
+export type TaffyMotion = 'off' | 'standard';
+/**
+ * The runtime shape of the stored settings, declared explicitly.
+ *
+ * Deliberately NOT `ReturnType<typeof TaffySettingsSchema>`: schemastery's
+ * `SchemaOutput` admits `Volatile<T>` (its `!!js` expression wrapper), so
+ * deriving the type leaked `string | Volatile<string>` into every consumer and
+ * made the client sources fail a type check they were never run through.
+ * `parseTaffySettings` always rebuilds a plain object, so this is the honest
+ * type and the schema remains the validator.
+ */
+export interface TaffyColorConfig {
+    preset: TaffyColorPreset;
+    primary: string;
+    secondary: string;
+    accent: string;
+    background: string;
+    surface: string;
+    text: string;
+    success: string;
+    warning: string;
+    error: string;
+    dynamicEnabled: boolean;
+    dynamicIntensity: TaffyDynamicIntensity;
+}
+export interface TaffySettings {
+    schemaVersion: 1;
+    enabled: boolean;
+    displayName: string;
+    subtitle: string;
+    heroHeadline: string;
+    avatar: string;
+    portrait: string;
+    timePhaseEnabled: boolean;
+    stateColorEnabled: boolean;
+    motion: TaffyMotion;
+    reducedMotion: boolean;
+    veilOpacity: number;
+    acrylicPercent: number;
+    frameOpacity: number;
+    panelOpacity: number;
+    characterOpacity: number;
+    showLeftCharacter: boolean;
+    showRightCharacter: boolean;
+    showMascot: boolean;
+    colors: TaffyColorConfig;
+}
 export declare function parseTaffySettings(value: unknown): TaffySettings;
 export declare const DEFAULT_SETTINGS: TaffySettings;
 /** @deprecated Use parseTaffySettings — kept for older imports/tests. */

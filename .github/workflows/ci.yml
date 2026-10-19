@@ -40,3 +40,11 @@ jobs:
 
       - name: Run quality gates
         run: npm run ci
+
+      # `lib/` is committed, so a source change that was never rebuilt would
+      # otherwise ship stale code. build:ci needs no DSH checkout and no mklink,
+      # so the rebuild can be diffed against the committed output.
+      - name: Build drift
+        run: |
+          npm run build:ci
+          git diff --exit-code -- lib src/client/theme-css.ts

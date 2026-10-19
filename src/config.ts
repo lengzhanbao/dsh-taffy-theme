@@ -61,11 +61,64 @@ export const TaffySettingsSchema = z.object({
   colors: TaffyColorConfigSchema,
 })
 
-export type TaffyColorConfig = ReturnType<typeof TaffyColorConfigSchema>
-export type TaffySettings = ReturnType<typeof TaffySettingsSchema>
+export type TaffyColorPreset = 'taffy-candy' | 'taffy-night' | 'taffy-mint' | 'custom'
+export type TaffyDynamicIntensity = 'low' | 'standard' | 'high'
+export type TaffyMotion = 'off' | 'standard'
+
+/**
+ * The runtime shape of the stored settings, declared explicitly.
+ *
+ * Deliberately NOT `ReturnType<typeof TaffySettingsSchema>`: schemastery's
+ * `SchemaOutput` admits `Volatile<T>` (its `!!js` expression wrapper), so
+ * deriving the type leaked `string | Volatile<string>` into every consumer and
+ * made the client sources fail a type check they were never run through.
+ * `parseTaffySettings` always rebuilds a plain object, so this is the honest
+ * type and the schema remains the validator.
+ */
+export interface TaffyColorConfig {
+  preset: TaffyColorPreset
+  primary: string
+  secondary: string
+  accent: string
+  background: string
+  surface: string
+  text: string
+  success: string
+  warning: string
+  error: string
+  dynamicEnabled: boolean
+  dynamicIntensity: TaffyDynamicIntensity
+}
+
+export interface TaffySettings {
+  schemaVersion: 1
+  enabled: boolean
+  displayName: string
+  subtitle: string
+  heroHeadline: string
+  avatar: string
+  portrait: string
+  timePhaseEnabled: boolean
+  stateColorEnabled: boolean
+  motion: TaffyMotion
+  reducedMotion: boolean
+  veilOpacity: number
+  acrylicPercent: number
+  frameOpacity: number
+  panelOpacity: number
+  characterOpacity: number
+  showLeftCharacter: boolean
+  showRightCharacter: boolean
+  showMascot: boolean
+  colors: TaffyColorConfig
+}
 
 export function parseTaffySettings(value: unknown): TaffySettings {
-  const resolved = TaffySettingsSchema(value && typeof value === 'object' ? value : {}) as TaffySettings
+  // The schema resolves defaults and `!!js` expressions; the manual rebuild
+  // below produces the plain runtime shape, hence the double assertion.
+  const resolved = TaffySettingsSchema(
+    value && typeof value === 'object' ? value : {},
+  ) as unknown as TaffySettings
   return {
     schemaVersion: 1,
     enabled: resolved.enabled,

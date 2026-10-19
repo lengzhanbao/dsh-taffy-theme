@@ -20,7 +20,13 @@ function touchesSelector(node: Node, selector: string): boolean {
   return node instanceof Element && (node.matches(selector) || node.querySelector(selector) !== null)
 }
 
-export function createChromeObserver(options: ChromeObserverOptions): { disconnect: () => void } {
+export interface ChromeObserver {
+  /** Re-run the hero headline sync (used after a settings change). */
+  refreshHero: () => void
+  disconnect: () => void
+}
+
+export function createChromeObserver(options: ChromeObserverOptions): ChromeObserver {
   const sidebarNodes = new Map<HTMLElement, HTMLElement[]>()
   const heroCopy = createHeroCopySync(() => options.getSettings().heroHeadline)
   const heroSync = createRafScheduler(() => heroCopy.apply(document))
