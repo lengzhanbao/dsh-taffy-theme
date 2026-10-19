@@ -1,0 +1,163 @@
+# DSH Desktop 兼容审计（第一阶段：只读）
+
+> 审计时间：2026-10-19
+> 目标：`E:\Deepseek harness\dsh-taffy-theme` 对 **官方 DSH Desktop** 的兼容性
+> 性质：**只读审计**，未修改任何 DSH Desktop 文件，未修改插件代码
+> 证据分级：**源码/配置实证** · **运行时实证** · **未验证**
+
+---
+
+## 0. 首要结论
+
+**Taffy 从未在桌面版上验证过，而且大概率装都装不进去** —— 不是因为版本，而是因为**目标 profile 认错了**：
+
+| 项 | 事实 | 证据 |
+| --- | --- | --- |
+| 桌面版 profile 名 | **`desktop`** | `E:\DeepSeekHarness\profiles\` 下**只有** `desktop`，没有 `web` |
+| Taffy 声明 | `"Platform: DSH Web profile only"` | 仓库 `README.md:12` |
+| Taffy 的安装文档 | `dsh plugin --profile web add …` | `README.md:20`、`docs/install.zh.md` |
+
+也就是说：Taffy 的所有安装文档与验证，指向的是**浏览器版 profile `web`**；而桌面版跑的是 `desktop` profile。这两者在桌面机器上是**两套并存的环境**（见 §1.3）。
+
+---
+
+## 1. 版本与架构（审计项 1）
+
+### 1.1 桌面安装包
+
+| 项 | 值 | 证据 |
+| --- | --- | --- |
+| 安装目录 | `E:\Deepseek harness`（即本会话工作目录） | 存在 `DeepSeek Harness.exe` (246 MB)、`resources/app.asar` (182 MB) |
+| Electron 应用版本 | `44.7.0` | 安装目录 `version` 文件 |
+| **内置 DSH Desktop 版本** | **`0.2.1-rc.2`** | `E:\DeepSeekHarness\dsh-runtimes\dsh-primary-runtime\runtime.json` → `desktopVersion` |
+| 平台 / 架构 | `win32` / `x64` | 同上 |
+| 运行时 Node | **`24.21.0`** | 同上 |
+| 运行时 pnpm | `11.28.5` | 同上 |
+| 运行时 Python | `3.12.14`（含 Pillow 12.3.0 等） | 同上 |
+
+**用户本机桌面版版本与任务目标一致（`0.2.1-rc.2`），无需版本差异记录。**
+
+> ⚠️ 注意：桌面运行时 Node 是 **24.21.0**，而本仓库开发机是 **26.3.0**。构建产物与原生依赖需按 24.x 复核（本阶段未做）。
+
+### 1.2 桌面数据目录
+
+`E:\DeepSeekHarness`，布局：
+
+```
+attachments/  cache/  dsh-runtimes/  profiles/  sessions/  storages/
+.anonymous-user-id  .credentials.yaml
+```
+
+- `dsh-runtimes/dsh-primary-runtime/` → `runtime.json` + `dependencies/{node,pnpm,python}`（**只装工具链，不含 DSH 包**）
+- `profiles/` → **只有 `desktop`**
+
+### 1.3 关键：桌面与浏览器是两套版本并存
+
+| 环境 | 数据目录 | profile | DSH 版本 |
+| --- | --- | --- | --- |
+| **桌面版**（本任务目标） | `E:\DeepSeekHarness` | `desktop` | **0.2.1-rc.2** |
+| 浏览器版（当前 GUI 10480） | `C:\Users\SYH\.dsh` | `web` | **0.1.6-alpha.1** |
+
+**这解释了此前的困惑**：本会话前面几轮我一直在 `web` profile / `0.1.6-alpha.1` 上验证，而任务目标是 `desktop` / `0.2.1-rc.2`。两者不是同一个宿主。
+
+---
+
+## 2. 桌面 profile 的真实状态（审计项 2）
+
+### 2.1 组合内容
+
+`E:\DeepSeekHarness\profiles\desktop\package.json`：
+
+```json
+{
+  "name": "dsh-profile-desktop",
+  "private": true,
+  "dependencies": {},
+  "dsh": { "profile": { "bundles": [
+    "@deepseek-ai/dsh-base",
+    "@deepseek-ai/dsh-web-app"
+  ] } }
+}
+```
+
+**与 `web` profile 的 bundle 列表完全相同** → 桌面版同样加载 `dsh-web-app`（含 webServer 与客户端 UI）。这对 Taffy 是好消息：它依赖的 `webServer.register` / `tapIndex` / `ctx.slots` / `ctx.locale` 应当同样存在（**待第二阶段实证**）。
+
+### 2.2 依赖未安装
+
+| 路径 | 存在 |
+| --- | --- |
+| `profiles\desktop\node_modules` | ❌ |
+| `profiles\node_modules` | ❌ |
+| `profiles\desktop\pnpm-lock.yaml` | ❌ |
+
+`dependencies` 为空，且没有 node_modules / lockfile → **桌面 profile 当前没有安装任何外部插件**。
+
+### 2.3 用户自定义层确实被使用
+
+`profiles/desktop/cordis.patch.yml`（7,646 字节）含真实用户配置，例如：
+
+```yaml
+- id: agent-default-model
+  name: "@deepseek-ai/dsh-agent-default-model"
+  config: { provider: opencode-go, model: deepseek-v4.1-flash, reasoningEffort: max }
+- id: ui-chat
+  name: "@deepseek-ai/dsh-client-ui-chat"
+  config: { transcriptView: standard, performanceUsage: compact }
+```
+
+→ 说明用户**确实在运行桌面版**，且桌面版读取该 profile 的用户 patch 层。**任何安装测试都必须避开这个文件。**
+
+---
+
+## 3. 对第一阶段 7 个问题的逐项回答
+
+| # | 问题 | 结论 | 证据等级 |
+| --- | --- | --- | --- |
+| 1 | 桌面安装包版本、内置 Host 与运行时依赖版本 | 见 §1.1。`0.2.1-rc.2` / win32-x64 / Node 24.21.0 | **配置实证** |
+| 2 | 桌面插件管理器的安装/启用/升级/卸载流程 | **未验证**（未在桌面目录下执行过任何 `dsh plugin` 命令） | 未验证 |
+| 3 | `dsh-app://app/` 入口如何与 Host 建立连接 | **未验证**。已确认 `app.asar` 含 `lib/main.js`(516 KB) + 5 个 preload（`preload-app` / `-mandatory` / `-platform-account` / `-update-dialog` / `-welcome`）与 `lib/welcome/`、`renderer/` 资源 | 部分实证 |
+| 4 | 外部插件的客户端 bundle 如何被桌面主文档加载 | **未验证**。桌面与 web 共用 `dsh-web-app`，推测沿用同一 client 装载路径，**但未实证** | 未验证 |
+| 5 | `webServer.tapIndex` / `register` / 客户端注入 / 素材路由在桌面版的调用路径 | **未验证**。桌面 bundle 与 web 相同（§2.1）是间接证据，不构成实证 | 未验证 |
+| 6 | `ctx.theme` 在桌面运行时是否存在 | **未验证**。`0.2.1-rc.2` 的 `dsh-client-ui-theme` 提供该服务（前几轮已在 npm 包上验证），但桌面运行时是否 compose 尚未确认 | 未验证 |
+| 7 | `dsh-agent-preset` 的 Preset 格式与加载方式 | **已在 0.2.1-rc.2 上实证**（前几轮）：格式为 `- insert: [{ id: preset-<id>, name: '@deepseek-ai/dsh-agent-preset', config: { id, order, plugins } }]`；Taffy 的 16 行组成通过官方 `entryListProblem`，且实测能组合进 0.2.1-rc.2 组合树（1233→1762 行）。**但未在 desktop profile 上试过** | 运行时实证（web-app profile） |
+
+### 重点问题的直接回答
+
+> **当前 Taffy 的每个启动环节，在官方桌面版里究竟会不会执行？**
+
+**目前无法回答，且不应假装能回答。** 已知的是：
+
+- ✅ 桌面版是 `0.2.1-rc.2`，Taffy 声明的 `engines.dsh`（`>=0.2.1-rc.2 <0.3.0` 分支）**覆盖它** → 安装门禁不会拦；
+- ✅ 桌面 profile 与 web profile 使用**同一组 bundle**，因此 Taffy 依赖的宿主服务理论上同样存在；
+- ❌ 但 Taffy 从未被安装进 `desktop` profile，**其 `apply()`、`tapIndex` 注入、素材路由、客户端 loader 在桌面版是否执行，一次都没有观测过**。
+
+按任务要求，**不得用浏览器测试代替桌面验证** —— 因此上一轮在 `web` profile 上取得的浏览器 10/10 通过，**不能**作为桌面兼容证据。
+
+---
+
+## 4. 尚未验证（必须在第二阶段/第三阶段补）
+
+1. 桌面插件管理器在 `desktop` profile 下的真实安装/启用/升级/卸载流程。
+2. `dsh-app://app/` 与 Host 的连接方式，以及外部插件 client bundle 的加载路径。
+3. `webServer.tapIndex` / `register` / 素材路由在桌面版的真实调用。
+4. `ctx.theme` 在桌面运行时是否存在及其生命周期。
+5. 桌面运行时 Node **24.21.0**（非开发机 26.3.0）下的构建与原生依赖表现。
+6. 是否可以在**不触碰** `profiles/desktop/cordis.patch.yml` 与用户配置的前提下做安装测试。
+
+---
+
+## 5. 建议的第二阶段起点
+
+1. **先确认安装路径**：桌面版应用内是否有「插件管理」界面（`dsh-client-ui-plugin-manager` 存在于 0.2.1-rc.2），优先走**官方 UI 流程**，而非手改 profile。
+2. **隔离测试**：把 `E:\DeepSeekHarness` **整体复制**到临时目录，用桌面版指向副本（或按官方支持的方式切换数据目录）后测试，**绝不在原目录试装**。
+3. **迁移 profile 目标**：Taffy 的安装文档与 `README` 需从 `--profile web` 改为按环境说明（web / desktop）。
+4. `engines.dsh` 目前声明了两条线（`>=0.1.6-alpha.1 <0.2.0 || >=0.2.1-rc.2 <0.3.0`）。桌面版只落在第二条，这一条**需要针对 desktop 实际复核**。
+
+---
+
+## 6. 本阶段未做的事（合规声明）
+
+- 未修改 DSH Desktop 的 Electron 主进程、preload 或安装程序；
+- 未修改 `E:\DeepSeekHarness` 下任何文件；
+- 未在 `desktop` profile 安装/卸载任何插件；
+- 未运行桌面应用。
