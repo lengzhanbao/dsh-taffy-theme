@@ -32,8 +32,9 @@
     "verify:assets": "node scripts/verify-assets.mjs",
     "verify:static": "node scripts/verify-taffy.mjs",
     "verify:pack": "node scripts/verify-pack.mjs",
+    "verify:peers": "node scripts/verify-peers.mjs",
     "verify": "node scripts/verify-taffy.mjs",
-    "ci": "npm run verify:assets && npm run verify:static && npm test && npm run verify:pack",
+    "ci": "npm run verify:peers && npm run verify:assets && npm run verify:static && npm test && npm run verify:pack",
     "capture:hint": "node scripts/capture-hint.mjs",
     "install:dev": "powershell -ExecutionPolicy Bypass -File scripts/install-dev.ps1",
     "install:release": "powershell -ExecutionPolicy Bypass -File scripts/install-release.ps1",
@@ -104,20 +105,30 @@
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "^4.0.1",
-    "@deepseek-ai/dsh-agent-presets": ">=0.1.0-rc.1 <0.2.0-0",
-    "@deepseek-ai/dsh-client-locale": ">=0.1.0-rc.1 <0.2.0-0",
-    "@deepseek-ai/dsh-client-ui-renderer": ">=0.1.0-rc.1 <0.2.0-0",
-    "@deepseek-ai/dsh-client-ui-settings": ">=0.1.0-rc.1 <0.2.0-0",
-    "@deepseek-ai/dsh-client-ui-settings-general": ">=0.1.0-rc.1 <0.2.0-0",
-    "@deepseek-ai/dsh-client-ui-slots": ">=0.1.0-rc.1 <0.2.0-0",
-    "@deepseek-ai/dsh-client-ui-theme": ">=0.1.0-rc.1 <0.2.0-0",
-    "@deepseek-ai/dsh-settings": ">=0.1.0-rc.1 <0.2.0-0",
-    "@deepseek-ai/dsh-tools": ">=0.1.0-rc.1 <0.2.0-0",
+    "@deepseek-ai/dsh-agent-presets": ">=0.1.6-alpha.1 <0.2.0",
+    "@deepseek-ai/dsh-client-locale": ">=0.1.6-alpha.1 <0.2.0 || >=0.2.1-rc.2 <0.3.0",
+    "@deepseek-ai/dsh-client-ui-renderer": ">=0.1.6-alpha.1 <0.2.0 || >=0.2.1-rc.2 <0.3.0",
+    "@deepseek-ai/dsh-client-ui-settings": ">=0.1.6-alpha.1 <0.2.0 || >=0.2.1-rc.2 <0.3.0",
+    "@deepseek-ai/dsh-client-ui-settings-general": ">=0.1.6-alpha.1 <0.2.0 || >=0.2.1-rc.2 <0.3.0",
+    "@deepseek-ai/dsh-client-ui-slots": ">=0.2.1-rc.2 <0.3.0",
+    "@deepseek-ai/dsh-client-ui-theme": ">=0.1.6-alpha.1 <0.2.0 || >=0.2.1-rc.2 <0.3.0",
+    "@deepseek-ai/dsh-host-webserver": ">=0.1.6-alpha.1 <0.2.0 || >=0.2.1-rc.2 <0.3.0",
+    "@deepseek-ai/dsh-settings": ">=0.1.6-alpha.1 <0.2.0 || >=0.2.1-rc.2 <0.3.0",
+    "@deepseek-ai/dsh-tools": ">=0.1.6-alpha.1 <0.2.0 || >=0.2.1-rc.2 <0.3.0",
     "react": "^18.2.0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-agent-presets": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-slots": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
     "jsdom": "^29.1.1",
+    "semver": "^7.6.3",
     "tsdown": "^0.22.14",
     "typescript": "^5.9.0",
     "vitest": "^4.1.10"
