@@ -305,6 +305,40 @@ function satisfies(runtimeVersion, range) {
 
 ---
 
+**迁移配方（已在隔离的 0.2.1-rc.2 上实测通过）**：DSH 自己就是这么声明 preset 的 —— `dsh-web-app/package.json` 的 `dsh.bundle.patch` 列出 `./presets/{standard,ptc,minimal,cordis}.patch.yml`，每个文件形如：
+
+```yaml
+- insert:
+    - id: preset-standard
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: standard
+        order: 1
+        plugins:
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            ...
+```
+
+即 **`plugins:` 就是 Taffy 现有 `agent.cordis.yml` 的行列表**。实验：把 Taffy 的 16 行原样缩进 10 空格塞进这个信封，写进隔离 profile 的 patch 层后启动：
+
+| 观察 | 结果 |
+| --- | --- |
+| 启动 | ✅ 成功，**stderr 为空**，进程稳定 |
+| `--dump-config` 组合树 | ✅ **1233 → 1762 行**（+529 = Taffy 的 preset 行） |
+| `preset-taffy` 行 | ✅ `name: '@deepseek-ai/dsh-agent-preset'` + `config: {id: taffy, order: 9, plugins: […]}`，与 `preset-standard` 结构完全一致 |
+
+**机制已确认可用，内容零改写。**
+
+**但有一个取舍必须先决定**：把 `presets/taffy.patch.yml` 加进 `dsh.bundle.patch` 后，**0.1.x 会解析到 `@deepseek-ai/dsh-agent-preset`（单数）—— 那个包在 0.1.x 不存在**，会变成加载错误。也就是说：
+
+- 想同时支持 0.1.x 与 0.2.x 的 preset → 需要按版本条件禁用该行（`disabled: !!js …`），复杂度上升且未验证；
+- 只支持 0.2.x → 直接加，干净。
+
+**因此本轮没有把 patch 文件写进仓库**：这是"服务哪些用户"的产品决定，不该由我替你做。配方与实测结果已备好，随时可落。
+
+---
+
 ## 4. 复现命令
 
 ```powershell
