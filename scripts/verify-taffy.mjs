@@ -154,6 +154,16 @@ for (const [fg, bg] of BASELINE.contrastPairs) {
   )
 }
 
+// Non-text UI (WCAG 1.4.11): focus rings, icons and control boundaries.
+for (const [fg, bg] of BASELINE.contrastPairsUi ?? []) {
+  const ratio = contrastRatio(fg, bg)
+  check(
+    `UI 对比度 ${fg} on ${bg}`,
+    ratio >= (BASELINE.contrastUiMinRatio ?? 3),
+    `ratio=${ratio.toFixed(2)}`,
+  )
+}
+
 const manifest = JSON.parse(readFileSync(join(ROOT, 'assets/taffy/manifest.json'), 'utf8'))
 for (const figure of Object.values(manifest.figures ?? {})) {
   check(`manifest figure ${figure.file}`, existsSync(join(ROOT, 'assets/taffy', figure.file)))

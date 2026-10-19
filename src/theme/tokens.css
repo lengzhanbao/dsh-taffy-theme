@@ -46,8 +46,11 @@ body[data-dsh-taffy-theme] {
   --taffy-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
   --taffy-pink: var(--ds-taffy-pink);
   --taffy-pink-deep: #dc6f9e;
+  /* Pink for text, icons and focus rings. `--ds-taffy-pink` is only 2.02:1 on
+     the light surfaces, so it stays decorative; this is its legible twin. */
+  --taffy-pink-ink: #9c2f5c;
   --taffy-ink: var(--ds-taffy-text);
-  --taffy-muted: #817486;
+  --taffy-muted: #6f6276;
   --taffy-blue: var(--ds-taffy-lens);
   --taffy-radius-sm: 8px;
   --taffy-radius-md: 12px;
@@ -167,6 +170,9 @@ body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] {
   --taffy-acrylic-blur: 14px;
   --taffy-acrylic-saturation: 1.05;
   --taffy-muted: #a99db2;
+  /* On the dark surfaces the bright pink is already legible (8.08:1), so the
+     legible-ink twin is not needed here — point it back at the brand pink. */
+  --taffy-pink-ink: var(--ds-taffy-pink);
   background-color: transparent;
 }
 
@@ -191,14 +197,18 @@ body[data-dsh-taffy-theme] :is(
   --dsw-alias-button-info-fill: var(--ds-taffy-pink);
   --dsw-alias-button-info-hover: var(--ds-taffy-pink-soft);
   --dsw-alias-label-caption: #6d5d74;
-  --dsw-alias-label-dimmed: #8a7a90;
+  --dsw-alias-label-dimmed: #6f6276;
   --dsw-alias-label-primary-bluish: var(--ds-taffy-text);
   --dsw-alias-label-primary-dimmed: #5c4c62;
   --dsw-alias-label-primary-foreground: #fff7f1;
   --dsw-alias-label-primary-inverted: #fff7f1;
   --dsw-alias-label-primary: var(--ds-taffy-text);
-  --dsw-alias-label-secondary: #74697b;
-  --dsw-alias-label-tertiary: #948a99;
+  /* The four light surfaces sit within 0.07 luminance of each other, so a
+     4-step label ramp cannot both descend and clear 4.5:1. These values keep a
+     real descending hierarchy (6.59 / 5.72 / 5.53 / 5.26 worst-case) rather
+     than a nominal one that fails. Measured against #fffdfb, #fff7f1, #fff4ea. */
+  --dsw-alias-label-secondary: #5f5464;
+  --dsw-alias-label-tertiary: #6b5f72;
   --dsw-alias-interactive-bg-hover: rgba(242, 155, 194, 0.12);
   --dsw-alias-interactive-bg-active: rgba(185, 167, 232, 0.16);
   --dsw-specific-bubble: #fff4ea;
