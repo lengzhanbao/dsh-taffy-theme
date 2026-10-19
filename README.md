@@ -21,10 +21,10 @@
 DSH Desktop 使用 `desktop` profile：
 
 ```bash
-dsh plugin --profile desktop add https://raw.githubusercontent.com/lengzhanbao/dsh-taffy-theme/master/dist/dsh-external-dsh-taffy-theme-0.2.0.tgz
+dsh plugin --profile desktop add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.2.0/dsh-external-dsh-taffy-theme-0.2.0.tgz
 ```
 
-或下载仓库里的 `dist/dsh-external-dsh-taffy-theme-0.2.0.tgz` 后本地安装：
+或下载 Release 附件后本地安装：
 
 ```powershell
 dsh plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.2.0.tgz
