@@ -339,6 +339,34 @@ function satisfies(runtimeVersion, range) {
 
 ---
 
+### 3.7.1 浏览器端验收 —— 10/10 通过（真实 Chromium/Edge）
+
+用 `playwright-core` 驱动本机 Edge，打开隔离环境的 token URL。**取得了此前所有静态分析都拿不到的证据**：
+
+```
+✓ 页面已加载（非空白） — DeepSeek Harness
+✓ 启动判定：客户端插件未失败 — no boot-failure text
+✓ html[data-dsh-taffy-theme]   ← host tapIndex 的 pre-paint veil 注入
+✓ body[data-dsh-taffy-theme]   ← 客户端 apply() 已执行
+✓ 样式表 #dsh-taffy-theme-style 已注入
+✓ 装饰节点已挂载 [data-skin-owner] — 15 个
+✓ 主题 token 已在 body 上生效 — --ds-taffy-cream=#fff7f1
+✓ 状态机已运行 (data-taffy-state) — state=idle
+✓ 无未捕获的页面异常
+✓ 无主题相关的 console 错误
+```
+
+截图确认渲染正常：浅色花房壁纸 + 左右立绘、粉金侧栏（`taffy-harness` 品牌字）、Q 版头像、左下「加油喵」吉祥物、粉金描边输入框。
+
+**意义**：
+1. `html` 上的标记来自 host 端 `webServer.tapIndex` → 证明 **host 的 boot veil 注入链路在 0.2.x 上完整可用**（这是之前唯一没能验证的 host 侧断言）；
+2. 客户端条目**没有**落进 `did not activate`（DSH 会因此整体拒绝挂载）→ 证明**阶段 A 的失败隔离与阶段 D 的 `ctx.inject(['theme'])` 设计在真实宿主上成立**；
+3. 15 个装饰节点 + token 生效 + 状态机运行 → 客户端主题在 0.2.x 上功能完整。
+
+复现：`node browser-accept.mjs <url文件> <截图路径>`（脚本在临时目录，依赖 `playwright-core` + 本机 Edge；**未加入仓库**，避免为一次性验收给项目引入浏览器依赖）。
+
+---
+
 ## 4. 复现命令
 
 ```powershell
