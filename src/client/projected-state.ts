@@ -3,6 +3,7 @@ import {
   BETTER_SIDEBAR_SELECTOR,
   CHAT_FLOW_SELECTOR,
   SETTINGS_DIALOG_SELECTOR,
+  SIDEBAR_COLLAPSED_SELECTOR,
   WORKSPACE_SELECTOR,
 } from './chrome-selectors'
 import { createRafScheduler } from './schedule'
@@ -36,7 +37,8 @@ export function startProjectedState(body: HTMLElement): () => void {
       (() => {
         const panel = body.querySelector(BETTER_SIDEBAR_SELECTOR)
         if (!(panel instanceof HTMLElement)) return false
-        if (body.hasAttribute('data-dsh-sidebar-collapsed')) return false
+        // The collapse marker lives on the layout frame, not on <body>.
+        if (body.querySelector(SIDEBAR_COLLAPSED_SELECTOR) !== null) return false
         const box = panel.getBoundingClientRect()
         return box.height > 80 && box.width > 160 && box.width < window.innerWidth * 0.72
       })(),
@@ -65,7 +67,7 @@ export function startProjectedState(body: HTMLElement): () => void {
   })
   observer.observe(body, {
     attributes: true,
-    attributeFilter: ['data-phase', 'data-chat-flow', 'data-dsh-better-sidebar', 'data-dsh-sidebar-collapsed'],
+    attributeFilter: ['data-phase', 'data-chat-flow', 'data-dsh-better-sidebar', 'data-sidebar-collapsed'],
     childList: true,
     subtree: true,
   })

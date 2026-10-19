@@ -3,8 +3,9 @@ import { mapDomSignals } from '../state/adapter'
 import {
   ACTIVE_SELECTOR,
   CHAT_FLOW_SELECTOR,
+  CONVERSATION_PHASE_SELECTOR,
   STREAMING_SELECTOR,
-  TOOL_CALL_SELECTOR,
+  TOOL_RUNNING_SELECTOR,
 } from './chrome-selectors'
 import { createRafScheduler } from './schedule'
 
@@ -23,16 +24,21 @@ export function createStateObserver(options: StateViewOptions): () => void {
     if (now - lastEmitAt < AGENT_THROTTLE_MS) return
     const activeConversation = body.querySelector(ACTIVE_SELECTOR) !== null
     const chatFlow = body.querySelector(CHAT_FLOW_SELECTOR)
-    const composerPhase = chatFlow?.getAttribute('data-phase') ?? null
+    // `data-phase` also exists on the composer with an unrelated domain, so the
+    // conversation phase is resolved upwards from the chat flow.
+    const conversationPhase =
+      chatFlow?.closest(CONVERSATION_PHASE_SELECTOR)?.getAttribute('data-phase') ?? null
     const streaming = body.querySelector(STREAMING_SELECTOR) !== null
-    const hasToolCall = body.querySelector(TOOL_CALL_SELECTOR) !== null
+    // Only live tool execution counts; a transcript full of finished tool cards
+    // must not report `tool-calling`.
+    const toolRunning = body.querySelector(TOOL_RUNNING_SELECTOR) !== null
     lastEmitAt = now
 
     mapDomSignals({
       activeConversation,
-      composerPhase,
+      composerPhase: conversationPhase,
       streaming,
-      hasToolCall,
+      hasToolCall: toolRunning,
       error: false,
       success: false,
     }, options.onState)
@@ -43,7 +49,9 @@ export function createStateObserver(options: StateViewOptions): () => void {
   const observer = new MutationObserver(() => scheduler.schedule())
   observer.observe(body, {
     attributes: true,
-    attributeFilter: ['data-phase', 'data-streaming'],
+    // `data-state`/`data-tool` are needed because a tool card changes state in
+    // place (preparing -> running -> success) without a childList mutation.
+    attributeFilter: ['data-phase', 'data-streaming', 'data-state', 'data-tool'],
     childList: true,
     subtree: true,
   })
