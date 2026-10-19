@@ -5,9 +5,14 @@
 **Do not clone the repo.** Install the prebuilt Release:
 
 ```bash
-dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.3/dsh-external-dsh-taffy-theme-0.1.3.tgz
+# browser DSH (web profile). For DSH Desktop use --profile desktop instead.
+dsh plugin --profile web add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.1.9/dsh-external-dsh-taffy-theme-0.1.9.tgz
 dsh web
 ```
+
+> Pinned to `v0.1.9` on purpose. Older tags are not safe to point at: `v0.1.3`'s
+> tarball is missing `lib/boot-taffy.js`, which `lib/index.js` imports, so the
+> plugin fails to load with `ERR_MODULE_NOT_FOUND`.
 
 Full guide: [docs/install.zh.md](docs/install.zh.md) · [docs/install.en.md](docs/install.en.md)
 

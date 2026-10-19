@@ -6,11 +6,15 @@ One command — **no** git clone, **no** local `npm build`.
 
 | Item | Requirement |
 | --- | --- |
-| Platform | [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) **Web** profile |
-| DSH version | `0.1.0-rc.6` or newer |
-| Other | `dsh web` works (default `http://127.0.0.1:3080`) |
+| Platform | DSH **Web** profile or **Desktop** profile — see the profile note below |
+| DSH version | decided by `engines.dsh`: `>=0.1.6-alpha.1 <0.2.0 \|\| >=0.2.1-rc.2 <0.3.0` |
+| Other | DSH opens normally (`dsh web` defaults to `http://127.0.0.1:3080`; Desktop is an app window) |
 
-Web UI only — not CLI or other profiles.
+> ⚠️ **Pick the right profile.** DSH Desktop uses `desktop`; browser DSH uses `web`. **Installing into the wrong profile does nothing.**
+>
+> **Verification status:** the `web` profile is install/start/browser-verified on DSH `0.2.1-rc.2` ([COMPAT-0.2.x-2026-10-19.md](COMPAT-0.2.x-2026-10-19.md)). The **`desktop` profile has not had a real install test yet** ([DESKTOP-AUDIT-2026-10-19.md](DESKTOP-AUDIT-2026-10-19.md)).
+>
+> CLI only is not supported — a theme is meaningless without the Web/Desktop UI.
 
 ## Install (recommended)
 
