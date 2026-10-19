@@ -1,18 +1,31 @@
 /* Taffy tokens live on body. Official --dsw-* stay on native DSH panes only. */
 
 body[data-dsh-taffy-theme] {
-  --ds-taffy-cream: #fff7f1;
-  --ds-taffy-cream-deep: #ffe8f0;
-  --ds-taffy-pink: #f29bc2;
+  /* Pearl Bloom (light). Values follow the Astral Atelier spec; the two accents
+     are nudged darker than the spec sheet because its #dd7da9 / #bf8d50 measure
+     2.65:1 / 2.81:1 on the light surfaces, under the 3:1 that WCAG 2.2 SC 1.4.11
+     wants for component boundaries. See docs/ASTRAL-ATELIER.md. */
+  --ds-taffy-cream: #fff8fc;
+  --ds-taffy-cream-deep: #f6eaf3;
+  --ds-taffy-layer-1: #fff3fa;
+  --ds-taffy-glass: rgba(255, 250, 253, 0.82);
+  --ds-taffy-pink: #dd7da9;
+  --ds-taffy-pink-ui: #c26e95;
   --ds-taffy-pink-soft: #ffd8e7;
-  --ds-taffy-gold: #e7b957;
-  --ds-taffy-gold-deep: #c9a227;
+  --ds-taffy-gold: #bf8d50;
+  --ds-taffy-gold-ui: #ae8049;
+  --ds-taffy-gold-deep: #896539;
   --ds-taffy-charcoal: #493b50;
   --ds-taffy-ribbon: #c43c3c;
   --ds-taffy-lens: #91d5e8;
   --ds-taffy-lavender: #b9a7e8;
-  --ds-taffy-text: #141018;
+  --ds-taffy-blueviolet: #757ce0;
+  --ds-taffy-text: #4d3045;
+  --ds-taffy-text-secondary: #715668;
+  --ds-taffy-text-muted: #7a6574;
   --ds-taffy-text-on-dark: #fff3e8;
+  --ds-taffy-border-soft: rgba(191, 141, 80, 0.18);
+  --ds-taffy-glow-soft: rgba(221, 125, 169, 0.12);
   --taffy-text-halo:
     0 0 0.6px rgba(255, 255, 255, 0.95),
     0 1px 0 rgba(255, 247, 241, 0.92),
@@ -37,7 +50,7 @@ body[data-dsh-taffy-theme] {
 
   --taffy-sidebar-width: 280px;
   --taffy-accent: var(--ds-taffy-pink);
-  --taffy-glow: rgba(242, 155, 194, 0.28);
+  --taffy-glow: var(--ds-taffy-glow-soft);
   --taffy-hairline: color-mix(in srgb, var(--ds-taffy-pink) 35%, transparent);
   --taffy-motion-scale: 1;
   --taffy-motion-duration: 1;
@@ -50,7 +63,18 @@ body[data-dsh-taffy-theme] {
      the light surfaces, so it stays decorative; this is its legible twin. */
   --taffy-pink-ink: #9c2f5c;
   --taffy-ink: var(--ds-taffy-text);
-  --taffy-muted: #6f6276;
+  --taffy-text-secondary: var(--ds-taffy-text-secondary);
+  --taffy-muted: var(--ds-taffy-text-muted);
+  /* Gold is the one accent the spec restricts to "点睛" duty, so give it a
+     legible ink twin as well: #bf8d50 is only 2.81:1 on the light surfaces,
+     while --ds-taffy-gold-deep clears 5.04:1 there. */
+  --taffy-gold-ink: var(--ds-taffy-gold-deep);
+  --taffy-pink-ui: var(--ds-taffy-pink-ui);
+  --taffy-gold-ui: var(--ds-taffy-gold-ui);
+  --taffy-blueviolet: var(--ds-taffy-blueviolet);
+  --taffy-glass: var(--ds-taffy-glass);
+  --taffy-layer-1: var(--ds-taffy-layer-1);
+  --taffy-border-soft: var(--ds-taffy-border-soft);
   --taffy-blue: var(--ds-taffy-lens);
   --taffy-radius-sm: 8px;
   --taffy-radius-md: 12px;
@@ -140,37 +164,51 @@ body[data-dsh-taffy-theme][data-taffy-preset='taffy-mint'] {
 
 body[data-dsh-taffy-theme][data-ds-dark-theme],
 body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] {
-  --ds-taffy-cream: #211b32;
-  --ds-taffy-cream-deep: #181326;
-  --ds-taffy-text: #fff3e8;
-  --ds-taffy-text-on-dark: #fff3e8;
+  /* Astral Night. Every pair here clears AA on its own: primary 16.26:1,
+     secondary 11.69:1, muted 6.61:1 against bg.base #160f1e. */
+  --ds-taffy-cream: #160f1e;
+  --ds-taffy-cream-deep: #2b1d39;
+  --ds-taffy-layer-1: #22162d;
+  --ds-taffy-glass: rgba(39, 23, 52, 0.78);
+  --ds-taffy-pink: #f29bc2;
+  --ds-taffy-pink-ui: #f29bc2;
+  --ds-taffy-gold: #d9b06c;
+  --ds-taffy-gold-ui: #d9b06c;
+  --ds-taffy-gold-deep: #b98f4e;
+  --ds-taffy-blueviolet: #8f95ff;
+  --ds-taffy-text: #f6ecf5;
+  --ds-taffy-text-secondary: #d9c7d8;
+  --ds-taffy-text-muted: #ab92a8;
+  --ds-taffy-text-on-dark: #f6ecf5;
+  --ds-taffy-border-soft: rgba(233, 191, 140, 0.18);
+  --ds-taffy-glow-soft: rgba(242, 155, 194, 0.18);
   --taffy-text-halo:
-    0 0 0.8px rgba(255, 243, 232, 0.95),
-    0 0 7px rgba(231, 185, 87, 0.34),
-    0 0 14px rgba(242, 155, 194, 0.22);
-  --taffy-veil: #211b32;
+    0 0 0.8px rgba(246, 236, 245, 0.9),
+    0 0 7px rgba(217, 176, 108, 0.3),
+    0 0 14px rgba(242, 155, 194, 0.2);
+  --taffy-veil: #160f1e;
   --taffy-veil-strength: 0.14;
   --taffy-veil-opacity: var(--taffy-veil-strength);
   --taffy-panel-opacity: 82;
-  --taffy-glow: rgba(242, 165, 200, 0.22);
+  --taffy-glow: var(--ds-taffy-glow-soft);
   --taffy-plate-art: linear-gradient(
     90deg,
-    rgba(220, 111, 158, 0.22),
-    rgba(39, 30, 55, 0.42) 50%,
-    rgba(185, 167, 232, 0.16)
+    rgba(220, 111, 158, 0.18),
+    rgba(43, 29, 57, 0.42) 50%,
+    rgba(143, 149, 255, 0.14)
   );
   --taffy-settings-frame-art: var(--taffy-plate-art);
-  --taffy-acrylic-bg: color-mix(in srgb, rgb(36, 29, 52) calc(var(--taffy-acrylic-percent) * 1%), transparent);
-  --taffy-acrylic-bg-strong: color-mix(in srgb, rgb(36, 29, 52) calc((var(--taffy-acrylic-percent) + 10) * 1%), transparent);
-  --taffy-acrylic-bg-soft: color-mix(in srgb, rgb(36, 29, 52) calc((var(--taffy-acrylic-percent) - 18) * 1%), transparent);
-  --taffy-acrylic-dark: color-mix(in srgb, rgb(36, 29, 52) calc(var(--taffy-panel-opacity) * 1%), transparent);
-  --taffy-acrylic-border: rgba(255, 244, 250, 0.14);
-  --taffy-acrylic-hairline: rgba(191, 174, 235, 0.22);
-  --taffy-acrylic-shadow: rgba(0, 0, 0, 0.3);
+  --taffy-acrylic-bg: color-mix(in srgb, rgb(39, 23, 52) calc(var(--taffy-acrylic-percent) * 1%), transparent);
+  --taffy-acrylic-bg-strong: color-mix(in srgb, rgb(39, 23, 52) calc((var(--taffy-acrylic-percent) + 10) * 1%), transparent);
+  --taffy-acrylic-bg-soft: color-mix(in srgb, rgb(39, 23, 52) calc((var(--taffy-acrylic-percent) - 18) * 1%), transparent);
+  --taffy-acrylic-dark: color-mix(in srgb, rgb(39, 23, 52) calc(var(--taffy-panel-opacity) * 1%), transparent);
+  --taffy-acrylic-border: rgba(233, 191, 140, 0.18);
+  --taffy-acrylic-hairline: rgba(143, 149, 255, 0.2);
+  --taffy-acrylic-shadow: rgba(0, 0, 0, 0.34);
   --taffy-acrylic-blur: 14px;
   --taffy-acrylic-saturation: 1.05;
-  --taffy-muted: #a99db2;
-  /* On the dark surfaces the bright pink is already legible (8.08:1), so the
+  --taffy-muted: var(--ds-taffy-text-muted);
+  /* On the dark surfaces the bright pink is already legible (9.14:1), so the
      legible-ink twin is not needed here — point it back at the brand pink. */
   --taffy-pink-ink: var(--ds-taffy-pink);
   background-color: transparent;

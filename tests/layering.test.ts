@@ -101,8 +101,10 @@ describe('decorative CSS contracts', () => {
     expect(bodyRule?.[0]).not.toMatch(/--dsw-/)
     expect(tokens).toContain("[class*='sidebarCol']")
     expect(tokens).toContain('--dsw-alias-label-primary: var(--ds-taffy-text)')
-    expect(tokens).toContain('--ds-taffy-text: #fff3e8')
-    expect(tokens).toContain('--ds-taffy-text: #141018')
+    // Astral Atelier palette — both modes must define the reading colour, and
+    // they must differ. See docs/ASTRAL-ATELIER.md for the measured ratios.
+    expect(tokens).toContain('--ds-taffy-text: #f6ecf5')
+    expect(tokens).toContain('--ds-taffy-text: #4d3045')
     expect(tokens).toContain('--dsw-specific-sidebar-fill')
     expect(components).toContain("[data-chat-flow]")
     expect(components).toContain('--dsw-alias-label-primary: var(--ds-taffy-text)')

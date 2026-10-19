@@ -5,49 +5,191 @@
   "clientJsMaxBytes": 1200000,
   "contrastMinRatio": 4.5,
   "contrastUiMinRatio": 3,
-  "contrastPairsComment": "Text pairs, WCAG 1.4.3. Light surfaces are #fffdfb (input), #fff7f1 (cream), #fff4ea (bubble); dark are #211b32 and #181326. The v0.1.9 gate only covered the two primary inks (~15:1), so it could never fail; the label ramp below is the tier that actually shipped too light.",
+  "contrastPairsComment": "Astral Atelier palette. Generated from src/theme/tokens.css; tests/palette-contrast.test.ts re-derives the same pairs from the stylesheet so this list cannot go stale unnoticed.",
   "contrastPairs": [
-    ["#141018", "#fffdfb"],
-    ["#141018", "#fff7f1"],
-    ["#141018", "#fff4ea"],
-    ["#5f5464", "#fffdfb"],
-    ["#5f5464", "#fff7f1"],
-    ["#5f5464", "#fff4ea"],
-    ["#6b5f72", "#fffdfb"],
-    ["#6b5f72", "#fff7f1"],
-    ["#6b5f72", "#fff4ea"],
-    ["#6f6276", "#fffdfb"],
-    ["#6f6276", "#fff7f1"],
-    ["#6f6276", "#fff4ea"],
-    ["#6d5d74", "#fffdfb"],
-    ["#6d5d74", "#fff7f1"],
-    ["#6d5d74", "#fff4ea"],
-    ["#5c4c62", "#fffdfb"],
-    ["#5c4c62", "#fff7f1"],
-    ["#5c4c62", "#fff4ea"],
-    ["#9c2f5c", "#fffdfb"],
-    ["#9c2f5c", "#fff7f1"],
-    ["#9c2f5c", "#fff4ea"],
-    ["#fff3e8", "#211b32"],
-    ["#fff3e8", "#181326"],
-    ["#d8cddf", "#211b32"],
-    ["#d8cddf", "#181326"],
-    ["#a99db2", "#211b32"],
-    ["#a99db2", "#181326"],
-    ["#e8dce8", "#211b32"],
-    ["#e8dce8", "#181326"],
-    ["#d4c8d8", "#211b32"],
-    ["#d4c8d8", "#181326"]
+    [
+      "#4d3045",
+      "#fff8fc"
+    ],
+    [
+      "#4d3045",
+      "#fff3fa"
+    ],
+    [
+      "#4d3045",
+      "#f6eaf3"
+    ],
+    [
+      "#715668",
+      "#fff8fc"
+    ],
+    [
+      "#715668",
+      "#fff3fa"
+    ],
+    [
+      "#715668",
+      "#f6eaf3"
+    ],
+    [
+      "#7a6574",
+      "#fff8fc"
+    ],
+    [
+      "#7a6574",
+      "#fff3fa"
+    ],
+    [
+      "#7a6574",
+      "#f6eaf3"
+    ],
+    [
+      "#9c2f5c",
+      "#fff8fc"
+    ],
+    [
+      "#9c2f5c",
+      "#fff3fa"
+    ],
+    [
+      "#9c2f5c",
+      "#f6eaf3"
+    ],
+    [
+      "#896539",
+      "#fff8fc"
+    ],
+    [
+      "#896539",
+      "#fff3fa"
+    ],
+    [
+      "#896539",
+      "#f6eaf3"
+    ],
+    [
+      "#f6ecf5",
+      "#160f1e"
+    ],
+    [
+      "#f6ecf5",
+      "#22162d"
+    ],
+    [
+      "#f6ecf5",
+      "#2b1d39"
+    ],
+    [
+      "#d9c7d8",
+      "#160f1e"
+    ],
+    [
+      "#d9c7d8",
+      "#22162d"
+    ],
+    [
+      "#d9c7d8",
+      "#2b1d39"
+    ],
+    [
+      "#ab92a8",
+      "#160f1e"
+    ],
+    [
+      "#ab92a8",
+      "#22162d"
+    ],
+    [
+      "#ab92a8",
+      "#2b1d39"
+    ],
+    [
+      "#f29bc2",
+      "#160f1e"
+    ],
+    [
+      "#f29bc2",
+      "#22162d"
+    ],
+    [
+      "#f29bc2",
+      "#2b1d39"
+    ],
+    [
+      "#d9b06c",
+      "#160f1e"
+    ],
+    [
+      "#d9b06c",
+      "#22162d"
+    ],
+    [
+      "#d9b06c",
+      "#2b1d39"
+    ]
   ],
   "contrastPairsUiComment": "Non-text UI, WCAG 1.4.11 (focus rings, icons, control boundaries). #f29bc2 as a focus ring was 2.02:1 on the light surfaces.",
   "contrastPairsUi": [
-    ["#9c2f5c", "#fffdfb"],
-    ["#9c2f5c", "#fff7f1"],
-    ["#9c2f5c", "#fff4ea"],
-    ["#f29bc2", "#211b32"],
-    ["#f29bc2", "#181326"],
-    ["#e7b957", "#211b32"],
-    ["#e7b957", "#181326"]
+    [
+      "#c26e95",
+      "#fff8fc"
+    ],
+    [
+      "#c26e95",
+      "#fff3fa"
+    ],
+    [
+      "#c26e95",
+      "#f6eaf3"
+    ],
+    [
+      "#ae8049",
+      "#fff8fc"
+    ],
+    [
+      "#ae8049",
+      "#fff3fa"
+    ],
+    [
+      "#ae8049",
+      "#f6eaf3"
+    ],
+    [
+      "#757ce0",
+      "#fff8fc"
+    ],
+    [
+      "#757ce0",
+      "#fff3fa"
+    ],
+    [
+      "#757ce0",
+      "#f6eaf3"
+    ],
+    [
+      "#f29bc2",
+      "#160f1e"
+    ],
+    [
+      "#f29bc2",
+      "#22162d"
+    ],
+    [
+      "#d9b06c",
+      "#160f1e"
+    ],
+    [
+      "#d9b06c",
+      "#22162d"
+    ],
+    [
+      "#8f95ff",
+      "#160f1e"
+    ],
+    [
+      "#8f95ff",
+      "#22162d"
+    ]
   ],
   "requiredPackageFiles": [
     "lib/index.js",
@@ -65,19 +207,52 @@
     "preview/dark.webp"
   ],
   "bannedClientPatterns": [
-    { "pattern": "\\[class\\*=_tab\\]", "reason": "误伤 _tabs / _table" },
-    { "pattern": "(?<![a-zA-Z])\\[class\\*=bubble\\]", "reason": "未限定元素的 bubble 子串会误伤 Tooltip" },
-    { "pattern": "\\[class\\*=_tableScroll\\]", "reason": "表格滚动容器误伤" },
-    { "pattern": "\\[data-cordis-panel\\]", "reason": "不得扫描第三方 Cordis 面板" },
-    { "pattern": "\\[data-shell-overlay\\]", "reason": "不得扫描宿主 overlay" }
+    {
+      "pattern": "\\[class\\*=_tab\\]",
+      "reason": "误伤 _tabs / _table"
+    },
+    {
+      "pattern": "(?<![a-zA-Z])\\[class\\*=bubble\\]",
+      "reason": "未限定元素的 bubble 子串会误伤 Tooltip"
+    },
+    {
+      "pattern": "\\[class\\*=_tableScroll\\]",
+      "reason": "表格滚动容器误伤"
+    },
+    {
+      "pattern": "\\[data-cordis-panel\\]",
+      "reason": "不得扫描第三方 Cordis 面板"
+    },
+    {
+      "pattern": "\\[data-shell-overlay\\]",
+      "reason": "不得扫描宿主 overlay"
+    }
   ],
   "bannedCssPatterns": [
-    { "pattern": "!important", "reason": "主题 CSS 禁止 !important" },
-    { "pattern": "^body \\*$", "reason": "禁止全局 body * 选择器" },
-    { "pattern": "#root \\*", "reason": "禁止 #root * 全局覆盖" },
-    { "pattern": "\\[class\\*='panel'\\]", "reason": "禁止宽泛 panel 子串" },
-    { "pattern": "body button", "reason": "禁止全局 button 改写" },
-    { "pattern": "\\[data-pane='details'\\]", "reason": "禁止对 details 面板做亚克力扫描" }
+    {
+      "pattern": "!important",
+      "reason": "主题 CSS 禁止 !important"
+    },
+    {
+      "pattern": "^body \\*$",
+      "reason": "禁止全局 body * 选择器"
+    },
+    {
+      "pattern": "#root \\*",
+      "reason": "禁止 #root * 全局覆盖"
+    },
+    {
+      "pattern": "\\[class\\*='panel'\\]",
+      "reason": "禁止宽泛 panel 子串"
+    },
+    {
+      "pattern": "body button",
+      "reason": "禁止全局 button 改写"
+    },
+    {
+      "pattern": "\\[data-pane='details'\\]",
+      "reason": "禁止对 details 面板做亚克力扫描"
+    }
   ],
   "requiredChromeExports": [
     "SIDEBAR_SELECTOR",

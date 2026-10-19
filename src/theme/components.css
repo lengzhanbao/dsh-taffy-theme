@@ -1216,3 +1216,195 @@ body[data-dsh-taffy-theme][data-dsh-taffy-reduced-motion='true'][data-ds-dark-th
     transition: none;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Astral Atelier — decoration budget
+   ───────────────────────────────────────────────────────────────────────────
+   Implements the "减法重构" half of the redesign spec (specs/01 §四, specs/02).
+   Every rule below is an override appended after the original declarations, so
+   the cascade settles it by source order at equal specificity — nothing is
+   marked important and no specificity padding is used. Tunable through the
+   knobs on the first block; setting a knob to its old value rolls that one
+   change back.
+
+   Deliberately NOT done here: the asset redraw the spec also asks for
+   (specs/03). This layer reduces how loudly the existing art is presented; it
+   cannot replace a poster-grade background with a UI-safe one. See
+   docs/ASTRAL-ATELIER.md for what still needs a new drawing.
+
+   IMPORTANT — which elements actually render. mount.ts sets
+   `data-taffy-scene='fused'` unconditionally, and the stylesheet hides
+   [data-taffy-character] and [data-taffy-ground] in that scene. Measured in a
+   live renderer they are 0x0 with display:none, as are the curtain and frame
+   chrome elements. So the *only* visible backdrop lever is
+   [data-taffy-wallpaper]: one fixed 1600x1000 bitmap with the room AND both
+   figures baked in. Rules targeting the hidden layers would be dead code, so
+   there are none below.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+body[data-dsh-taffy-theme] {
+  /* specs/01 §四.2 — particle density down by half or more. The animated value
+     lives in motion.css @keyframes taffy-sparkle-drift; this one covers the
+     branches that suppress the animation (low-power, reduced-motion). */
+  --taffy-sparkle-opacity: 0.2;
+  /* specs/01 §一.1 — the backdrop is a companion, not the poster */
+  --taffy-wallpaper-saturation: 0.92;
+  --taffy-wallpaper-brightness: 0.98;
+  /* specs/01 §四.2 + specs/05 §三.2 — on a functional page the backdrop steps
+     back so the text wins. This is the only honest way to deliver "设置页背景
+     低干扰" without the redrawn asset specs/03 asks for. */
+  --taffy-wallpaper-focus-opacity: 0.42;
+  /* specs/01 §四.3 — gold stays a highlight, not a wash */
+  --taffy-gold-ink-strength: 0.72;
+}
+
+/* ── 1. Particles: fewer, fainter ─────────────────────────────────────────
+   specs/01 §四.2 "粒子密度降低 50% 以上". Three dot layers collapse to two,
+   each on a larger tile so there are fewer dots per screen, and the drift
+   keyframes were lowered in motion.css. */
+body[data-dsh-taffy-theme] [data-taffy-sparkles] {
+  opacity: var(--taffy-sparkle-opacity, 0.2);
+  background-image:
+    radial-gradient(circle, rgba(255, 216, 231, 0.8) 0 1.2px, transparent 2px),
+    radial-gradient(circle, rgba(217, 176, 108, 0.6) 0 1px, transparent 1.7px);
+  background-size: 340px 280px, 420px 360px;
+  background-position: 14% 20%, 74% 34%;
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-taffy-sparkles],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-taffy-sparkles] {
+  opacity: calc(var(--taffy-sparkle-opacity, 0.2) * 0.9);
+  background-image:
+    radial-gradient(circle, rgba(255, 236, 180, 0.8) 0 1.3px, transparent 2.2px),
+    radial-gradient(circle, rgba(143, 149, 255, 0.5) 0 1px, transparent 1.8px);
+  background-size: 360px 300px, 440px 380px;
+}
+
+/* ── 2. Wallpaper: the one lever that actually renders ────────────────────
+   specs/01 §一.1 "主背景像海报，不像 UI 背景" and §四.2 "降低背景高光强度".
+   Every visible figure lives inside this bitmap, so the only available moves
+   are global tone and, on functional pages, opacity. */
+body[data-dsh-taffy-theme] [data-taffy-wallpaper] {
+  filter: saturate(var(--taffy-wallpaper-saturation, 0.92))
+          brightness(var(--taffy-wallpaper-brightness, 0.98));
+  transition: opacity 260ms ease, filter 260ms ease;
+}
+
+body[data-dsh-taffy-theme][data-taffy-settings-open] [data-taffy-wallpaper] {
+  opacity: var(--taffy-wallpaper-focus-opacity, 0.42);
+  filter: saturate(0.72) brightness(1.03) blur(1px);
+}
+
+/* specs/01 §四.2 — the two full-bleed overlays that also carry light across the
+   reading area. The veil breathes at rest (motion.css), so calm it by amount
+   rather than by removing the layer. */
+body[data-dsh-taffy-theme] [data-taffy-veil='curtain'] {
+  opacity: calc(var(--taffy-veil-opacity, 0.12) * 0.75);
+}
+
+body[data-dsh-taffy-theme] [data-taffy-atmosphere] {
+  opacity: 0.62;
+}
+
+body[data-dsh-taffy-theme][data-taffy-settings-open] [data-taffy-atmosphere] {
+  opacity: 0.32;
+}
+
+/* ── 3. Sidebar mascot: smaller ───────────────────────────────────────────
+   specs/05 §三.1 "底部 Q 版角色缩小，避免抢焦点" */
+body[data-dsh-taffy-theme] :is([class*='sidebarCol'], [data-pane='sidebar']) [data-taffy-mascot='sidebar'] {
+  width: min(84px, calc(100% - 64px));
+  max-height: 11vh;
+  opacity: calc(var(--taffy-character-opacity, 1) * 0.82);
+}
+
+/* specs/02 §一 — the sidebar trim is a 280x1000 gradient wash over the list;
+   the spec wants the list to be first, so soften the wash and keep the rule. */
+body[data-dsh-taffy-theme] [data-skin-chrome='sidebar-trim'] {
+  opacity: 0.6;
+}
+
+/* ── 4. Composer filigree: quieter ────────────────────────────────────────
+   specs/01 §四.3 "降低金色描边亮度" — the corner/bow/jewel art is the loudest
+   gold in the UI because it sits inside the control the user types into. */
+body[data-dsh-taffy-theme] [data-composer-card]::before {
+  opacity: 0.58;
+}
+
+body[data-dsh-taffy-theme] [data-composer-card]::after {
+  opacity: 0.66;
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card]::before,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-composer-card]::before {
+  opacity: 0.62;
+  filter: saturate(1.05) brightness(1.06);
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-composer-card]::after,
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-composer-card]::after {
+  opacity: 0.7;
+  filter: saturate(1.05) brightness(1.06);
+}
+
+/* ── 5. Settings: one readable surface ────────────────────────────────────
+   specs/02 §二 — "所有设置项放在一层更实的暗色玻璃卡片上", 充分内边距, 行间距略增.
+   The dialog uses --ds-taffy-glass, which is the spec's panel.glass value. */
+body[data-dsh-taffy-theme] [data-slot='sidebar.settings'] [role='dialog'][aria-modal='true'] {
+  background: var(--ds-taffy-glass, var(--ds-taffy-cream));
+  border-color: var(--ds-taffy-border-soft, rgba(191, 141, 80, 0.18));
+  backdrop-filter: blur(18px) saturate(1.04);
+  -webkit-backdrop-filter: blur(18px) saturate(1.04);
+  padding: 4px 4px 8px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    0 18px 44px rgba(73, 59, 80, 0.16);
+}
+
+body[data-dsh-taffy-theme][data-ds-dark-theme] [data-slot='sidebar.settings'] [role='dialog'][aria-modal='true'],
+body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] [data-slot='sidebar.settings'] [role='dialog'][aria-modal='true'] {
+  box-shadow:
+    inset 0 0 0 1px rgba(233, 191, 140, 0.12),
+    0 18px 44px rgba(0, 0, 0, 0.42);
+}
+
+body[data-dsh-taffy-theme] [data-slot='sidebar.settings'] [role='dialog'][aria-modal='true']::after {
+  opacity: 0.42;
+}
+
+/* specs/02 §二 — 标题与说明字分层清楚; 行间距比现状略增 */
+body[data-dsh-taffy-theme] .dsh-taffy-general-row {
+  gap: 10px;
+  padding: 20px 4px;
+  border-bottom-color: var(--ds-taffy-border-soft, rgba(73, 59, 80, 0.14));
+}
+
+body[data-dsh-taffy-theme] .dsh-taffy-general-title {
+  color: var(--ds-taffy-text, var(--taffy-ink));
+  font-weight: 500;
+  line-height: 24px;
+}
+
+body[data-dsh-taffy-theme] .dsh-taffy-general-note {
+  color: var(--ds-taffy-text-muted, var(--taffy-muted));
+  line-height: 20px;
+}
+
+/* ── 6. Functional pages: particles step back further ─────────────────────
+   specs/01 §四.2 "粒子密度降低 50% 以上" applies hardest while a settings
+   dialog is open, because that is the screen the spec calls out by name. */
+body[data-dsh-taffy-theme][data-taffy-settings-open] [data-taffy-sparkles] {
+  opacity: calc(var(--taffy-sparkle-opacity, 0.2) * 0.5);
+}
+
+/* ── 7. Text hierarchy on the reading surfaces ────────────────────────────
+   specs/04 §三 — three levels, and the muted level must stay legible: the
+   spec's #9a7f92 measures 3.45:1 on the light surfaces, so --ds-taffy-text-muted
+   carries a corrected #7a6574 (4.56:1 worst case). */
+body[data-dsh-taffy-theme] :is([class*='sidebarCol'], [class*='centerCol'], [class*='detailsCol']) :is(p, li, dd, dt) {
+  color: var(--ds-taffy-text-secondary, var(--taffy-text-secondary));
+}
+
+body[data-dsh-taffy-theme] :is([class*='sidebarCol'], [class*='centerCol']) :is(small, time, [class*='hint'], [class*='caption']) {
+  color: var(--ds-taffy-text-muted, var(--taffy-muted));
+}

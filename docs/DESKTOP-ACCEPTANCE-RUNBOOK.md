@@ -366,6 +366,26 @@ Get-Content 'E:\Deepseek harness\dsh-taffy-theme\.cache\desktop-accept-report.js
 | 探针报 `Cannot reach the DevTools endpoint` | 没带 `--remote-debugging-port=9333` | 回第 4 步，先退干净再带参启动 |
 | 探针报 `No dsh-app://app target found` | 界面还在启动页 / 目标列表为空 | 等界面完全起来再跑；报错里会列出实际看到的目标 URL |
 | 装完界面里完全没变化 | 插件未被启用 | 看应用内插件管理界面是否需要手动启用 |
+| **改了代码重装，界面还是老样子** | **同版本号重装不替换文件**（见下） | 先 `remove` 再 `add`，并核对 `lib/client.js` 字节数 |
 | 有 `data-taffy-asset-error` | 素材 404 | 把探针打印的图片 URL 发我，对照 `DESKTOP-RUNTIME-EVIDENCE.md` §2 |
 | 立绘在但尺寸是 `0x0` | 图未解码 | 等 2 秒重跑；仍为 0 说明取回的不是有效 webp |
 
+### 同版本号重装不会替换文件（实测）
+
+
+pm pack 之后版本号仍是 `0.1.9`，此时直接 `plugin add` 会**复用先前的解析结果**，
+`node_modules` 里还是旧构建 —— 页面看起来「改了没效果」。
+
+```powershell
+$cli = 'E:\Deepseek harness\resources\runtime\cli\bin\dsh.cmd'
+& $cli plugin --profile desktop remove @dsh-external/dsh-taffy-theme
+& $cli plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.1.9.tgz
+```
+
+核对是否真的换掉了：
+
+```powershell
+$p = 'E:\DeepSeekHarness\profiles\desktop\node_modules\@dsh-external\dsh-taffy-theme\lib\client.js'
+(Get-Item $p).Length, (Get-Item 'E:\Deepseek harness\dsh-taffy-theme\lib\client.js').Length
+# 两个数字必须一致
+```

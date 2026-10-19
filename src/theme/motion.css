@@ -31,8 +31,12 @@ body[data-dsh-taffy-theme] [data-composer-card] button[aria-label='Stop generati
 }
 
 @keyframes taffy-sparkle-drift {
-  0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.42; }
-  50% { transform: translate3d(1.6%, -1.2%, 0); opacity: 0.68; }
+  /* Astral Atelier: the spec asks for at least half the particle density gone.
+     These two numbers are the only thing that actually controls how loud the
+     sparkles are while the animation runs — a static opacity on the element is
+     overridden by the running keyframes, so it has to be changed here. */
+  0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.18; }
+  50% { transform: translate3d(1.6%, -1.2%, 0); opacity: 0.3; }
 }
 
 @keyframes taffy-send-glow {
