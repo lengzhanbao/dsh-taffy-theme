@@ -1465,3 +1465,44 @@ body[data-dsh-taffy-theme][data-taffy-sidebar-bare] [data-taffy-sidebar-watermar
 body[data-dsh-taffy-theme][data-taffy-sidebar-bare] [data-skin-chrome='sidebar-trim'] {
   opacity: 0;
 }
+
+/* ── 11. 侧栏：去掉浮空金框，并把底板压实 ───────────────────────────────────
+   实测（深色、简约档）：
+
+   [data-skin-chrome='sidebar-trim'] 用 10 层渐变画了一个「内缩 10px、上下各短
+   48px」的金色方框。它不对齐侧栏的任何边缘，看上去就是几条悬空的断线，正是
+   反馈里说的「条线有问题」。这些层没有一层是结构性的，简约档直接不画。
+
+   侧栏底板实测只有 64% 不透明，壁纸里的人物以 36% 透上来压在列表文字上。
+   specs/02 §一 要求「列表第一优先」，所以简约档把底板压到接近实底。
+   两个数都是 knob，想找回原来的观感改回 0.64 / 恢复渐变即可。 */
+
+body[data-dsh-taffy-theme] {
+  --taffy-sidebar-fill-strength: 94%;
+}
+
+body[data-dsh-taffy-theme]:not([data-taffy-sidebar-ornate]) [data-skin-chrome='sidebar-trim'] {
+  background-image: none;
+}
+
+body[data-dsh-taffy-theme]:not([data-taffy-sidebar-ornate]) :is(
+  [data-pane='sidebar'],
+  [class*='sidebarCol']
+) {
+  background-color: color-mix(
+    in srgb,
+    var(--ds-taffy-layer-1, var(--ds-taffy-cream)) var(--taffy-sidebar-fill-strength, 94%),
+    transparent
+  );
+}
+
+/* 侧栏金饰是 trim 的**子元素**（4 个角饰 + 2 条缎带/垂饰），各自带内联 SVG 背景。
+   上一版只清了 trim 自身的 background-image，管不到它们，所以顶部横线和三个角饰
+   仍在侧栏里悬着 —— 这就是反馈里那条「条线」。简约档直接不渲染这些子元素；
+   想要它们就切到「完整」装饰等级。 */
+body[data-dsh-taffy-theme]:not([data-taffy-sidebar-ornate]) :is(
+  [data-taffy-sidebar-corner],
+  [data-taffy-sidebar-ornament]
+) {
+  display: none;
+}
