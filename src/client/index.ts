@@ -10,7 +10,7 @@ import type { TaffyAgentState } from '../state/types'
 import { resetStateAdapter } from '../state/adapter'
 import { applyThemeTokens, restoreThemeTokens, resolveThemeTokens, snapshotThemeTokens } from '../theme/user-theme'
 import { resolveTimePhase, startTimePhaseTicker } from '../theme/time-theme'
-import { loadSettings, saveSettings, subscribeSettings } from './settings-store'
+import { STORAGE_KEY, loadSettings, readRaw, saveSettings, subscribeSettings } from './settings-store'
 import { ensureStyleNode, removeStyleNode } from './styles'
 import {
   clearMetricsStamp,
@@ -41,6 +41,16 @@ export const name = '@dsh-external/dsh-taffy-theme'
 export const inject = ['slots', 'locale']
 
 export function apply(ctx: ClientContext): void {
+  try {
+    applyTheme(ctx)
+  } catch (error) {
+    // A decorative theme must never be able to fail the web boot: DSH aborts
+    // the whole client when any plugin entry does not reach `active`.
+    console.error('[dsh-taffy-theme] apply() aborted; the native UI is unaffected', error)
+  }
+}
+
+function applyTheme(ctx: ClientContext): void {
   const body = document.body
   const tokenSnapshot = snapshotThemeTokens(body)
   const inlineSnapshot = snapshotInlineStyles(body, TAFFY_INLINE_STYLE_KEYS)
@@ -138,69 +148,101 @@ export function apply(ctx: ClientContext): void {
     mountStaticChrome()
   }
 
+  let disposed = false
+
+  /**
+   * Idempotent teardown. Runs on normal Cordis disposal and also after a
+   * partial init failure, so a broken theme never leaves observers, timers,
+   * subscriptions, style nodes, chrome or host-style overrides behind.
+   */
+  const disposeAll = (): void => {
+    if (disposed) return
+    disposed = true
+    disposeStateObserver?.()
+    disposeStateObserver = undefined
+    disposeTimePhase?.()
+    disposeTimePhase = undefined
+    disposeSettingsSub?.()
+    disposeSettingsSub = undefined
+    unmountChrome()
+    resetStateAdapter()
+    removeStyleNode(document)
+    clearMetricsStamp(document)
+    body.removeAttribute('data-dsh-taffy-theme')
+    body.removeAttribute('data-taffy-state')
+    body.removeAttribute('data-taffy-preset')
+    body.removeAttribute('data-taffy-chat-active')
+    body.removeAttribute('data-taffy-conversation-active')
+    body.removeAttribute('data-taffy-workspace')
+    body.removeAttribute('data-taffy-better-sidebar-open')
+    body.removeAttribute('data-taffy-details-open')
+    body.removeAttribute('data-taffy-settings-open')
+    body.removeAttribute('data-dsh-floating-panel-open')
+    body.removeAttribute('data-time-phase')
+    body.removeAttribute('data-dsh-taffy-intensity')
+    body.removeAttribute('data-dsh-taffy-motion')
+    body.removeAttribute('data-dsh-taffy-reduced-motion')
+    body.removeAttribute('data-taffy-veil')
+    body.removeAttribute('data-taffy-low-power')
+    body.removeAttribute('data-taffy-acrylic-percent')
+    body.removeAttribute('data-taffy-frame-opacity')
+    body.removeAttribute('data-taffy-panel-opacity')
+    body.removeAttribute('data-taffy-character-opacity')
+    body.removeAttribute('data-taffy-scene')
+    body.removeAttribute('data-taffy-hide-left')
+    body.removeAttribute('data-taffy-hide-right')
+    body.removeAttribute('data-taffy-hide-mascot')
+    body.removeAttribute('data-taffy-right-crowded')
+    body.removeAttribute('data-taffy-q-ready')
+    delete body.dataset.taffySidebarSize
+    // The pre-paint boot script marks <html> as well; clear both so any
+    // "is the theme on?" probe reports the truth after teardown.
+    document.documentElement.removeAttribute('data-dsh-taffy-theme')
+    restoreHostStyles()
+  }
+
   ctx.effect(() => {
-    resetMetricsStampState()
-    setMetricsEnabledGetter(() => settings.enabled)
-    ensureStyleNode(document)
-    syncTheme()
-    ensureChrome()
-    disposeStateObserver = createStateObserver({
-      onState: (next) => {
-        state = next
-        if (settings.enabled) body.setAttribute('data-taffy-state', state)
-      },
-    })
-    disposeTimePhase = settings.timePhaseEnabled
-      ? startTimePhaseTicker((phase: string) => body.setAttribute('data-time-phase', phase))
-      : undefined
-    disposeSettingsSub = subscribeSettings((next) => {
-      settings = next
+    try {
+      resetMetricsStampState()
+      setMetricsEnabledGetter(() => settings.enabled)
+      ensureStyleNode(document)
       syncTheme()
       ensureChrome()
-      refreshHeroCopy?.()
-    })
-
-    return () => {
-      disposeStateObserver?.()
-      disposeStateObserver = undefined
-      disposeTimePhase?.()
-      disposeSettingsSub?.()
-      unmountChrome()
-      resetStateAdapter()
-      removeStyleNode(document)
-      clearMetricsStamp(document)
-      body.removeAttribute('data-dsh-taffy-theme')
-      body.removeAttribute('data-taffy-state')
-      body.removeAttribute('data-taffy-preset')
-      body.removeAttribute('data-taffy-chat-active')
-      body.removeAttribute('data-taffy-conversation-active')
-      body.removeAttribute('data-taffy-workspace')
-      body.removeAttribute('data-taffy-better-sidebar-open')
-      body.removeAttribute('data-taffy-details-open')
-      body.removeAttribute('data-taffy-settings-open')
-      body.removeAttribute('data-dsh-floating-panel-open')
-      body.removeAttribute('data-time-phase')
-      body.removeAttribute('data-dsh-taffy-intensity')
-      body.removeAttribute('data-dsh-taffy-motion')
-      body.removeAttribute('data-dsh-taffy-reduced-motion')
-      body.removeAttribute('data-taffy-veil')
-      body.removeAttribute('data-taffy-low-power')
-      body.removeAttribute('data-taffy-acrylic-percent')
-      body.removeAttribute('data-taffy-frame-opacity')
-      body.removeAttribute('data-taffy-panel-opacity')
-      body.removeAttribute('data-taffy-character-opacity')
-      body.removeAttribute('data-taffy-scene')
-      body.removeAttribute('data-taffy-hide-left')
-      body.removeAttribute('data-taffy-hide-right')
-      body.removeAttribute('data-taffy-hide-mascot')
-      body.removeAttribute('data-taffy-right-crowded')
-      body.removeAttribute('data-taffy-q-ready')
-      delete body.dataset.taffySidebarSize
-      restoreHostStyles()
+      disposeStateObserver = createStateObserver({
+        onState: (next) => {
+          state = next
+          if (settings.enabled) body.setAttribute('data-taffy-state', state)
+        },
+      })
+      disposeTimePhase = settings.timePhaseEnabled
+        ? startTimePhaseTicker((phase: string) => body.setAttribute('data-time-phase', phase))
+        : undefined
+      disposeSettingsSub = subscribeSettings((next) => {
+        settings = next
+        syncTheme()
+        ensureChrome()
+        refreshHeroCopy?.()
+      })
+    } catch (error) {
+      // Undo whatever the partial init managed to create, then stay inert:
+      // never rethrow, or DSH marks this plugin entry as failed to activate.
+      console.error('[dsh-taffy-theme] client init failed; using the native UI', error)
+      disposeAll()
+      return undefined
     }
+
+    return disposeAll
   }, 'dsh-taffy-theme:lifecycle')
 
-  registerSettingsPanel(ctx)
+  try {
+    registerSettingsPanel(ctx)
+  } catch (error) {
+    console.error('[dsh-taffy-theme] settings row registration failed', error)
+  }
 
-  if (!localStorage.getItem('dsh-taffy-theme:v1')) saveSettings(settings)
+  try {
+    if (readRaw(STORAGE_KEY) === null) saveSettings(settings)
+  } catch (error) {
+    console.error('[dsh-taffy-theme] first-run settings persist failed', error)
+  }
 }
