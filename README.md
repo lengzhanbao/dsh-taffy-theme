@@ -9,25 +9,33 @@
 | | |
 | --- | --- |
 | Package | `@dsh-external/dsh-taffy-theme` |
-| Version | **`0.2.1`** |
+| Version | **`0.2.2`** |
 | 目标宿主 | **DSH Desktop 0.2.x**（`desktop` profile） |
 | Requires | `engines.dsh`：`>=0.2.1-rc.2 <0.3.0` |
 | 只改外观 | 不接管 DSH 原生按钮、事件与几何布局 |
 
 > **0.2.x 单一版本线**：本版只支持 DSH `0.2.1-rc.2` 起的 0.2.x。0.1.x 宿主请使用旧版 Release。
 
+## 界面预览
+
+| 深色（Astral Night） | 浅色（Pearl Bloom） |
+| --- | --- |
+| ![深色](preview/desktop-dark.png) | ![浅色](preview/desktop-light.png) |
+
+> 上图为**用主题真实 CSS 渲染的独立预览**，非 DSH Desktop 实机截图；实机的按钮与弹层层级由宿主决定。
+
 ## 装机
 
 DSH Desktop 使用 `desktop` profile：
 
 ```bash
-dsh plugin --profile desktop add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.2.1/dsh-external-dsh-taffy-theme-0.2.1.tgz
+dsh plugin --profile desktop add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.2.2/dsh-external-dsh-taffy-theme-0.2.2.tgz
 ```
 
 或下载 Release 附件后本地安装：
 
 ```powershell
-dsh plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.2.1.tgz
+dsh plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.2.2.tgz
 ```
 
 装完 **完全退出并重开 DSH Desktop** —— 客户端 bundle 只在启动时加载，仅刷新窗口不够。
@@ -82,6 +90,11 @@ dsh plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.2.1.tgz
 - 输入框「完整」才绘制金色角饰；「简约」是细粉边；「无装饰」完全干净。
 - 助手回复、工具卡片、代码块、Markdown 容器**不受影响**。
 
+## 侧栏水印可见度
+
+水印与侧栏底板、文字、按钮**完全解耦**：0 = 隐藏，100 = 最高可见度，滑杆只调水印这一层。
+默认值对应旧版 62% 纱幕下的观感，升级不需要重新调。
+
 ## 三档侧栏边框
 
 | 档位 | 效果 |
@@ -90,7 +103,10 @@ dsh plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.2.1.tgz
 | 简约·柔光 | 一条粉紫细侧线 + 底部短柔光 |
 | 完整·细框 | 左右香槟金细线 + 上下短线 |
 
-三档都**不改动 DSH 原生按钮**的尺寸、图标、点击区域与事件；边框与侧栏水印互相独立。
+三档都**不改动 DSH 原生按钮**的尺寸、图标、点击区域与事件；边框、水印、可见度三者互相独立。
+
+「完整·细框」的金线与角饰取自**输入框**那套粉金纹样（卷草、上下对称金纹），按面积缩放：
+气泡只保留一处小角饰，选中卡片用顶部短纹，侧栏把纹样集中在品牌与 Q 版两端。
 
 ## 与 DSH 的关系
 
