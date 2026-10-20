@@ -19,6 +19,9 @@
 
 > **0.2.x 单一版本线**：本版只支持 DSH `0.2.1-rc.2` 起的 0.2.x。0.1.x 宿主请使用旧版 Release。
 
+**Taffy theme for DSH Desktop** — a DeepSeek Harness (DSH) Desktop theme plugin: nine selectable art
+sets, adjustable sidebar watermark, three sidebar frame levels, and a custom chat bubble / composer look.
+
 **关键词**：DSH · DSH Desktop · DeepSeek Harness · DSH 插件 · DSH 主题 · 塔菲 · Taffy
 · Astral Atelier · 深色主题 · 粉金 · 亚克力 · 桌面主题 · dark theme · plugin
 
