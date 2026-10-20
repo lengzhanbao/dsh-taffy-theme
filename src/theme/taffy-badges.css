@@ -212,33 +212,10 @@ body[data-dsh-taffy-theme][data-taffy-frame-compact] [data-taffy-frame-badge] {
   }
 }
 
-body[data-dsh-taffy-theme] [data-skin-chrome='sidebar-trim'] {
-  --taffy-sidebar-frame-line: 2px;
-  position: fixed;
-  z-index: 0;
-  pointer-events: none;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: var(--taffy-sidebar-width, 280px);
-  overflow: visible;
-  /* Gold seam bars — pink-gold mix */
-  background:
-    linear-gradient(90deg, rgba(242, 160, 184, 0.28), rgba(239, 176, 122, 0.95), rgba(255, 224, 236, 0.95), rgba(242, 155, 194, 0.9), rgba(239, 176, 122, 0.95), rgba(242, 160, 184, 0.28))
-      left 48px top 10px / calc(100% - 96px) var(--taffy-sidebar-frame-line) no-repeat,
-    linear-gradient(90deg, rgba(242, 160, 184, 0.26), rgba(239, 176, 122, 0.92), rgba(242, 155, 194, 0.7), rgba(239, 176, 122, 0.92), rgba(242, 160, 184, 0.26))
-      left 48px bottom 10px / calc(100% - 96px) var(--taffy-sidebar-frame-line) no-repeat,
-    linear-gradient(180deg, rgba(242, 160, 184, 0.24), rgba(239, 176, 122, 0.92), rgba(255, 224, 236, 0.85), rgba(242, 155, 194, 0.75), rgba(239, 176, 122, 0.92), rgba(242, 160, 184, 0.24))
-      left 10px top 48px / var(--taffy-sidebar-frame-line) calc(100% - 96px) no-repeat,
-    linear-gradient(180deg, rgba(242, 160, 184, 0.24), rgba(239, 176, 122, 0.92), rgba(242, 155, 194, 0.65), rgba(239, 176, 122, 0.92), rgba(242, 160, 184, 0.24))
-      right 10px top 48px / var(--taffy-sidebar-frame-line) calc(100% - 96px) no-repeat,
-    var(--taffy-gold-dust-bar) left 48px top 2px / 180px 16px no-repeat,
-    var(--taffy-gold-dust-bar) right 48px top 2px / 180px 16px no-repeat,
-    var(--taffy-gold-dust-bar) left 48px bottom 2px / 180px 16px no-repeat,
-    var(--taffy-gold-dust-bar) right 48px bottom 2px / 180px 16px no-repeat,
-    var(--taffy-gold-jewel-art) left 6px center / 16px 16px no-repeat,
-    var(--taffy-gold-jewel-art) right 6px center / 16px 16px no-repeat;
-}
+/* The ten-layer gold frame that used to live here was removed in 0.2.1: it was
+   anchored to the viewport (left:0/top:0/bottom:0) instead of the real sidebar
+   rect, and the three decoration levels now draw their own inner edges in
+   components.css. Deleting it beats out-specifying it. */
 
 body[data-dsh-taffy-theme][data-taffy-sidebar-size='rail'] [data-skin-chrome='sidebar-trim'] {
   display: none;
