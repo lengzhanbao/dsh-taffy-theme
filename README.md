@@ -2,6 +2,9 @@
 
 [![CI](https://github.com/lengzhanbao/dsh-taffy-theme/actions/workflows/ci.yml/badge.svg)](https://github.com/lengzhanbao/dsh-taffy-theme/actions/workflows/ci.yml)
 [![awesome · DSH plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
+[![Release](https://img.shields.io/github/v/release/lengzhanbao/dsh-taffy-theme?label=release)](https://github.com/lengzhanbao/dsh-taffy-theme/releases)
+[![License](https://img.shields.io/github/license/lengzhanbao/dsh-taffy-theme)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-DSH%20Desktop%200.2.x-8f95ff)](https://github.com/lengzhanbao/dsh-taffy-theme#%E8%A3%85%E6%9C%BA)
 
 **为官方 DSH Desktop 打造的塔菲主题** —— 星夜工房背景、可选的九套素材、粉金亚克力对话框、
 三档侧栏边框，以及可独立调节的**聊天外观**（自己的消息气泡 / 输入框）。
@@ -16,6 +19,21 @@
 
 > **0.2.x 单一版本线**：本版只支持 DSH `0.2.1-rc.2` 起的 0.2.x。0.1.x 宿主请使用旧版 Release。
 
+**关键词**：DSH · DSH Desktop · DeepSeek Harness · DSH 插件 · DSH 主题 · 塔菲 · Taffy
+· Astral Atelier · 深色主题 · 粉金 · 亚克力 · 桌面主题 · dark theme · plugin
+
+## 目录
+
+- [界面预览](#界面预览) · [装机](#装机) · [素材：九套](#素材九套全部可选)
+- [聊天外观](#聊天外观020-新增) · [侧栏水印可见度](#侧栏水印可见度) · [三档侧栏边框](#三档侧栏边框)
+- [与 DSH 的关系](#与-dsh-的关系) · [验证边界](#验证边界) · [卸载](#卸载) · [English](#english)
+
+## 为什么用它
+
+- **九套素材随便挑**：5 张 16:9 背景、2 张 9:16 侧栏水印、2 张 Q 版，全部单独选择，也能一键回默认。
+- **不动 DSH 一根手指**：原生按钮的尺寸、图标、点击区域、事件都不碰，仓库里有静态守卫测试盯着。
+- **升级不惊吓**：已有配置保持原样，新素材只在你主动选了才生效。
+- **可调而非写死**：气泡、输入框、水印可见度、侧栏三档，都能自己调。
 ## 界面预览
 
 | 深色（Astral Night） | 浅色（Pearl Bloom） |
@@ -165,6 +183,12 @@ npm pack             # 出发布包
 - **源代码**：[MIT](LICENSE)
 - **角色图像**：非官方同人 fan skin，详见 [NOTICE.md](NOTICE.md)
 
+## 关键词
+
+方便检索：`DSH` `DSH Desktop` `DeepSeek Harness` `dsh-plugin` `dsh-theme` `theme`
+`dark-theme` `taffy` `塔菲` `astral-atelier` `亚克力` `acrylic` `粉金` `pink gold`
+`桌面主题` `cordis` `cordis-plugin` `customization` `chat-bubble` `composer`
+
 ## English
 
 A Taffy character theme built for the official **DSH Desktop** 0.2.x: nine selectable art packages
@@ -172,4 +196,5 @@ A Taffy character theme built for the official **DSH Desktop** 0.2.x: nine selec
 for your own messages and the composer, and three sidebar frame levels. It repaints the theme's own
 layers only — native DSH controls keep their geometry, icons and click behaviour. Install with the
 command above, then fully restart the app; see [docs/install.en.md](docs/install.en.md).
+
 
