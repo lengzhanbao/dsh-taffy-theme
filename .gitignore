@@ -12,3 +12,5 @@ temp/
 /执行计划*.md
 
 *.zip
+
+.learnings/

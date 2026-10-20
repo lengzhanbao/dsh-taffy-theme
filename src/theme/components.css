@@ -983,8 +983,8 @@ body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']):not([data-taffy
   :is([data-pane='sidebar'], [class*='sidebarCol']) {
   background-image:
     linear-gradient(
-      var(--taffy-sidebar-watermark-veil, color-mix(in srgb, var(--ds-taffy-layer-1, var(--ds-taffy-cream)) 88%, transparent)),
-      var(--taffy-sidebar-watermark-veil, color-mix(in srgb, var(--ds-taffy-layer-1, var(--ds-taffy-cream)) 88%, transparent))
+      var(--taffy-sidebar-watermark-veil, color-mix(in srgb, var(--ds-taffy-layer-1, var(--ds-taffy-cream)) 62%, transparent)),
+      var(--taffy-sidebar-watermark-veil, color-mix(in srgb, var(--ds-taffy-layer-1, var(--ds-taffy-cream)) 62%, transparent))
     ),
     var(--taffy-sidebar-watermark-art, none);
   background-repeat: no-repeat, no-repeat;
@@ -1468,3 +1468,4 @@ body[data-dsh-taffy-theme] :is([class*='sidebarCol'])
 body[data-dsh-taffy-theme] [data-conversation-scroll] {
   scroll-padding-bottom: calc(var(--taffy-composer-height, 0px) + 12px);
 }
+
