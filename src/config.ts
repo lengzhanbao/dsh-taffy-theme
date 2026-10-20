@@ -4,6 +4,7 @@ import z from 'schemastery'
 export const PluginConfig = z.object({})
 
 export const SETTINGS_NAMESPACE = 'taffy-theme'
+export const DEFAULT_SIDEBAR_WATERMARK_STRENGTH = 60
 
 const colorPreset = z.union([
   z.const('taffy-candy'),
@@ -69,6 +70,7 @@ export const TaffySettingsSchema = z.object({
   backgroundHero: artChoice,
   backgroundFunctional: artChoice,
   sidebarWatermark: artChoice,
+  sidebarWatermarkStrength: z.number().min(0).max(100).default(DEFAULT_SIDEBAR_WATERMARK_STRENGTH),
   chibiMascot: artChoice,
   sidebarDecoration: z.union([
     z.const('off'),
@@ -148,6 +150,8 @@ export interface TaffySettings {
   backgroundFunctional: string
   /** `default` = shipped watermark, `none` = no watermark layer. */
   sidebarWatermark: string
+  /** 0 hides the selected watermark; 100 is the strongest permitted image layer. */
+  sidebarWatermarkStrength: number
   /** `default` = the classic mascot, otherwise an id from BUNDLED_CHIBI. */
   chibiMascot: string
   /**
@@ -236,6 +240,7 @@ const NUMERIC_RANGES: Record<string, [number, number]> = {
   frameOpacity: [0, 100],
   panelOpacity: [0, 100],
   characterOpacity: [0, 100],
+  sidebarWatermarkStrength: [0, 100],
   userBubbleOpacity: [55, 100],
   userBubbleRadius: [6, 28],
   userBubbleMaxWidth: [60, 90],
@@ -288,6 +293,7 @@ export function parseTaffySettings(value: unknown): TaffySettings {
     backgroundHero: resolved.backgroundHero,
     backgroundFunctional: resolved.backgroundFunctional,
     sidebarWatermark: resolved.sidebarWatermark,
+    sidebarWatermarkStrength: resolved.sidebarWatermarkStrength,
     chibiMascot: resolved.chibiMascot,
     sidebarDecoration: resolved.sidebarDecoration,
     userBubbleStyle: chat.userBubbleStyle,

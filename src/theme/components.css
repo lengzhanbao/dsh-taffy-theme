@@ -605,8 +605,15 @@ body[data-dsh-taffy-theme] .dsh-taffy-general-row,
 }
 
 :is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-general-cube.is-selected {
-  background: var(--dsw-alias-bg-layer-2, rgba(255, 216, 231, 0.35));
-  border-color: var(--dsw-alias-border-l3, rgba(242, 155, 194, 0.42));
+  background:
+    var(--taffy-gold-bow-art, none) center 3px / 30px 12px no-repeat,
+    var(--taffy-gold-dust-bar, none) center 3px / min(118px, 60%) 12px no-repeat,
+    color-mix(in srgb, var(--taffy-ornate-surface, var(--dsw-alias-bg-layer-2, #fffaf7)) 96%, transparent);
+  border-color: var(--taffy-ornate-gold-edge, rgba(239, 176, 122, 0.32));
+  box-shadow:
+    inset 0 0 0 1px var(--taffy-ornate-pink-edge, rgba(242, 160, 184, 0.48)),
+    inset 0 1px var(--taffy-highlight, rgba(255, 255, 255, 0.5)),
+    0 0 8px var(--taffy-ornate-glow, rgba(242, 160, 184, 0.14));
 }
 
 :is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-general-cube:disabled {
@@ -971,25 +978,20 @@ body[data-dsh-taffy-theme][data-taffy-settings-open] [data-taffy-wallpaper='pape
   visibility: hidden;
 }
 
-/* ── 2b. 侧栏水印：画成侧栏自己的背景层 ───────────────────────────────────
-   早前把水印做成 stage 里的一个 div，但 stage 被 prepend 到 body 最前面且
-   z-index:0，#root 在它之后绘制，所以水印永远在侧栏底板下面；底板又不透明，
-   于是「选了也看不见」。
-
-   现在把素材挂到侧栏列的 background 上：底板颜色仍在，水印作为其上的第一层，
-   再叠一层底板色纱幕把强度压到约 12%，内容文字仍在其上。这样既可见，也永远
-   不会被裁到侧栏外面。 */
+/* ── 2b. 侧栏水印：单独调图片，不调底板或文字 ─────────────────────────
+   Desktop 的 Chromium 支持 -webkit-cross-fade。只在背景图片层混合水印与
+   透明图，底板仍由 --taffy-sidebar-fill-strength 控制。侧栏不建立堆叠
+   上下文，以免困住 DSH 自己的设置弹层。 */
 body[data-dsh-taffy-theme]:not([data-taffy-sidebar-size='rail']):not([data-taffy-low-power])
   :is([data-pane='sidebar'], [class*='sidebarCol']) {
-  background-image:
-    linear-gradient(
-      var(--taffy-sidebar-watermark-veil, color-mix(in srgb, var(--ds-taffy-layer-1, var(--ds-taffy-cream)) 62%, transparent)),
-      var(--taffy-sidebar-watermark-veil, color-mix(in srgb, var(--ds-taffy-layer-1, var(--ds-taffy-cream)) 62%, transparent))
-    ),
-    var(--taffy-sidebar-watermark-art, none);
-  background-repeat: no-repeat, no-repeat;
-  background-position: center, right top;
-  background-size: 100% 100%, cover;
+  background-image: -webkit-cross-fade(
+    linear-gradient(transparent, transparent),
+    var(--taffy-sidebar-watermark-art, linear-gradient(transparent, transparent)),
+    var(--taffy-sidebar-watermark-opacity, 39%)
+  );
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: cover;
 }
 
 /* specs/01 §四.2 — the two full-bleed overlays that also carry light across the
@@ -1244,8 +1246,11 @@ body[data-dsh-taffy-theme] {
 
 :is(body[data-dsh-taffy-theme], [data-dsh-taffy-settings]) .dsh-taffy-choice.is-selected {
   border-color: var(--taffy-pink-ink, #e4a0c4);
-  background: color-mix(in srgb, var(--ds-taffy-pink, #f29bc2) 14%, transparent);
-  box-shadow: inset 0 0 0 1px var(--taffy-pink-ink, #e4a0c4);
+  background: color-mix(in srgb, var(--taffy-ornate-surface, var(--dsw-alias-bg-layer-2, #fffaf7)) 96%, transparent);
+  box-shadow:
+    inset 0 0 0 1px var(--taffy-ornate-gold-edge, rgba(239, 176, 122, 0.32)),
+    inset 0 1px var(--taffy-highlight, rgba(255, 255, 255, 0.5)),
+    0 0 6px var(--taffy-ornate-glow, rgba(242, 160, 184, 0.14));
   font-weight: 600;
 }
 
@@ -1309,18 +1314,50 @@ body[data-dsh-taffy-theme][data-taffy-sidebar-decor='simple'] [data-skin-chrome=
   opacity: 0.9;
 }
 
-/* 完整 · 细框：左右两条淡香槟金细线 + 上下短线，轻盈星金边。 */
+/* Full: the composer's paired pink/gold hairlines stay inside the sidebar. */
 body[data-dsh-taffy-theme][data-taffy-sidebar-decor='full'] [data-skin-chrome='sidebar-trim'] {
   background:
-    linear-gradient(180deg, transparent 7%, var(--taffy-edge-gold) 22% 78%, transparent 93%)
-      left top / 1px 100% no-repeat,
-    linear-gradient(180deg, transparent 7%, var(--taffy-edge-gold) 22% 78%, transparent 93%)
-      right top / 1px 100% no-repeat,
-    linear-gradient(90deg, transparent 6%, var(--taffy-edge-gold) 32% 68%, transparent 94%)
-      left top / 100% 1px no-repeat,
-    linear-gradient(90deg, transparent 6%, var(--taffy-edge-gold) 32% 68%, transparent 94%)
-      left bottom / 100% 1px no-repeat;
+    linear-gradient(90deg, var(--taffy-ornate-pink-edge) 50%, var(--taffy-ornate-gold-edge) 50%)
+      left 2px top 2px / 2px calc(100% - 4px) no-repeat,
+    linear-gradient(90deg, var(--taffy-ornate-gold-edge) 50%, var(--taffy-ornate-pink-edge) 50%)
+      right 2px top 2px / 2px calc(100% - 4px) no-repeat,
+    linear-gradient(180deg, var(--taffy-ornate-pink-edge) 50%, var(--taffy-ornate-gold-edge) 50%)
+      left 2px top 2px / calc(100% - 4px) 2px no-repeat,
+    linear-gradient(180deg, var(--taffy-ornate-gold-edge) 50%, var(--taffy-ornate-pink-edge) 50%)
+      left 2px bottom 2px / calc(100% - 4px) 2px no-repeat;
   opacity: 1;
+}
+
+/* Reuse the actual composer art. Concentrate it at the brand and mascot ends;
+   the central list gets no scattered dots or floating ornament nodes. */
+body[data-dsh-taffy-theme][data-taffy-sidebar-decor='full'] [data-skin-chrome='sidebar-trim']::before,
+body[data-dsh-taffy-theme][data-taffy-sidebar-decor='full'] [data-skin-chrome='sidebar-trim']::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  height: 32px;
+  pointer-events: none;
+}
+
+body[data-dsh-taffy-theme][data-taffy-sidebar-decor='full'] [data-skin-chrome='sidebar-trim']::before {
+  top: 3px;
+  background:
+    var(--taffy-gold-corner-art) left top / 30px 30px no-repeat,
+    var(--taffy-gold-corner-tr) right top / 30px 30px no-repeat,
+    var(--taffy-gold-bow-art) center 1px / 30px 12px no-repeat,
+    var(--taffy-gold-dust-bar) center top / min(160px, 60%) 14px no-repeat;
+  opacity: 0.76;
+}
+
+body[data-dsh-taffy-theme][data-taffy-sidebar-decor='full'] [data-skin-chrome='sidebar-trim']::after {
+  bottom: calc(var(--taffy-sidebar-footer-height, 56px) + 6px);
+  background:
+    var(--taffy-gold-corner-bl) left bottom / 28px 28px no-repeat,
+    var(--taffy-gold-corner-br) right bottom / 28px 28px no-repeat,
+    var(--taffy-gold-dust-bar) left 24px bottom / min(56px, 18%) 12px no-repeat,
+    var(--taffy-gold-dust-bar) right 24px bottom / min(56px, 18%) 12px no-repeat;
+  opacity: 0.68;
 }
 
 /* 侧栏底板：三档一致，保持实底以免壁纸人物透到列表上。 */
@@ -1386,27 +1423,20 @@ body[data-taffy-bubble='ornate'] [data-chat-flow-kind='user'] {
 body[data-taffy-bubble='glass'] [data-chat-flow-kind='user'] {
   --dsw-specific-bubble: color-mix(
     in srgb,
-    color-mix(in srgb, var(--ds-taffy-pink) 16%, var(--ds-taffy-cream-deep))
-      calc(var(--taffy-bubble-opacity, 0.72) * 100%),
+    var(--taffy-ornate-surface) calc(var(--taffy-bubble-opacity, 0.72) * 100%),
     transparent
   );
   --taffy-bubble-edge: color-mix(in srgb, var(--ds-taffy-pink) 42%, transparent);
 }
 
 body[data-taffy-bubble='ornate'] [data-chat-flow-kind='user'] {
-  --dsw-specific-bubble: linear-gradient(
-    160deg,
+  --dsw-specific-bubble:
+    var(--taffy-gold-corner-br) right 1px bottom 1px / 20px 20px no-repeat,
     color-mix(
       in srgb,
-      var(--ds-taffy-pink) calc(var(--taffy-bubble-opacity, 0.72) * 34%),
+      var(--taffy-ornate-surface) calc(var(--taffy-bubble-opacity, 0.72) * 100%),
       transparent
-    ),
-    color-mix(
-      in srgb,
-      var(--ds-taffy-gold) calc(var(--taffy-bubble-opacity, 0.72) * 20%),
-      transparent
-    )
-  );
+    );
   --taffy-bubble-edge: color-mix(in srgb, var(--ds-taffy-gold) 58%, transparent);
 }
 
@@ -1414,13 +1444,16 @@ body[data-taffy-bubble='ornate'] [data-chat-flow-kind='user'] {
    the bubble's box and shift the text by 1px. */
 body[data-taffy-bubble-border='subtle'] [data-chat-flow-kind='user'] [class*='_bubble'],
 body[data-taffy-bubble-border='accent'] [data-chat-flow-kind='user'] [class*='_bubble'] {
-  box-shadow: inset 0 0 0 1px var(--taffy-bubble-edge, color-mix(in srgb, var(--ds-taffy-pink) 42%, transparent));
+  box-shadow:
+    inset 0 0 0 1px var(--taffy-ornate-pink-edge),
+    inset 0 0 0 2px var(--taffy-ornate-gold-edge);
 }
 
 body[data-taffy-bubble-border='accent'] [data-chat-flow-kind='user'] [class*='_bubble'] {
   box-shadow:
-    inset 0 0 0 1px var(--taffy-bubble-edge, color-mix(in srgb, var(--ds-taffy-gold) 58%, transparent)),
-    0 2px 12px color-mix(in srgb, var(--ds-taffy-pink) 22%, transparent);
+    inset 0 0 0 1px var(--taffy-ornate-pink-edge),
+    inset 0 0 0 2px var(--taffy-ornate-gold-edge),
+    0 2px 12px var(--taffy-ornate-glow);
 }
 
 /* ── Composer ─────────────────────────────────────────────────────────── */
@@ -1451,14 +1484,15 @@ body[data-taffy-composer-decor='off'] [data-composer-card] {
    content, so the native layout and hit area are untouched. */
 body[data-dsh-taffy-theme] :is([class*='sidebarCol'])
   :is(button[aria-label='新建会话'], button[aria-label='New session']):not([class*='brand']) {
-  background: color-mix(in srgb, var(--ds-taffy-pink) 14%, var(--ds-taffy-glass));
+  background:
+    color-mix(in srgb, var(--taffy-ornate-surface) 94%, transparent);
   border-color: color-mix(in srgb, var(--ds-taffy-pink) 34%, transparent);
   color: var(--ds-taffy-text);
 }
 
 body[data-dsh-taffy-theme] :is([class*='sidebarCol'])
   :is(button[aria-label='新建会话'], button[aria-label='New session']):not([class*='brand']):hover {
-  background: color-mix(in srgb, var(--ds-taffy-pink) 22%, var(--ds-taffy-glass));
+  background-color: color-mix(in srgb, var(--ds-taffy-pink) 10%, var(--taffy-ornate-surface));
   border-color: color-mix(in srgb, var(--ds-taffy-pink) 52%, transparent);
 }
 

@@ -4,6 +4,7 @@ import type { Context as ClientContext } from '@deepseek-ai/cordis'
 import type {} from '@deepseek-ai/dsh-client-locale/client'
 import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
 import type { TaffySettings } from '../state/types'
+import { DEFAULT_SIDEBAR_WATERMARK_STRENGTH } from '../config'
 import { loadSettings, saveSettings } from './settings-store'
 import { DEFAULT_HERO_HEADLINE } from './hero-copy'
 import {
@@ -347,6 +348,7 @@ function TaffyModeRow() {
       options: backgroundOptions(),
       onSelect: (backgroundFunctional) => commit({ backgroundFunctional }),
     }),
+    createElement('div', { className: 'dsh-taffy-general-title' }, '侧栏'),
     createElement(Choice, {
       label: '侧栏装饰等级',
       value: settings.sidebarDecoration,
@@ -360,6 +362,21 @@ function TaffyModeRow() {
       variant: 'tall',
       onSelect: (sidebarWatermark) => commit({ sidebarWatermark }),
     }),
+    createElement(Slider, {
+      label: '水印可见度',
+      value: settings.sidebarWatermarkStrength,
+      onChange: (sidebarWatermarkStrength) => commit({ sidebarWatermarkStrength }),
+    }),
+    createElement('div', { className: 'dsh-taffy-general-note' },
+      '隐藏 ← 柔和 · 清晰 →　仅调节水印，不影响侧栏底板、背景与装饰。',
+    ),
+    createElement('div', { className: 'dsh-taffy-choice-group' },
+      createElement('button', {
+        type: 'button',
+        className: 'dsh-taffy-choice',
+        onClick: () => commit({ sidebarWatermarkStrength: DEFAULT_SIDEBAR_WATERMARK_STRENGTH }),
+      }, '恢复水印默认可见度'),
+    ),
     createElement(SwatchRow, {
       label: '底部 Q 版',
       value: settings.chibiMascot,

@@ -18,6 +18,11 @@ import { shouldUseLowPower } from './performance'
 
 const ROOT_ATTR = 'data-dsh-taffy-theme'
 
+/** Dark default matches the former 62% veil; light mode caps art to keep dark text readable. */
+export function sidebarWatermarkOpacity(strength: number, night = true): number {
+  return Math.min(100, Math.max(0, strength)) / 100 * (night ? 0.65 : 0.4)
+}
+
 const Q_VARS = [
   '--taffy-hero-avatar',
   '--taffy-q-face',
@@ -205,6 +210,7 @@ export function applyRootAttributes(body: HTMLElement, settings: TaffySettings, 
   body.setAttribute('data-taffy-frame-opacity', String(settings.frameOpacity))
   body.setAttribute('data-taffy-panel-opacity', String(settings.panelOpacity))
   body.setAttribute('data-taffy-character-opacity', String(settings.characterOpacity))
+  body.style.setProperty('--taffy-sidebar-watermark-opacity', `${sidebarWatermarkOpacity(settings.sidebarWatermarkStrength, isNightScene(body)) * 100}%`)
   body.setAttribute('data-taffy-scene', 'fused')
   applyOpacityVars(body, settings)
   const heroAvatar = settings.avatar !== 'default' && isAllowedImageProtocol(settings.avatar)
@@ -438,6 +444,7 @@ function applyChatLookVars(body: HTMLElement, settings: TaffySettings): void {
 }
 
 const WATERMARK_VAR = '--taffy-sidebar-watermark-art'
+const WATERMARK_OPACITY_VAR = '--taffy-sidebar-watermark-opacity'
 
 const CHAT_LOOK_VARS = [
   '--taffy-bubble-opacity',
@@ -452,6 +459,7 @@ export const TAFFY_INLINE_STYLE_KEYS = [
   ...OPACITY_VARS,
   ...CHAT_LOOK_VARS,
   WATERMARK_VAR,
+  WATERMARK_OPACITY_VAR,
   '--taffy-conversation-left',
   '--taffy-conversation-top',
   '--taffy-conversation-width',

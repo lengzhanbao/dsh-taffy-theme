@@ -149,6 +149,12 @@ body[data-dsh-taffy-theme] {
   --taffy-border-light: rgba(242, 155, 194, 0.34);
   --taffy-border-dark: rgba(255, 220, 240, 0.2);
   --taffy-highlight: rgba(255, 255, 255, 0.5);
+  /* Companion surfaces borrow the composer's palette without changing it.
+     Keep this base opaque: each consumer applies its own opacity exactly once. */
+  --taffy-ornate-surface: rgb(255, 250, 247);
+  --taffy-ornate-pink-edge: rgba(242, 160, 184, 0.48);
+  --taffy-ornate-gold-edge: rgba(239, 176, 122, 0.32);
+  --taffy-ornate-glow: rgba(242, 160, 184, 0.14);
   --taffy-shadow: 0 12px 32px rgba(73, 59, 80, 0.12);
 
   background-color: transparent;
@@ -167,6 +173,7 @@ body[data-dsh-taffy-theme][data-taffy-preset='taffy-night'] {
   /* Astral Night. Every pair here clears AA on its own: primary 16.26:1,
      secondary 11.69:1, muted 6.61:1 against bg.base #160f1e. */
   --ds-taffy-cream: #160f1e;
+  --taffy-ornate-surface: rgb(39, 23, 52);
   --ds-taffy-cream-deep: #2b1d39;
   --ds-taffy-layer-1: #22162d;
   --ds-taffy-glass: rgba(39, 23, 52, 0.78);

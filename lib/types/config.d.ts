@@ -2,6 +2,7 @@ import z from 'schemastery';
 /** Cordis plugin config — host has no tunables; UI prefs live in browser localStorage. */
 export declare const PluginConfig: z<Schemastery.ObjectS<{}>, Schemastery.ObjectT<{}>>;
 export declare const SETTINGS_NAMESPACE = "taffy-theme";
+export declare const DEFAULT_SIDEBAR_WATERMARK_STRENGTH = 60;
 export declare const TaffyColorConfigSchema: z<Schemastery.ObjectS<{
     preset: z<"taffy-candy" | "taffy-night" | "taffy-mint" | "custom", "taffy-candy" | "taffy-night" | "taffy-mint" | "custom">;
     primary: z<string, string>;
@@ -52,6 +53,7 @@ export declare const TaffySettingsSchema: z<Schemastery.ObjectS<{
     backgroundHero: z<string, string>;
     backgroundFunctional: z<string, string>;
     sidebarWatermark: z<string, string>;
+    sidebarWatermarkStrength: z<number, number>;
     chibiMascot: z<string, string>;
     sidebarDecoration: z<"off" | "simple" | "full", "off" | "simple" | "full">;
     userBubbleStyle: z<string, string>;
@@ -113,6 +115,7 @@ export declare const TaffySettingsSchema: z<Schemastery.ObjectS<{
     backgroundHero: z<string, string>;
     backgroundFunctional: z<string, string>;
     sidebarWatermark: z<string, string>;
+    sidebarWatermarkStrength: z<number, number>;
     chibiMascot: z<string, string>;
     sidebarDecoration: z<"off" | "simple" | "full", "off" | "simple" | "full">;
     userBubbleStyle: z<string, string>;
@@ -209,6 +212,8 @@ export interface TaffySettings {
     backgroundFunctional: string;
     /** `default` = shipped watermark, `none` = no watermark layer. */
     sidebarWatermark: string;
+    /** 0 hides the selected watermark; 100 is the strongest permitted image layer. */
+    sidebarWatermarkStrength: number;
     /** `default` = the classic mascot, otherwise an id from BUNDLED_CHIBI. */
     chibiMascot: string;
     /**
