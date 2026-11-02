@@ -27,7 +27,7 @@ sets, adjustable sidebar watermark, three sidebar frame levels, and a custom cha
 
 ## 目录
 
-- [界面预览](#界面预览) · [装机](#装机) · [素材：九套](#素材九套全部可选)
+- [装机](#装机) · [素材：九套](#素材九套全部可选)
 - [聊天外观](#聊天外观020-新增) · [侧栏水印可见度](#侧栏水印可见度) · [三档侧栏边框](#三档侧栏边框)
 - [与 DSH 的关系](#与-dsh-的关系) · [验证边界](#验证边界) · [卸载](#卸载) · [English](#english)
 
@@ -37,13 +37,6 @@ sets, adjustable sidebar watermark, three sidebar frame levels, and a custom cha
 - **不动 DSH 一根手指**：原生按钮的尺寸、图标、点击区域、事件都不碰，仓库里有静态守卫测试盯着。
 - **升级不惊吓**：已有配置保持原样，新素材只在你主动选了才生效。
 - **可调而非写死**：气泡、输入框、水印可见度、侧栏三档，都能自己调。
-## 界面预览
-
-| 深色（Astral Night） | 浅色（Pearl Bloom） |
-| --- | --- |
-| ![深色](preview/desktop-dark.png) | ![浅色](preview/desktop-light.png) |
-
-> 上图为**用主题真实 CSS 渲染的独立预览**，非 DSH Desktop 实机截图；实机的按钮与弹层层级由宿主决定。
 
 ## 装机
 
