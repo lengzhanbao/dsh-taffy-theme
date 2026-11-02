@@ -5,7 +5,6 @@ node_modules/
 .env.*
 .DS_Store
 .cache/
-preview/*.png
 lib/**/*.map
 tmp/
 temp/
