@@ -101,17 +101,24 @@ const backgroundOptions = () => {
     { value: 'classic-light', label: '经典花房', src: BUNDLED_WALLPAPER_LIGHT },
     { value: 'classic-dark', label: '经典舞台', src: BUNDLED_WALLPAPER_DARK },
     { value: 'observatory', label: '观星台', src: BUNDLED_BACKGROUNDS.observatory },
+    { value: 'observatory-light', label: '观星台·晨曦', src: BUNDLED_BACKGROUNDS['observatory-light'] },
     { value: 'balcony', label: '星空露台', src: BUNDLED_BACKGROUNDS.balcony },
+    { value: 'balcony-light', label: '星空露台·晨曦', src: BUNDLED_BACKGROUNDS['balcony-light'] },
     { value: 'studio', label: '星夜创作室', src: BUNDLED_BACKGROUNDS.studio },
+    { value: 'studio-light', label: '星夜创作室·晨曦', src: BUNDLED_BACKGROUNDS['studio-light'] },
     { value: 'atelier', label: '午夜工房', src: BUNDLED_BACKGROUNDS.atelier },
+    { value: 'atelier-light', label: '午夜工房·晨曦', src: BUNDLED_BACKGROUNDS['atelier-light'] },
     { value: 'piano', label: '星夜钢琴室', src: BUNDLED_BACKGROUNDS.piano },
+    { value: 'piano-light', label: '星夜钢琴室·晨曦', src: BUNDLED_BACKGROUNDS['piano-light'] },
   ]
 }
 
 const sidebarOptions = () => [
   { value: 'default', label: '不显示', src: '' },
   { value: 'celestial-sidebar', label: '星空侧栏', src: BUNDLED_SIDEBAR_WATERMARKS['celestial-sidebar'] },
+    { value: 'celestial-sidebar-light', label: '星空侧栏·浅色', src: BUNDLED_SIDEBAR_WATERMARKS['celestial-sidebar-light'] },
   { value: 'celestial-plum', label: '梅色梦境', src: BUNDLED_SIDEBAR_WATERMARKS['celestial-plum'] },
+    { value: 'celestial-plum-light', label: '梅色梦境·浅色', src: BUNDLED_SIDEBAR_WATERMARKS['celestial-plum-light'] },
 ]
 
 const chibiOptions = () => [

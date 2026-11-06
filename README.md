@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/github/license/lengzhanbao/dsh-taffy-theme)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-DSH%20Desktop%200.2.x-8f95ff)](https://github.com/lengzhanbao/dsh-taffy-theme#%E8%A3%85%E6%9C%BA)
 
-**为官方 DSH Desktop 打造的塔菲主题** —— 星夜工房背景、可选的九套素材、粉金亚克力对话框、
+**为官方 DSH Desktop 打造的塔菲主题** —— 星夜工房与晨曦工房双套背景、十六张可选素材、粉金亚克力对话框、
 三档侧栏边框，以及可独立调节的**聊天外观**（自己的消息气泡 / 输入框）。
 
 | | |
@@ -19,21 +19,21 @@
 
 > **0.2.x 单一版本线**：本版只支持 DSH `0.2.1-rc.2` 起的 0.2.x。0.1.x 宿主请使用旧版 Release。
 
-**Taffy theme for DSH Desktop** — a DeepSeek Harness (DSH) Desktop theme plugin: nine selectable art
-sets, adjustable sidebar watermark, three sidebar frame levels, and a custom chat bubble / composer look.
+**Taffy theme for DSH Desktop** — a DeepSeek Harness (DSH) Desktop theme plugin: sixteen selectable art
+files (five night scenes plus five Pearl Dawn variants, four sidebar watermarks, two chibi mascots), adjustable sidebar watermark, three sidebar frame levels, and a custom chat bubble / composer look.
 
 **关键词**：DSH · DSH Desktop · DeepSeek Harness · DSH 插件 · DSH 主题 · 塔菲 · Taffy
 · Astral Atelier · 深色主题 · 粉金 · 亚克力 · 桌面主题 · dark theme · plugin
 
 ## 目录
 
-- [装机](#装机) · [素材：九套](#素材九套全部可选)
+- [装机](#装机) · [素材：16 张](#素材16-张全部可选)
 - [聊天外观](#聊天外观020-新增) · [侧栏水印可见度](#侧栏水印可见度) · [三档侧栏边框](#三档侧栏边框)
 - [与 DSH 的关系](#与-dsh-的关系) · [验证边界](#验证边界) · [卸载](#卸载) · [English](#english)
 
 ## 为什么用它
 
-- **九套素材随便挑**：5 张 16:9 背景、2 张 9:16 侧栏水印、2 张 Q 版，全部单独选择，也能一键回默认。
+- **夜色 + 晨曦两套**：5 张夜色背景与 5 张晨曦背景、2 张夜色水印与 2 张晨曦水印、2 张 Q 版，共 16 张，全部单独选择，也能一键回默认。
 - **不动 DSH 一根手指**：原生按钮的尺寸、图标、点击区域、事件都不碰，仓库里有静态守卫测试盯着。
 - **升级不惊吓**：已有配置保持原样，新素材只在你主动选了才生效。
 - **可调而非写死**：气泡、输入框、水印可见度、侧栏三档，都能自己调。
@@ -56,26 +56,29 @@ dsh plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.2.2.tgz
 
 然后打开 **设置 → 通用 → 塔菲工房**。
 
-## 素材：九套，全部可选
+## 素材：16 张，全部可选
 
 背景、侧栏水印、底部 Q 版各自独立设置，也可一键恢复默认。
 **升级不会替换你正在用的画面** —— 已有配置一律保持原样，新素材只在你主动选择后生效。
 
-### 背景（5 张，16:9）
+### 背景（10 张：5 夜色 + 5 晨曦，16:9）
 
-| | | |
+同一场景两个版本，分别是夜色原图与新增的晨曦版。
+
+| 场景 | 夜色 | 晨曦（新增） |
 | --- | --- | --- |
-| ![观星台](assets/taffy/backgrounds/observatory.webp) | ![星空露台](assets/taffy/backgrounds/balcony.webp) | ![星夜创作室](assets/taffy/backgrounds/studio.webp) |
-| 观星台 | 星空露台 | 星夜创作室 |
-| ![午夜工房](assets/taffy/backgrounds/atelier.webp) | ![星夜钢琴室](assets/taffy/backgrounds/piano.webp) | |
-| 午夜工房 | 星夜钢琴室 | |
+| 观星台 | ![观星台](assets/taffy/backgrounds/observatory.webp) | ![观星台·晨曦](assets/taffy/backgrounds/observatory-light.webp) |
+| 星空露台 | ![星空露台](assets/taffy/backgrounds/balcony.webp) | ![星空露台·晨曦](assets/taffy/backgrounds/balcony-light.webp) |
+| 星夜创作室 | ![星夜创作室](assets/taffy/backgrounds/studio.webp) | ![星夜创作室·晨曦](assets/taffy/backgrounds/studio-light.webp) |
+| 午夜工房 | ![午夜工房](assets/taffy/backgrounds/atelier.webp) | ![午夜工房·晨曦](assets/taffy/backgrounds/atelier-light.webp) |
+| 星夜钢琴室 | ![星夜钢琴室](assets/taffy/backgrounds/piano.webp) | ![星夜钢琴室·晨曦](assets/taffy/backgrounds/piano-light.webp) |
 
-### 侧栏水印（2 张，9:16）
+### 侧栏水印（4 张：2 夜色 + 2 晨曦，9:16）
 
-| | |
-| --- | --- |
-| ![星空侧栏](assets/taffy/sidebar/celestial-sidebar.webp) | ![梅色梦境](assets/taffy/sidebar/celestial-plum.webp) |
-| 星空侧栏 | 梅色梦境 |
+| 水印 | 夜色 | 晨曦（新增） |
+| --- | --- | --- |
+| 星空侧栏 | ![星空侧栏](assets/taffy/sidebar/celestial-sidebar.webp) | ![星空侧栏·浅色](assets/taffy/sidebar/celestial-sidebar-light.webp) |
+| 梅色梦境 | ![梅色梦境](assets/taffy/sidebar/celestial-plum.webp) | ![梅色梦境·浅色](assets/taffy/sidebar/celestial-plum-light.webp) |
 
 ### 底部 Q 版（2 张，1:1）
 
@@ -84,6 +87,9 @@ dsh plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.2.2.tgz
 | ![抱猫猫](assets/taffy/chibi/cat-hug.webp) | ![张开手](assets/taffy/chibi/open-arms.webp) |
 | 抱猫猫 | 张开手 |
 
+> **晨曦图怎么来的**：由仓库内原图做**确定性浅色调处理**得到 —— 同一张画、同一构图、原生分辨率
+> （背景 1672×941、水印 941×1672），不是重新绘制，也不是截图裁切；旧文件零覆盖。
+> 设置里它们叫「观星台·晨曦」…「星空侧栏·浅色」「梅色梦境·浅色」，夜色原选项全部保留。
 ### 经典壁纸
 
 升级前的两张原版壁纸**完整保留**，并且是**独立选项**（经典花房 / 经典舞台）——
@@ -187,8 +193,8 @@ npm pack             # 出发布包
 
 ## English
 
-A Taffy character theme built for the official **DSH Desktop** 0.2.x: nine selectable art packages
-(five night-interior backdrops, two sidebar watermarks, two chibi mascots), a glass/ornate chat look
+A Taffy character theme built for the official **DSH Desktop** 0.2.x: sixteen selectable art files
+(five night-interior backdrops with five Pearl Dawn counterparts, four sidebar watermarks, two chibi mascots), a glass/ornate chat look
 for your own messages and the composer, and three sidebar frame levels. It repaints the theme's own
 layers only — native DSH controls keep their geometry, icons and click behaviour. Install with the
 command above, then fully restart the app; see [docs/install.en.md](docs/install.en.md).

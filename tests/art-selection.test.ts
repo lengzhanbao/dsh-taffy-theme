@@ -94,3 +94,45 @@ describe('chibi mascot', () => {
     expect(resolveChibiUrl(settings({ chibiMascot: 'nope' }))).toContain('avatar.webp')
   })
 })
+
+describe('pearl dawn light set', () => {
+  const scenes = ['observatory', 'balcony', 'studio', 'atelier', 'piano'] as const
+
+  it('resolves every light scene id to its own light file', () => {
+    for (const id of scenes) {
+      const url = resolveSceneBackground(settings({ backgroundHero: `${id}-light` }), { night: false, functional: false })
+      expect(url).toContain(`backgrounds/${id}-light.webp`)
+    }
+  })
+
+  it('keeps the dark ids on the original dark files', () => {
+    for (const id of scenes) {
+      const url = resolveSceneBackground(settings({ backgroundHero: id }), { night: true, functional: false })
+      expect(url).toContain(`backgrounds/${id}.webp`)
+      expect(url).not.toContain('-light.webp')
+    }
+  })
+
+  it('lets a light theme pick a dark scene and vice versa', () => {
+    expect(resolveSceneBackground(settings({ backgroundHero: 'atelier' }), { night: false, functional: false }))
+      .toContain('backgrounds/atelier.webp')
+    expect(resolveSceneBackground(settings({ backgroundHero: 'atelier-light' }), { night: true, functional: false }))
+      .toContain('backgrounds/atelier-light.webp')
+    expect(resolveSceneBackground(settings({ backgroundFunctional: 'piano-light' }), { night: true, functional: true }))
+      .toContain('backgrounds/piano-light.webp')
+  })
+
+  it('resolves both light sidebar watermarks', () => {
+    for (const id of ['celestial-sidebar', 'celestial-plum']) {
+      const url = resolveSidebarWatermarkUrl(settings({ sidebarWatermark: `${id}-light` }))
+      expect(url).toContain(`sidebar/${id}-light.webp`)
+    }
+  })
+
+  it('still falls back for an id that no longer exists', () => {
+    expect(resolveSceneBackground(settings({ backgroundHero: 'gone-forever' }), { night: true, functional: false }))
+      .toContain('wallpaper-dark.webp')
+    expect(resolveSidebarWatermarkUrl(settings({ sidebarWatermark: 'gone-forever' }))).toBe('')
+  })
+})
+

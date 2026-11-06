@@ -24,15 +24,22 @@ export const BUNDLED_HERO_AVATAR = buildAssetUrl('hero-avatar.webp')
  */
 export const BUNDLED_BACKGROUNDS = {
   observatory: buildAssetUrl('backgrounds/observatory.webp'),
+  'observatory-light': buildAssetUrl('backgrounds/observatory-light.webp'),
   balcony: buildAssetUrl('backgrounds/balcony.webp'),
+  'balcony-light': buildAssetUrl('backgrounds/balcony-light.webp'),
   studio: buildAssetUrl('backgrounds/studio.webp'),
+  'studio-light': buildAssetUrl('backgrounds/studio-light.webp'),
   atelier: buildAssetUrl('backgrounds/atelier.webp'),
+  'atelier-light': buildAssetUrl('backgrounds/atelier-light.webp'),
   piano: buildAssetUrl('backgrounds/piano.webp'),
+  'piano-light': buildAssetUrl('backgrounds/piano-light.webp'),
 } as const
 
 export const BUNDLED_SIDEBAR_WATERMARKS = {
   'celestial-plum': buildAssetUrl('sidebar/celestial-plum.webp'),
+  'celestial-plum-light': buildAssetUrl('sidebar/celestial-plum-light.webp'),
   'celestial-sidebar': buildAssetUrl('sidebar/celestial-sidebar.webp'),
+  'celestial-sidebar-light': buildAssetUrl('sidebar/celestial-sidebar-light.webp'),
 } as const
 
 export const BUNDLED_CHIBI = {
