@@ -12,7 +12,7 @@
 | | |
 | --- | --- |
 | Package | `@dsh-external/dsh-taffy-theme` |
-| Version | **`0.2.2`** |
+| Version | **`0.2.3`** |
 | 目标宿主 | **DSH Desktop 0.2.x**（`desktop` profile） |
 | Requires | `engines.dsh`：`>=0.2.1-rc.2 <0.3.0` |
 | 只改外观 | 不接管 DSH 原生按钮、事件与几何布局 |
@@ -43,13 +43,13 @@ files (five night scenes plus five Pearl Dawn variants, four sidebar watermarks,
 DSH Desktop 使用 `desktop` profile：
 
 ```bash
-dsh plugin --profile desktop add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.2.2/dsh-external-dsh-taffy-theme-0.2.2.tgz
+dsh plugin --profile desktop add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.2.3/dsh-external-dsh-taffy-theme-0.2.3.tgz
 ```
 
 或下载 Release 附件后本地安装：
 
 ```powershell
-dsh plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.2.2.tgz
+dsh plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.2.3.tgz
 ```
 
 装完 **完全退出并重开 DSH Desktop** —— 客户端 bundle 只在启动时加载，仅刷新窗口不够。

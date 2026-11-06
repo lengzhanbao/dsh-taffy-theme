@@ -1,6 +1,6 @@
 # Changelog
 
-## 未发布 — Pearl Dawn 晨曦素材
+## 0.2.3 — 2026-11-07
 
 - 新增 7 张浅色素材：`observatory-light`、`balcony-light`、`studio-light`、`atelier-light`、`piano-light`、
   `celestial-sidebar-light`、`celestial-plum-light`，均由仓库内原图确定性浅色调处理生成（原生分辨率，未覆盖旧图）。
