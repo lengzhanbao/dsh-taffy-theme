@@ -1,5 +1,13 @@
 # Changelog
 
+## 未发布 — Pearl Dawn 晨曦素材
+
+- 新增 7 张浅色素材：`observatory-light`、`balcony-light`、`studio-light`、`atelier-light`、`piano-light`、
+  `celestial-sidebar-light`、`celestial-plum-light`，均由仓库内原图确定性浅色调处理生成（原生分辨率，未覆盖旧图）。
+- 设置面板新增对应选项（`·晨曦` / `·浅色`），与夜色选项成对出现；旧 ID、默认值与已保存的选择全部不变。
+- `ASSET_SET_VERSION` 提升到 `2026-11-07-pearl-dawn`，避免旧缓存命中旧图；`assets/taffy/manifest.json` 同步。
+- 测试：新增 5 项断言（每个浅色 ID 解析到自己的文件、夜色 ID 不被改指、明暗可交叉选择、未知 ID 仍回退）。
+
 ## 0.2.2 — 2026-10-20
 
 ### 侧栏水印可见度可调 + 纹样统一

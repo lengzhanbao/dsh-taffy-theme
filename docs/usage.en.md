@@ -92,6 +92,12 @@ Preset files ship inside the plugin under `presets/taffy/`.
 
 ## Assets and license
 
+- **Backgrounds** come in two independent slots: hero and functional pages.
+- **Five night scenes** and **five Pearl Dawn scenes** (`...·晨曦` in the picker) are separate options —
+  a light theme may use a dark scene and vice versa.
+- **Sidebar watermarks** likewise have two night and two light variants, independent of the frame level and the watermark visibility slider.
+- Upgrading never changes a saved choice: `default` still means the classic wallpaper for the active mode.
+
 | Content | License |
 | --- | --- |
 | Plugin source code | [MIT](../LICENSE) |
