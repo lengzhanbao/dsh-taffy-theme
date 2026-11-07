@@ -156,7 +156,14 @@ export function saveSettings(next: TaffySettings): void {
 }
 
 export function subscribeSettings(onChange: (settings: TaffySettings) => void): () => void {
-  const handler = () => onChange(loadSettings())
+  // The change event already carries the parsed settings, so use that instead of
+  // re-reading storage: a read-back could observe the previous value if a write
+  // has been deferred (quota retry, private-mode fallback), which showed up as
+  // "the first click does not repaint, the second one does".
+  const handler = (event: Event) => {
+    const detail = (event as CustomEvent).detail
+    onChange(detail && typeof detail === 'object' ? (detail as TaffySettings) : loadSettings())
+  }
   window.addEventListener('storage', handler)
   window.addEventListener(SETTINGS_CHANGE_EVENT, handler)
   return () => {

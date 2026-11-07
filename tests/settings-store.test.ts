@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DEFAULT_SETTINGS } from '../src/config.ts'
-import { loadSettings, saveSettings, veilBucket, veilFromOpacity } from '../src/client/settings-store.ts'
+import { SETTINGS_CHANGE_EVENT, loadSettings, saveSettings, subscribeSettings, veilBucket, veilFromOpacity } from '../src/client/settings-store.ts'
 
 const STORAGE_KEY = 'dsh-taffy-theme:v1'
 const memory = new Map<string, string>()
@@ -50,5 +50,23 @@ describe('settings store', () => {
     expect(raw.veilOpacity).toBe(14)
     expect(raw).not.toHaveProperty('veilStrength')
     expect(veilFromOpacity(14)).toBe('standard')
+  })
+})
+
+describe('settings subscription', () => {
+  it('uses the value carried by the change event, not a storage read-back', () => {
+    // The first click failed to repaint whenever the subscriber re-read storage:
+    // it could still see the previous value. The event detail is authoritative.
+    const seen: string[] = []
+    const off = subscribeSettings((next) => seen.push(next.backgroundHero))
+
+    window.localStorage.setItem('dsh-taffy-theme:v1', JSON.stringify({ backgroundHero: 'default' }))
+    window.dispatchEvent(
+      new CustomEvent(SETTINGS_CHANGE_EVENT, { detail: { ...DEFAULT_SETTINGS, backgroundHero: 'observatory-light' } }),
+    )
+    off()
+
+    expect(seen).toEqual(['observatory-light'])
+    expect(loadSettings().backgroundHero).toBe('default')
   })
 })

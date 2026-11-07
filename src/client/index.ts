@@ -229,6 +229,10 @@ function applyTheme(ctx: ClientContext): void {
         settings = next
         syncTheme()
         ensureChrome()
+        // Repaint explicitly. ensureChrome only reaches syncStageArt while the
+        // chrome is already mounted, and the art must follow the picker on the
+        // very first click, not one click later.
+        if (body.hasAttribute('data-dsh-taffy-theme')) syncStageArt(body, settings)
         refreshHeroCopy?.()
       })
 
