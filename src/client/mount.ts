@@ -57,10 +57,27 @@ export function bindAssetFallback(image: HTMLImageElement, fallbackSrc?: string)
   })
 }
 
+/**
+ * Force the browser to rebuild this element's paint box.
+ *
+ * The stage wallpapers are `position: fixed` and carry a `filter` in the night
+ * theme, which promotes them to their own composited layer. Swapping `src` on
+ * such a layer can leave the old texture on screen until some unrelated
+ * interaction invalidates it — the reported "the picture only changes when I
+ * click somewhere else". Toggling the box for one frame forces a fresh paint.
+ */
+function nudgePaint(element: HTMLElement): void {
+  const previous = element.style.display
+  element.style.display = 'none'
+  void element.offsetWidth
+  element.style.display = previous
+}
+
 export function applyImageSrc(image: HTMLImageElement, src: string): void {
   delete image.dataset.taffyAssetError
   if (image.getAttribute('src') === src) return
   image.src = src
+  nudgePaint(image)
 }
 
 function makeImage(src: string, character: 'left' | 'right', pose: 'sit' | 'stand' | 'bust'): HTMLImageElement {
@@ -252,6 +269,10 @@ export function syncStageArt(root: HTMLElement = document.body, settings?: Taffy
     // therefore behind the sidebar's own (now 94% opaque) fill.
     if (watermarkUrl) root.style.setProperty('--taffy-sidebar-watermark-art', `url("${watermarkUrl}")`)
     else root.style.removeProperty('--taffy-sidebar-watermark-art')
+    // The sidebar paints an acrylic layer over this variable, so the same stale
+    // frame applies: force a rebuild so the watermark changes on this click.
+    const sidebar = root.querySelector("[data-pane='sidebar'], [class*='sidebarCol']")
+    if (sidebar instanceof HTMLElement) nudgePaint(sidebar)
   } else {
     const wallpaperUrl = resolveWallpaperUrl(night)
     const wallpaper = root.querySelector('[data-taffy-wallpaper]')
