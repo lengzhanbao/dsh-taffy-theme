@@ -15,7 +15,7 @@ import {
   BUNDLED_WALLPAPER_DARK,
   BUNDLED_WALLPAPER_LIGHT,
 } from './bundled-assets'
-import { artIdMatchesMode, isNightScene } from '../assets/resolve'
+import { artIdForMode, artIdMatchesMode, isNightScene } from '../assets/resolve'
 
 const SETTINGS_NS = 'settings.taffyTheme'
 
@@ -279,13 +279,24 @@ function TextField({
 function TaffyModeRow() {
   const [settings, setSettings] = useState(loadSettings)
 
+  // The picker lists a different art set per mode, and the thumbnails are built
+  // during render. Without this the row kept the previous mode's list until some
+  // other click happened to re-render it - the reported "it only updates when I
+  // press something else".
+  const [, setThemeTick] = useState(0)
   useEffect(() => {
     const refresh = () => setSettings(loadSettings())
     window.addEventListener('storage', refresh)
     window.addEventListener('dsh-taffy-theme:settings-change', refresh)
+    const observer = new MutationObserver(() => setThemeTick((tick) => tick + 1))
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['data-ds-dark-theme', 'data-taffy-preset'],
+    })
     return () => {
       window.removeEventListener('storage', refresh)
       window.removeEventListener('dsh-taffy-theme:settings-change', refresh)
+      observer.disconnect()
     }
   }, [])
 
@@ -351,13 +362,13 @@ function TaffyModeRow() {
     createElement('div', { className: 'dsh-taffy-general-title' }, '背景与素材'),
     createElement(SwatchRow, {
       label: '首页背景',
-      value: settings.backgroundHero,
+      value: artIdForMode(settings.backgroundHero, isNightScene()),
       options: backgroundOptions(),
       onSelect: (backgroundHero) => commit({ backgroundHero }),
     }),
     createElement(SwatchRow, {
       label: '功能页背景',
-      value: settings.backgroundFunctional,
+      value: artIdForMode(settings.backgroundFunctional, isNightScene()),
       options: backgroundOptions(),
       onSelect: (backgroundFunctional) => commit({ backgroundFunctional }),
     }),
@@ -370,7 +381,7 @@ function TaffyModeRow() {
     }),
     createElement(SwatchRow, {
       label: '侧栏水印',
-      value: settings.sidebarWatermark,
+      value: artIdForMode(settings.sidebarWatermark, isNightScene()),
       options: sidebarOptions(),
       variant: 'tall',
       onSelect: (sidebarWatermark) => commit({ sidebarWatermark }),
