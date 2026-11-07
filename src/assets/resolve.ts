@@ -87,11 +87,36 @@ const CHIBI_IDS = Object.keys(BUNDLED_CHIBI)
  * An explicit id overrides that in either mode, because choosing a picture is a
  * direct instruction while choosing `default` is not.
  */
+/**
+ * The art pack ships each scene twice: a night original and a Pearl Dawn
+ * counterpart named "<id>-light". A light picture behind a dark UI (or the
+ * reverse) leaves chat text without contrast, so the two modes are matched
+ * rather than freely crossed: a mismatched id is swapped for its counterpart.
+ */
+export function artIdForMode(id: string, night: boolean): string {
+  if (!id || id === 'default' || id === 'none') return id
+  // The classic pair predates the -light suffix convention, so name it directly.
+  if (id === 'classic-light') return night ? 'classic-dark' : id
+  if (id === 'classic-dark') return night ? id : 'classic-light'
+  const isLightId = id.endsWith('-light')
+  if (isLightId === !night) return id
+  const twin = isLightId ? id.slice(0, -'-light'.length) : `${id}-light`
+  const known = BACKGROUND_IDS.includes(twin) || SIDEBAR_IDS.includes(twin) || twin === 'classic-light' || twin === 'classic-dark'
+  return known ? twin : id
+}
+
+export function artIdMatchesMode(id: string, night: boolean): boolean {
+  return artIdForMode(id, night) === id
+}
+
 export function resolveSceneBackground(
   settings: TaffySettings,
   scene: { night: boolean; functional: boolean },
 ): string {
-  const chosen = scene.functional ? settings.backgroundFunctional : settings.backgroundHero
+  const raw = scene.functional ? settings.backgroundFunctional : settings.backgroundHero
+  // Pair the id with the active mode first: a night picture under a light UI
+  // (or the reverse) is what made chat text unreadable.
+  const chosen = artIdForMode(raw, scene.night)
   // The classic pair stays selectable forever; these two ids are how a light
   // theme can opt into the dark wallpaper and vice versa.
   if (chosen === 'classic-light') return resolveWallpaperUrl(false)
@@ -108,11 +133,11 @@ export function resolveSceneBackground(
  * wallpaper bitmap and could not be addressed separately.
  * See docs/ASTRAL-ATELIER.md §1.
  */
-export function resolveSidebarWatermarkUrl(settings: TaffySettings): string {
+export function resolveSidebarWatermarkUrl(settings: TaffySettings, night = isNightScene()): string {
   // `default` is "no layer", which is what every existing install looks like
   // today. The watermark is something people turn on, never something they have
   // to turn off after an upgrade.
-  const chosen = settings.sidebarWatermark
+  const chosen = artIdForMode(settings.sidebarWatermark, night)
   if (chosen === 'none' || chosen === 'default') return ''
   if (SIDEBAR_IDS.includes(chosen)) {
     return pickImage(BUNDLED_SIDEBAR_WATERMARKS[chosen as SidebarWatermarkId], '')

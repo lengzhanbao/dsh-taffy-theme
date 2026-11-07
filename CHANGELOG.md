@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.4 — 2026-11-07
+
+### 素材按明暗配对，避免正文读不清
+
+- 深色外观只列出夜色素材，浅色外观只列出晨曦素材；选不到会让正文失去对比度的组合。
+- 解析层同时做兜底：已保存的跨明暗选择会自动换成**同一场景**的另一张（`observatory` ↔ `observatory-light`），
+  而不是退回经典壁纸，用户选的场景仍然保留。
+- 经典壁纸同样配对（`classic-light` ↔ `classic-dark`）。
+- 测试：新增 2 项配对断言并同步 3 项旧断言；共 201 项通过。
+
 ## 0.2.3 — 2026-11-07
 
 - 新增 7 张浅色素材：`observatory-light`、`balcony-light`、`studio-light`、`atelier-light`、`piano-light`、

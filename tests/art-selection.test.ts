@@ -27,17 +27,17 @@ describe('scene background', () => {
     expect(resolveSceneBackground(settings(), { night: false, functional: true })).toContain('wallpaper-light.webp')
   })
 
-  it('offers both classic wallpapers as explicit choices', () => {
-    const picked = settings({ backgroundHero: 'classic-dark' })
-    expect(resolveSceneBackground(picked, { night: false, functional: false })).toContain('wallpaper-dark.webp')
-    const other = settings({ backgroundHero: 'classic-light' })
-    expect(resolveSceneBackground(other, { night: true, functional: false })).toContain('wallpaper-light.webp')
+  it('keeps both classic wallpapers selectable, each in its own mode', () => {
+    expect(resolveSceneBackground(settings({ backgroundHero: 'classic-dark' }), { night: true, functional: false }))
+      .toContain('wallpaper-dark.webp')
+    expect(resolveSceneBackground(settings({ backgroundHero: 'classic-light' }), { night: false, functional: false }))
+      .toContain('wallpaper-light.webp')
   })
 
-  it('honours a supplied asset in either mode', () => {
-    const chosen = settings({ backgroundHero: 'piano', backgroundFunctional: 'observatory' })
-    expect(resolveSceneBackground(chosen, { night: false, functional: false })).toContain('backgrounds/piano.webp')
-    expect(resolveSceneBackground(chosen, { night: true, functional: true })).toContain('backgrounds/observatory.webp')
+  it('honours a supplied asset in its own mode', () => {
+    const chosen = settings({ backgroundHero: 'piano', backgroundFunctional: 'observatory-light' })
+    expect(resolveSceneBackground(chosen, { night: true, functional: false })).toContain('backgrounds/piano.webp')
+    expect(resolveSceneBackground(chosen, { night: false, functional: true })).toContain('backgrounds/observatory-light.webp')
   })
 
   it('keeps hero and functional independent', () => {
@@ -69,9 +69,10 @@ describe('sidebar watermark', () => {
     expect(resolveSidebarWatermarkUrl(settings({ sidebarWatermark: 'none' }))).toBe('')
   })
 
-  it('accepts either supplied portrait', () => {
-    expect(resolveSidebarWatermarkUrl(settings({ sidebarWatermark: 'celestial-sidebar' }))).toContain('sidebar/celestial-sidebar.webp')
-    expect(resolveSidebarWatermarkUrl(settings({ sidebarWatermark: 'celestial-plum' }))).toContain('sidebar/celestial-plum.webp')
+  it('accepts either supplied portrait in its own mode', () => {
+    expect(resolveSidebarWatermarkUrl(settings({ sidebarWatermark: 'celestial-sidebar' }), true)).toContain('sidebar/celestial-sidebar.webp')
+    expect(resolveSidebarWatermarkUrl(settings({ sidebarWatermark: 'celestial-plum' }), true)).toContain('sidebar/celestial-plum.webp')
+    expect(resolveSidebarWatermarkUrl(settings({ sidebarWatermark: 'celestial-sidebar-light' }), false)).toContain('sidebar/celestial-sidebar-light.webp')
   })
 
   it('degrades to no layer for an unknown id', () => {
@@ -113,13 +114,31 @@ describe('pearl dawn light set', () => {
     }
   })
 
-  it('lets a light theme pick a dark scene and vice versa', () => {
+  it('pairs a scene with the active mode instead of crossing it', () => {
+    // A night scene under a light UI (or the reverse) leaves chat text without
+    // contrast, so the resolver swaps in that scene's counterpart.
     expect(resolveSceneBackground(settings({ backgroundHero: 'atelier' }), { night: false, functional: false }))
-      .toContain('backgrounds/atelier.webp')
-    expect(resolveSceneBackground(settings({ backgroundHero: 'atelier-light' }), { night: true, functional: false }))
       .toContain('backgrounds/atelier-light.webp')
-    expect(resolveSceneBackground(settings({ backgroundFunctional: 'piano-light' }), { night: true, functional: true }))
+    expect(resolveSceneBackground(settings({ backgroundHero: 'atelier-light' }), { night: true, functional: false }))
+      .toContain('backgrounds/atelier.webp')
+    expect(resolveSceneBackground(settings({ backgroundFunctional: 'piano' }), { night: false, functional: true }))
       .toContain('backgrounds/piano-light.webp')
+  })
+
+  it('pairs the classic wallpapers the same way', () => {
+    expect(resolveSceneBackground(settings({ backgroundHero: 'classic-light' }), { night: true, functional: false }))
+      .toContain('wallpaper-dark.webp')
+    expect(resolveSceneBackground(settings({ backgroundHero: 'classic-dark' }), { night: false, functional: false }))
+      .toContain('wallpaper-light.webp')
+  })
+
+  it('pairs watermarks with the active mode too', () => {
+    expect(resolveSidebarWatermarkUrl(settings({ sidebarWatermark: 'celestial-plum-light' }), true))
+      .toContain('sidebar/celestial-plum.webp')
+    expect(resolveSidebarWatermarkUrl(settings({ sidebarWatermark: 'celestial-plum' }), false))
+      .toContain('sidebar/celestial-plum-light.webp')
+    expect(resolveSidebarWatermarkUrl(settings({ sidebarWatermark: 'celestial-plum' }), true))
+      .toContain('sidebar/celestial-plum.webp')
   })
 
   it('resolves both light sidebar watermarks', () => {

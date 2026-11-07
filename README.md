@@ -12,7 +12,7 @@
 | | |
 | --- | --- |
 | Package | `@dsh-external/dsh-taffy-theme` |
-| Version | **`0.2.3`** |
+| Version | **`0.2.4`** |
 | 目标宿主 | **DSH Desktop 0.2.x**（`desktop` profile） |
 | Requires | `engines.dsh`：`>=0.2.1-rc.2 <0.3.0` |
 | 只改外观 | 不接管 DSH 原生按钮、事件与几何布局 |
@@ -37,19 +37,20 @@ files (five night scenes plus five Pearl Dawn variants, four sidebar watermarks,
 - **不动 DSH 一根手指**：原生按钮的尺寸、图标、点击区域、事件都不碰，仓库里有静态守卫测试盯着。
 - **升级不惊吓**：已有配置保持原样，新素材只在你主动选了才生效。
 - **可调而非写死**：气泡、输入框、水印可见度、侧栏三档，都能自己调。
+- **不会把界面搞花**：素材按当前明暗过滤，暗色界面不会配上亮到看不清正文的图。
 
 ## 装机
 
 DSH Desktop 使用 `desktop` profile：
 
 ```bash
-dsh plugin --profile desktop add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.2.3/dsh-external-dsh-taffy-theme-0.2.3.tgz
+dsh plugin --profile desktop add https://github.com/lengzhanbao/dsh-taffy-theme/releases/download/v0.2.4/dsh-external-dsh-taffy-theme-0.2.4.tgz
 ```
 
 或下载 Release 附件后本地安装：
 
 ```powershell
-dsh plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.2.3.tgz
+dsh plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.2.4.tgz
 ```
 
 装完 **完全退出并重开 DSH Desktop** —— 客户端 bundle 只在启动时加载，仅刷新窗口不够。
@@ -63,7 +64,7 @@ dsh plugin --profile desktop add .\dsh-external-dsh-taffy-theme-0.2.3.tgz
 
 ### 背景（10 张：5 夜色 + 5 晨曦，16:9）
 
-同一场景两个版本，分别是夜色原图与新增的晨曦版。
+同一场景两个版本，分别是夜色原图与新增的晨曦版；**选择器只显示与当前外观匹配的那一列**。
 
 | 场景 | 夜色 | 晨曦（新增） |
 | --- | --- | --- |

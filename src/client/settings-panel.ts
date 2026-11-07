@@ -15,7 +15,7 @@ import {
   BUNDLED_WALLPAPER_DARK,
   BUNDLED_WALLPAPER_LIGHT,
 } from './bundled-assets'
-import { isNightScene } from '../assets/resolve'
+import { artIdMatchesMode, isNightScene } from '../assets/resolve'
 
 const SETTINGS_NS = 'settings.taffyTheme'
 
@@ -95,8 +95,11 @@ function Choice({
  * The label survives as aria-label and title only.
  */
 const backgroundOptions = () => {
-  const classic = isNightScene() ? BUNDLED_WALLPAPER_DARK : BUNDLED_WALLPAPER_LIGHT
+  const night = isNightScene()
+  const classic = night ? BUNDLED_WALLPAPER_DARK : BUNDLED_WALLPAPER_LIGHT
   return [
+    // Only the set that matches the active mode is offered: a night scene under
+    // a light UI (or the reverse) is what left chat text without contrast.
     { value: 'default', label: '跟随外观（当前经典壁纸）', src: classic },
     { value: 'classic-light', label: '经典花房', src: BUNDLED_WALLPAPER_LIGHT },
     { value: 'classic-dark', label: '经典舞台', src: BUNDLED_WALLPAPER_DARK },
@@ -110,16 +113,19 @@ const backgroundOptions = () => {
     { value: 'atelier-light', label: '午夜工房·晨曦', src: BUNDLED_BACKGROUNDS['atelier-light'] },
     { value: 'piano', label: '星夜钢琴室', src: BUNDLED_BACKGROUNDS.piano },
     { value: 'piano-light', label: '星夜钢琴室·晨曦', src: BUNDLED_BACKGROUNDS['piano-light'] },
-  ]
+  ].filter((option) => artIdMatchesMode(option.value, night))
 }
 
-const sidebarOptions = () => [
+const sidebarOptions = () => {
+  const night = isNightScene()
+  return [
   { value: 'default', label: '不显示', src: '' },
   { value: 'celestial-sidebar', label: '星空侧栏', src: BUNDLED_SIDEBAR_WATERMARKS['celestial-sidebar'] },
     { value: 'celestial-sidebar-light', label: '星空侧栏·浅色', src: BUNDLED_SIDEBAR_WATERMARKS['celestial-sidebar-light'] },
   { value: 'celestial-plum', label: '梅色梦境', src: BUNDLED_SIDEBAR_WATERMARKS['celestial-plum'] },
     { value: 'celestial-plum-light', label: '梅色梦境·浅色', src: BUNDLED_SIDEBAR_WATERMARKS['celestial-plum-light'] },
-]
+  ].filter((option) => artIdMatchesMode(option.value, night))
+}
 
 const chibiOptions = () => [
   { value: 'default', label: '经典头像', src: BUNDLED_AVATAR },
